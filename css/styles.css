@@ -1,0 +1,211 @@
+/* Reset some basic elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Import Fira Code font */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+
+/* Page Transition Effects */
+html, body {
+    overflow-x: hidden;
+    position: relative;
+}
+
+body {
+    font-family: 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #e1e1e1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #121212;
+    transition: transform 0.5s ease-out;
+}
+
+.page-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #121212;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.5s ease-out;
+}
+
+.page-transition.active {
+    transform: translateX(0);
+}
+
+/* Header styles */
+header {
+    background-color: #1e1e1e;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+header h1 {
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #88c0d0;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #8fbcbb;
+}
+
+/* Section styles */
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+section h2 {
+    margin-bottom: 15px;
+    color: #88c0d0;
+}
+
+/* Form styles */
+form div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #d8dee9;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #2e2e2e;
+    color: #e1e1e1;
+    font-family: 'Fira Code', monospace;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+button {
+    background-color: #5e81ac;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    font-family: 'Fira Code', monospace;
+}
+
+button:hover {
+    background-color: #81a1c1;
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #1e1e1e;
+    margin-top: 20px;
+    border-radius: 5px;
+    color: #a0a0a0;
+    border: 1px solid #333;
+}
+
+/* About page specific styles */
+.about-content h3 {
+    color: #88c0d0;
+    margin: 20px 0 10px 0;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+.about-content ul {
+    list-style-type: square;
+    margin-left: 25px;
+    color: #d8dee9;
+}
+
+/* Documents page specific styles */
+.document-list {
+    margin-top: 20px;
+}
+
+.document-list ul {
+    list-style-type: none;
+}
+
+.document-list li {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #252525;
+    border-radius: 4px;
+    border-left: 3px solid #5e81ac;
+}
+
+.document-list h4 {
+    color: #88c0d0;
+    margin-bottom: 5px;
+}
+
+.document-list .date {
+    color: #81a1c1;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.document-list .excerpt {
+    color: #d8dee9;
+}
+
+/* Visualization styles */
+.visualization-container {
+    margin: 30px auto;
+    text-align: center;
+    max-width: 320px;
+}
+
+.visualization-container h3 {
+    color: #88c0d0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+#arrowCanvas {
+    background-color: #252525;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid #444;
+    cursor: pointer;
+}
