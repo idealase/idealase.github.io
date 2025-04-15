@@ -27,23 +27,6 @@ jobs:
           npm install stylelint stylelint-config-standard
           npm install eslint
 
-      - name: Create test configuration files
-        run: |
-          echo '{
-            "extends": "stylelint-config-standard"
-          }' > .stylelintrc.json
-          
-          echo 'module.exports = {
-            "env": {
-                "browser": true,
-                "es2021": true
-            },
-            "extends": "eslint:recommended",
-            "parserOptions": {
-                "ecmaVersion": 12
-            }
-          }' > .eslintrc.js
-
       - name: Validate HTML
         run: npx html-validate "*.html" || echo "HTML validation issues found, but continuing"
         continue-on-error: true
@@ -84,5 +67,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
