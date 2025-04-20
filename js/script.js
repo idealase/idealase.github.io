@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     (function() {
         // Initialize EmailJS with your public key
         emailjs.init({
-            publicKey: "xK7z-7gyMjdVtKqWq"
+            publicKey: "sBWi2Myw71iv3sKXL"
         });
     })();
     
