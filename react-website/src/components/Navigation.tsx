@@ -12,7 +12,7 @@ const NavContainer = styled.nav`
   transition: all 0.3s ease;
 `;
 
-const NavList = styled.ul`
+const NavList = styled.ul<{ $isOpen: boolean }>`
   display: flex;
   justify-content: center;
   list-style: none;
@@ -22,6 +22,10 @@ const NavList = styled.ul`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
+    display: ${props => props.$isOpen ? 'flex' : 'none'};
+    padding: 1rem 0;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
   }
 `;
 
@@ -107,7 +111,7 @@ const Navigation: React.FC = () => {
       <MobileMenuButton onClick={toggleMobileMenu}>
         {isMobileMenuOpen ? '✕' : '☰'}
       </MobileMenuButton>
-      <NavList style={{ display: isMobileMenuOpen ? 'flex' : 'flex' }}>
+      <NavList $isOpen={isMobileMenuOpen}>
         <NavItem>
           <Link to="/" $isActive={location.pathname === '/'}>
             Home
