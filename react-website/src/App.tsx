@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, HashRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import GlobalStyles from './GlobalStyles';
 import Navigation from './components/Navigation';
@@ -29,7 +29,7 @@ const Footer = styled.footer`
 
 function App() {
   return (
-    <Router>
+    <HashRouter>
       <AppContainer>
         <GlobalStyles />
         <Navigation />
@@ -44,10 +44,10 @@ function App() {
           </Routes>
         </MainContent>
         <Footer>
-          <p>&copy; 2025 My Website | <a href="https://github.com/yourusername/first-js" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+          <p>&copy; 2025 My Website | <a href="https://github.com/bsandford/first-js" target="_blank" rel="noopener noreferrer">GitHub</a></p>
         </Footer>
       </AppContainer>
-    </Router>
+    </HashRouter>
   );
 }
 
