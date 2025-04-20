@@ -2,6 +2,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Website loaded successfully!');
     
+    // Initialize EmailJS with your user ID
+    // Replace "user_yourActualUserID" with your EmailJS user ID after signing up
+    emailjs.init("xK7z-7gyMjdVtKqWq");
+    
     // Get elements we'll work with
     const contactForm = document.getElementById('contact-form');
     const navLinks = document.querySelectorAll('nav a');
@@ -59,17 +63,40 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
             
-            // In a real application, you would send this data to a server
-            console.log('Form submitted with the following data:');
-            console.log(`Name: ${name}`);
-            console.log(`Email: ${email}`);
-            console.log(`Message: ${message}`);
+            // Show loading indication
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
             
-            // Show a success message
-            alert('Thank you for your message! We will get back to you soon.');
+            // Prepare template parameters
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                message: message
+            };
             
-            // Clear the form
-            contactForm.reset();
+            // Send email using EmailJS
+            // Replace "service_id" and "template_id" with your actual service and template IDs from EmailJS
+            emailjs.send("service_szc0b2r", "template_zxvpn0b", templateParams)
+                .then(function(response) {
+                    console.log('Email sent successfully!', response.status, response.text);
+                    
+                    // Show success message
+                    alert('Thank you for your message! We will get back to you soon.');
+                    
+                    // Reset the form
+                    contactForm.reset();
+                })
+                .catch(function(error) {
+                    console.error('Email sending failed:', error);
+                    alert('Sorry, there was a problem sending your message. Please try again later.');
+                })
+                .finally(function() {
+                    // Restore button state
+                    submitButton.textContent = originalButtonText;
+                    submitButton.disabled = false;
+                });
         });
     }
     
