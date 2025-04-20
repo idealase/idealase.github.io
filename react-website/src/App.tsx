@@ -44,7 +44,7 @@ function App() {
           </Routes>
         </MainContent>
         <Footer>
-          <p>&copy; 2025 My Website | <a href="https://github.com/bsandford/first-js" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+          <p>&copy; 2025 My Website | <a href="https://github.com/idealase/idealase.github.io" target="_blank" rel="noopener noreferrer">GitHub</a></p>
         </Footer>
       </AppContainer>
     </HashRouter>
