@@ -124,10 +124,9 @@ const Contact: React.FC = () => {
   
   // Initialize EmailJS once when component mounts
   useEffect(() => {
-    // Initialize with your actual public key
-    emailjs.init({
-      publicKey: "sBWi2Myw71iv3sKXL"
-    });
+    // Using legacy initialization method
+    emailjs.init("sBWi2Myw71iv3sKXL");
+    console.log("EmailJS initialized");
   }, []);
   
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
@@ -137,13 +136,25 @@ const Contact: React.FC = () => {
     
     setIsSubmitting(true);
     
-    // No need to pass the public key here since we initialized it above
-    emailjs.sendForm(
-      'service_szc0b2r', 
-      'template_zxvpn0b', 
-      form.current
+    // Get form data
+    const formData = new FormData(form.current);
+    const templateParams = {
+      from_name: formData.get('from_name'),
+      from_email: formData.get('from_email'),
+      message: formData.get('message'),
+    };
+    
+    console.log("Attempting to send email with template parameters:", templateParams);
+    
+    // Use your correct service ID from your EmailJS dashboard
+    // The current one 'service_szc0b2r' doesn't exist according to the error message
+    emailjs.send(
+      'service_bhhay7a', // Replace this with your actual service ID from EmailJS dashboard
+      'template_zxvpn0b',        // Your template ID - verify this is correct as well
+      templateParams
     )
       .then((result) => {
+        console.log('Email sent successfully:', result);
         setMessage({
           text: 'Thank you for your message! We will get back to you soon.',
           success: true
@@ -151,11 +162,11 @@ const Contact: React.FC = () => {
         form.current!.reset();
       })
       .catch((error) => {
+        console.error('EmailJS detailed error:', error);
         setMessage({
-          text: `Failed to send the message: ${error.text}`,
+          text: `Failed to send the message: ${error.text || error.message || 'Unknown error'}`,
           success: false
         });
-        console.error('EmailJS error:', error);
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -164,7 +175,7 @@ const Contact: React.FC = () => {
 
   return (
     <ContactSection id="contact">
-      <Title>Get in Touch</Title>
+      <Title>Contact sandford.systems</Title>
       <ContactForm ref={form} onSubmit={sendEmail}>
         <FormGroup>
           <Label htmlFor="name">Name</Label>

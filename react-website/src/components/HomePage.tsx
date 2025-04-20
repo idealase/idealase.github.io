@@ -140,7 +140,7 @@ const HomePage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Welcome to <span>My Website</span>
+            Welcome to <span>sandford.systems</span>
           </Title>
           <Subtitle
             initial={{ opacity: 0, y: 20 }}
