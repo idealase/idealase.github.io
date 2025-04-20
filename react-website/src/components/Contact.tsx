@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
@@ -122,6 +122,14 @@ const Contact: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ text: string; success: boolean } | null>(null);
   
+  // Initialize EmailJS once when component mounts
+  useEffect(() => {
+    // Initialize with your actual public key
+    emailjs.init({
+      publicKey: "sBWi2Myw71iv3sKXL"
+    });
+  }, []);
+  
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -129,12 +137,11 @@ const Contact: React.FC = () => {
     
     setIsSubmitting(true);
     
-    // Replace with your EmailJS service ID, template ID, and Public Key
+    // No need to pass the public key here since we initialized it above
     emailjs.sendForm(
       'service_szc0b2r', 
       'template_zxvpn0b', 
-      form.current, 
-      'YOUR_PUBLIC_KEY_HERE'
+      form.current
     )
       .then((result) => {
         setMessage({
@@ -148,6 +155,7 @@ const Contact: React.FC = () => {
           text: `Failed to send the message: ${error.text}`,
           success: false
         });
+        console.error('EmailJS error:', error);
       })
       .finally(() => {
         setIsSubmitting(false);
