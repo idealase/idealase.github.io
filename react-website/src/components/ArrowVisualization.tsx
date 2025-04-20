@@ -181,7 +181,7 @@ const ArrowVisualization: React.FC<ArrowVisualizationProps> = ({ title = 'Progre
     // Initial draw
     drawArrow(0);
     
-    // Event handlers
+    // Event handlers for tracking cursor across entire document
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       const canvasCenterX = rect.left + centerX;
@@ -195,7 +195,6 @@ const ArrowVisualization: React.FC<ArrowVisualizationProps> = ({ title = 'Progre
     };
     
     const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault(); // Prevent scrolling
       const touch = e.touches[0];
       
       const rect = canvas.getBoundingClientRect();
@@ -209,14 +208,14 @@ const ArrowVisualization: React.FC<ArrowVisualizationProps> = ({ title = 'Progre
       drawArrow(angle);
     };
     
-    // Add event listeners
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('touchmove', handleTouchMove);
+    // Add event listeners to the document instead of just the canvas
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
     
     // Clean up event listeners on component unmount
     return () => {
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('touchmove', handleTouchMove);
     };
   }, []);
   
