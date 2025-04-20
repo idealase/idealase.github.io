@@ -142,8 +142,23 @@ const ArrowVisualization: React.FC<ArrowVisualizationProps> = ({ title = 'Progre
     
     // Draw the arrow at the specified angle
     const drawArrow = (angle: number) => {
-      // Clear the canvas
+      // More robust canvas clearing - completely reset the canvas
+      ctx.save();
+      
+      // Reset the transformation to identity matrix
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      
+      // Clear the entire canvas including transforms
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Restore the canvas state
+      ctx.restore();
+      
+      // For extra measure, fill with the background color to ensure complete clearing
+      ctx.fillStyle = 'rgba(35, 35, 35, 0.6)';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius + 10, 0, Math.PI * 2, false);
+      ctx.fill();
       
       // Draw tick marks around the circle
       drawTickMarks();
