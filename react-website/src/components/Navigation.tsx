@@ -86,6 +86,7 @@ const Navigation: React.FC = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,6 +102,17 @@ const Navigation: React.FC = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Effect to close mobile menu when location changes
+  useEffect(() => {
+    // Check if the pathname has changed
+    if (location.pathname !== prevPathname) {
+      // Close the mobile menu
+      setIsMobileMenuOpen(false);
+      // Update the previous pathname
+      setPrevPathname(location.pathname);
+    }
+  }, [location.pathname, prevPathname]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
