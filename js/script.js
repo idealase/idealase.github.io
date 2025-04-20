@@ -2,11 +2,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Website loaded successfully!');
     
-    // Initialize EmailJS with your public key
-    // Using the correct format for the latest version of EmailJS
-    emailjs.init({
-        publicKey: "xK7z-7gyMjdVtKqWq",
-    });
+    // EmailJS initialization
+    (function() {
+        // Initialize EmailJS with your public key
+        emailjs.init({
+            publicKey: "xK7z-7gyMjdVtKqWq"
+        });
+    })();
     
     // Get elements we'll work with
     const contactForm = document.getElementById('contact-form');
@@ -61,37 +63,38 @@ document.addEventListener('DOMContentLoaded', function() {
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
             // Show loading indication
             const submitButton = contactForm.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.textContent;
             submitButton.textContent = 'Sending...';
             submitButton.disabled = true;
             
-            // Prepare template parameters
-            const templateParams = {
-                from_name: name,
-                from_email: email,
-                message: message
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value
             };
             
-            // Send email using EmailJS with the updated method signature
-            emailjs.send("service_szc0b2r", "template_zxvpn0b", templateParams)
-                .then(function(response) {
-                    console.log('Email sent successfully!', response.status, response.text);
-                    
-                    // Show success message
+            // Service ID, Template ID and template parameters
+            const serviceID = "service_szc0b2r";
+            const templateID = "template_zxvpn0b";
+            const templateParams = {
+                from_name: formData.name,
+                from_email: formData.email,
+                message: formData.message
+            };
+            
+            // Send email using EmailJS
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function() {
+                    console.log('Email sent successfully!');
                     alert('Thank you for your message! We will get back to you soon.');
-                    
-                    // Reset the form
                     contactForm.reset();
                 })
                 .catch(function(error) {
                     console.error('Email sending failed:', error);
-                    alert('Sorry, there was a problem sending your message: ' + error.text);
+                    alert('Failed to send the message. Error: ' + JSON.stringify(error));
                 })
                 .finally(function() {
                     // Restore button state
