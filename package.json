@@ -1,0 +1,33 @@
+{
+  "name": "first-js",
+  "version": "1.0.0",
+  "description": "A simple website built with HTML, CSS, and JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -p 8080",
+    "lint:html": "html-validate \"*.html\"",
+    "lint:css": "stylelint \"css/*.css\"",
+    "lint:js": "eslint \"js/*.js\"",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "test": "npm run lint && node tests/run-tests.js"
+  },
+  "keywords": [
+    "html",
+    "css",
+    "javascript",
+    "website"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.33.0",
+    "html-validate": "^7.12.0",
+    "http-server": "^14.1.1",
+    "jest": "^29.4.1",
+    "stylelint": "^14.16.1",
+    "stylelint-config-standard": "^29.0.0"
+  },
+  "dependencies": {
+    "emailjs-com": "^3.2.0"
+  }
+}
