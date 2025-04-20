@@ -2,9 +2,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Website loaded successfully!');
     
-    // Initialize EmailJS with your user ID
-    // Replace "user_yourActualUserID" with your EmailJS user ID after signing up
-    emailjs.init("xK7z-7gyMjdVtKqWq");
+    // Initialize EmailJS with your public key
+    // Using the correct format for the latest version of EmailJS
+    emailjs.init({
+        publicKey: "xK7z-7gyMjdVtKqWq",
+    });
     
     // Get elements we'll work with
     const contactForm = document.getElementById('contact-form');
@@ -76,8 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 message: message
             };
             
-            // Send email using EmailJS
-            // Replace "service_id" and "template_id" with your actual service and template IDs from EmailJS
+            // Send email using EmailJS with the updated method signature
             emailjs.send("service_szc0b2r", "template_zxvpn0b", templateParams)
                 .then(function(response) {
                     console.log('Email sent successfully!', response.status, response.text);
@@ -90,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(function(error) {
                     console.error('Email sending failed:', error);
-                    alert('Sorry, there was a problem sending your message. Please try again later.');
+                    alert('Sorry, there was a problem sending your message: ' + error.text);
                 })
                 .finally(function() {
                     // Restore button state
