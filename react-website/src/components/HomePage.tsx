@@ -147,7 +147,7 @@ const HomePage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            A modern and sophisticated React application showcasing interactive elements and smooth user experience.
+            A modern and sophisticated React site, built entirely from vibes.
           </Subtitle>
         </HeroContent>
         <ScrollPrompt
@@ -177,7 +177,7 @@ const HomePage: React.FC = () => {
 
       <ContentSection id="content">
         <SectionTitle>Home</SectionTitle>
-        <p>Welcome to my first React website! This is a modern and sophisticated version of my original JavaScript site.</p>
+        <p>Welcome to my first React website! This is a modern and sophisticated version of my original JavaScript site. With VS Code Copilot Agent mode, and little else, I am making this website, one prompt at a time.</p>
         <ArrowVisualization />
       </ContentSection>
 
