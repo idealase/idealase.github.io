@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test - My First Website</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Login System Test</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="documents.html">Documents</a></li>
+                <li><a href="login.html">Private Area</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="test">
+            <h2>Authentication Status Test</h2>
+            <div id="auth-status"></div>
+            <div id="session-data"></div>
+
+            <h3>Actions</h3>
+            <button onclick="testLogin()">Test Login (password: aaa)</button>
+            <button onclick="clearSession()">Clear Session</button>
+            <button onclick="goToPrivate()">Try to Access Private Area</button>
+            <button onclick="goToHangman()">Try to Access Hangman Game</button>
+
+            <h3>Results</h3>
+            <div id="results"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 My First Website</p>
+    </footer>
+
+    <script>
+        function updateStatus() {
+            const authStatus = sessionStorage.getItem('authenticated');
+            const statusDiv = document.getElementById('auth-status');
+            const sessionDiv = document.getElementById('session-data');
+
+            statusDiv.innerHTML = `<p><strong>Authentication Status:</strong> ${authStatus || 'Not set'}</p>`;
+
+            // Show all session storage data
+            let sessionData = '<h4>Session Storage Contents:</h4><ul>';
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                const value = sessionStorage.getItem(key);
+                sessionData += `<li><strong>${key}:</strong> ${value}</li>`;
+            }
+            sessionData += '</ul>';
+            sessionDiv.innerHTML = sessionData;
+        }
+
+        function testLogin() {
+            // Simulate the login process
+            sessionStorage.setItem('authenticated', 'true');
+            updateStatus();
+            log('Login simulation complete - set authenticated to true');
+        }
+
+        function clearSession() {
+            sessionStorage.clear();
+            updateStatus();
+            log('Session storage cleared');
+        }
+
+        function goToPrivate() {
+            log('Attempting to navigate to private.html...');
+            window.location.href = 'private.html';
+        }
+
+        function goToHangman() {
+            log('Attempting to navigate to hangman game...');
+            window.location.href = 'dev-work/hangman-dos.html';
+        }
+
+        function log(message) {
+            const resultsDiv = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            resultsDiv.innerHTML += `<p><strong>[${timestamp}]</strong> ${message}</p>`;
+        }
+
+        // Update status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus();
+            log('Test page loaded');
+        });
+    </script>
+</body>
+</html>
