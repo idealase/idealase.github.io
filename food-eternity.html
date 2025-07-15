@@ -25,25 +25,144 @@
             <h2>Food Eternity Document</h2>
             <p>This document explores concepts related to food sustainability and preservation.</p>
 
-            <div class="document-viewer">
-                <h3>Document Viewer</h3>
-                <div class="pdf-container">
-                    <embed src="food-eternity.pdf"
-                           type="application/pdf"
-                           width="100%"
-                           height="600px"
-                           style="border: 1px solid #333; border-radius: 5px;">
+            <!-- Navigation tabs for different viewing options -->
+            <div class="document-tabs">
+                <button class="tab-btn active" onclick="showTab('text-content')">📖 Read Online</button>
+                <button class="tab-btn" onclick="showTab('pdf-viewer')">📄 PDF Viewer</button>
+            </div>
 
-                    <!-- Fallback for browsers that don't support PDF embedding -->
-                    <p style="margin-top: 20px;">
-                        If the PDF doesn't display above, you can
-                        <a href="food-eternity.pdf" target="_blank" download>download the PDF file here</a>.
-                    </p>
+            <!-- Text Content Tab -->
+            <div id="text-content" class="tab-content active">
+                <div class="document-text">
+                    <article>
+                        <header class="document-header">
+                            <h1>Food Eternity: Sustainable Preservation and Storage</h1>
+                            <p class="document-meta">A comprehensive guide to food security and sustainability</p>
+                        </header>
+
+                        <section class="document-section">
+                            <h2>Executive Summary</h2>
+                            <p>In an era of increasing environmental challenges and global food insecurity, the need for sustainable food preservation and storage solutions has never been more critical. This document explores comprehensive approaches to extending food longevity while maintaining nutritional value and implementing environmentally responsible practices.</p>
+                        </section>
+
+                        <section class="document-section">
+                            <h2>1. Introduction to Food Preservation</h2>
+                            <p>Food preservation encompasses a range of techniques designed to prevent or slow down food spoilage, maintain nutritional quality, and extend shelf life. These methods have evolved from traditional practices passed down through generations to modern scientific approaches that leverage technology and deep understanding of food science.</p>
+
+                            <h3>1.1 Historical Context</h3>
+                            <p>Throughout human history, food preservation has been essential for survival. Ancient civilizations developed methods such as drying, salting, fermentation, and smoking to ensure food availability during scarce periods. These traditional methods laid the foundation for modern preservation techniques.</p>
+
+                            <h3>1.2 Modern Challenges</h3>
+                            <p>Today's food preservation faces unique challenges including climate change, resource scarcity, population growth, and the need for sustainable practices. Modern solutions must balance effectiveness, environmental impact, and economic viability.</p>
+                        </section>
+
+                        <section class="document-section">
+                            <h2>2. Sustainable Preservation Techniques</h2>
+
+                            <h3>2.1 Traditional Methods</h3>
+                            <ul>
+                                <li><strong>Dehydration:</strong> Removing moisture to prevent bacterial growth while maintaining nutritional value</li>
+                                <li><strong>Fermentation:</strong> Using beneficial microorganisms to preserve food and enhance nutritional properties</li>
+                                <li><strong>Salt Curing:</strong> Using salt to draw out moisture and create an inhospitable environment for harmful bacteria</li>
+                                <li><strong>Smoking:</strong> Combining dehydration with antimicrobial compounds from wood smoke</li>
+                            </ul>
+
+                            <h3>2.2 Modern Eco-Friendly Approaches</h3>
+                            <ul>
+                                <li><strong>Solar Dehydration:</strong> Using renewable solar energy for efficient food drying</li>
+                                <li><strong>Vacuum Sealing:</strong> Removing oxygen to prevent oxidation and spoilage</li>
+                                <li><strong>Natural Preservatives:</strong> Using plant-based compounds instead of synthetic chemicals</li>
+                                <li><strong>Modified Atmosphere Packaging:</strong> Controlling gas composition to extend shelf life</li>
+                            </ul>
+                        </section>
+
+                        <section class="document-section">
+                            <h2>3. Long-term Storage Solutions</h2>
+
+                            <h3>3.1 Environmental Controls</h3>
+                            <p>Proper storage requires careful control of temperature, humidity, light exposure, and air circulation. These factors significantly impact food quality and longevity.</p>
+
+                            <h3>3.2 Storage Infrastructure</h3>
+                            <ul>
+                                <li><strong>Root Cellars:</strong> Natural temperature and humidity control using earth's thermal mass</li>
+                                <li><strong>Cold Storage:</strong> Refrigeration systems optimized for different food types</li>
+                                <li><strong>Dry Storage:</strong> Climate-controlled environments for shelf-stable goods</li>
+                                <li><strong>Bulk Storage Systems:</strong> Large-scale solutions for community and commercial use</li>
+                            </ul>
+                        </section>
+
+                        <section class="document-section">
+                            <h2>4. Best Practices for Food Management</h2>
+
+                            <h3>4.1 Inventory Management</h3>
+                            <p>Effective food management requires systematic approaches to inventory tracking, rotation, and consumption planning. This includes implementing FIFO (First In, First Out) principles and regular quality assessments.</p>
+
+                            <h3>4.2 Quality Control</h3>
+                            <ul>
+                                <li>Regular inspection for signs of spoilage</li>
+                                <li>Temperature and humidity monitoring</li>
+                                <li>Proper labeling and dating systems</li>
+                                <li>Documentation of storage conditions</li>
+                            </ul>
+
+                            <h3>4.3 Waste Reduction Strategies</h3>
+                            <p>Minimizing food waste through proper planning, preservation timing, and creative utilization of foods approaching expiration dates.</p>
+                        </section>
+
+                        <section class="document-section">
+                            <h2>5. Environmental Impact and Sustainability</h2>
+
+                            <h3>5.1 Carbon Footprint Reduction</h3>
+                            <p>Food preservation can significantly reduce the carbon footprint associated with food production by extending usable life and reducing waste. Choosing energy-efficient preservation methods and local food sources further enhances environmental benefits.</p>
+
+                            <h3>5.2 Resource Conservation</h3>
+                            <p>Effective food preservation conserves water, energy, and raw materials by maximizing the utility of produced food and reducing the need for replacement production.</p>
+                        </section>
+
+                        <section class="document-section">
+                            <h2>6. Future Considerations</h2>
+                            <p>As we face mounting environmental challenges and growing global populations, food preservation will play an increasingly critical role in ensuring food security. Emerging technologies, improved understanding of food science, and innovative sustainable practices will continue to evolve this field.</p>
+
+                            <h3>6.1 Emerging Technologies</h3>
+                            <ul>
+                                <li>Smart storage systems with IoT monitoring</li>
+                                <li>Advanced packaging materials from renewable sources</li>
+                                <li>Precision preservation techniques</li>
+                                <li>Biotechnology applications in food preservation</li>
+                            </ul>
+                        </section>
+
+                        <section class="document-section">
+                            <h2>Conclusion</h2>
+                            <p>Food preservation and sustainable storage practices represent essential tools for addressing global food security challenges while minimizing environmental impact. By combining traditional wisdom with modern innovation, we can develop comprehensive approaches that serve both current needs and future generations.</p>
+
+                            <p>The implementation of these practices requires commitment at individual, community, and institutional levels. Through education, investment in appropriate infrastructure, and adoption of best practices, we can work toward a more sustainable and secure food future.</p>
+                        </section>
+                    </article>
                 </div>
+            </div>
 
-                <div class="document-actions" style="margin-top: 20px;">
-                    <a href="food-eternity.pdf" target="_blank" class="btn">Open in New Tab</a>
-                    <a href="food-eternity.pdf" download class="btn">Download PDF</a>
+            <!-- PDF Viewer Tab -->
+            <div id="pdf-viewer" class="tab-content">
+                <div class="document-viewer">
+                    <h3>PDF Document Viewer</h3>
+                    <div class="pdf-container">
+                        <embed src="food-eternity.pdf"
+                               type="application/pdf"
+                               width="100%"
+                               height="600px"
+                               style="border: 1px solid #333; border-radius: 5px;">
+
+                        <!-- Mobile-friendly fallback -->
+                        <div class="mobile-pdf-notice">
+                            <p><strong>📱 Mobile users:</strong> PDF viewing may not work properly on mobile devices. Please use the "📖 Read Online" tab above for the best mobile experience, or download the PDF to view in your device's PDF reader.</p>
+                        </div>
+                    </div>
+
+                    <div class="document-actions" style="margin-top: 20px;">
+                        <a href="food-eternity.pdf" target="_blank" class="btn">Open in New Tab</a>
+                        <a href="food-eternity.pdf" download class="btn">Download PDF</a>
+                    </div>
                 </div>
             </div>
 
@@ -65,5 +184,42 @@
     </footer>
 
     <script src="js/script.js"></script>
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Auto-detect mobile and show text content by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                // Mobile users start with text content
+                showTab('text-content');
+
+                // Show mobile notice
+                const mobileNotice = document.querySelector('.mobile-pdf-notice');
+                if (mobileNotice) {
+                    mobileNotice.style.display = 'block';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

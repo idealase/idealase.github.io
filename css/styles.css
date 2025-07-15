@@ -391,6 +391,139 @@ footer {
     box-shadow: 0 4px 12px rgba(136, 192, 208, 0.4);
 }
 
+/* Document Tabs and Text Content Styles */
+.document-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    gap: 10px;
+}
+
+.tab-btn {
+    background-color: #2e2e2e;
+    color: #e1e1e1;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    transition: all 0.3s ease;
+    border: 1px solid #444;
+    border-bottom: none;
+}
+
+.tab-btn:hover {
+    background-color: #3e3e3e;
+    color: #88c0d0;
+}
+
+.tab-btn.active {
+    background-color: #5e81ac;
+    color: white;
+    border-color: #5e81ac;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.document-text {
+    background-color: #252525;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    max-width: none;
+    line-height: 1.8;
+}
+
+.document-text article {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.document-header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #5e81ac;
+    padding-bottom: 20px;
+}
+
+.document-header h1 {
+    color: #88c0d0;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.document-meta {
+    color: #81a1c1;
+    font-style: italic;
+    font-size: 1.1em;
+    margin: 0;
+}
+
+.document-section {
+    margin-bottom: 35px;
+}
+
+.document-section h2 {
+    color: #88c0d0;
+    font-size: 1.6em;
+    margin-bottom: 15px;
+    margin-top: 30px;
+    border-left: 4px solid #5e81ac;
+    padding-left: 15px;
+}
+
+.document-section h3 {
+    color: #81a1c1;
+    font-size: 1.3em;
+    margin-bottom: 12px;
+    margin-top: 25px;
+}
+
+.document-section p {
+    color: #e1e1e1;
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.document-section ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.document-section li {
+    color: #d8dee9;
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.document-section li strong {
+    color: #88c0d0;
+}
+
+.mobile-pdf-notice {
+    display: none;
+    background-color: #3e2723;
+    border: 1px solid #d84315;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+    color: #ffab91;
+}
+
 /* Responsive design for featured section */
 @media (max-width: 768px) {
     .featured-actions {
@@ -399,5 +532,52 @@ footer {
 
     .featured-btn {
         min-width: 100%;
+    }
+}
+
+/* Responsive design for document text */
+@media (max-width: 768px) {
+    .document-tabs {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        border-radius: 5px;
+        border: 1px solid #444;
+        margin-bottom: 5px;
+    }
+
+    .tab-btn.active {
+        border-color: #5e81ac;
+    }
+
+    .document-text {
+        padding: 20px 15px;
+    }
+
+    .document-header h1 {
+        font-size: 1.8em;
+    }
+
+    .document-section h2 {
+        font-size: 1.4em;
+    }
+
+    .document-section h3 {
+        font-size: 1.2em;
+    }
+
+    .mobile-pdf-notice {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .document-text {
+        padding: 15px 10px;
+    }
+
+    .document-header h1 {
+        font-size: 1.6em;
     }
 }
