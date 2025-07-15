@@ -15,7 +15,7 @@
             border-radius: 5px;
             overflow: hidden;
         }
-        
+
         .emulator-header {
             background-color: #0000aa;
             color: white;
@@ -24,14 +24,14 @@
             display: flex;
             justify-content: space-between;
         }
-        
+
         .emulator-header button {
             padding: 2px 5px;
             font-size: 12px;
             background-color: #aaaaaa;
             color: black;
         }
-        
+
         .emulator-screen {
             background-color: #000;
             color: #aaa;
@@ -41,20 +41,20 @@
             overflow-y: auto;
             white-space: pre-wrap;
         }
-        
+
         .input-line {
             display: flex;
             background-color: #000;
             padding: 5px 10px;
             border-top: 1px solid #444;
         }
-        
+
         .prompt {
             color: #aaa;
             margin-right: 5px;
             font-family: 'Courier New', monospace;
         }
-        
+
         #dos-input {
             background-color: #000;
             color: #aaa;
@@ -63,7 +63,7 @@
             font-family: 'Courier New', monospace;
             outline: none;
         }
-        
+
         /* Readme styling */
         .readme {
             background-color: #252525;
@@ -73,7 +73,7 @@
             border: 1px solid #444;
             font-family: 'Courier New', monospace;
         }
-        
+
         .readme pre {
             background-color: #1a1a1a;
             padding: 15px;
@@ -81,11 +81,11 @@
             overflow-x: auto;
             border: 1px solid #333;
         }
-        
+
         .readme code {
             color: #88c0d0;
         }
-        
+
         /* Code display styling */
         .code-header {
             background-color: #333;
@@ -93,7 +93,7 @@
             border-radius: 5px 5px 0 0;
             font-weight: bold;
         }
-        
+
         .source-code {
             background-color: #1a1a1a;
             padding: 15px;
@@ -103,25 +103,18 @@
             margin-top: 0;
             color: #d8dee9;
         }
-        
+
         .back-link {
             display: inline-block;
             margin-bottom: 20px;
             color: #88c0d0;
             text-decoration: none;
         }
-        
+
         .back-link:hover {
             text-decoration: underline;
         }
     </style>
-    <script>
-        // Check if user is authenticated
-        if (sessionStorage.getItem('authenticated') !== 'true') {
-            // Redirect to login page if not authenticated
-            window.location.href = '../login.html';
-        }
-    </script>
 </head>
 <body>
     <header>
@@ -138,11 +131,11 @@
 
     <main>
         <a href="../private.html" class="back-link">← Back to Private Area</a>
-        
+
         <section id="hangman-project">
             <h2>MS-DOS Hangman</h2>
             <p>A classic word guessing game implemented in MS-DOS using Turbo Pascal. This project demonstrates low-level game programming techniques in a constrained environment.</p>
-            
+
             <div class="readme">
                 <h3>README.md</h3>
                 <pre>
@@ -192,10 +185,10 @@ This Hangman game is written in Turbo Pascal 7.0 for MS-DOS environments. The ga
 Developed by [Your Name], April 2025
 </pre>
             </div>
-            
+
             <h3>Emulator</h3>
             <p>You can run and play the MS-DOS Hangman game in the emulator below. Type <code>HANGMAN</code> and press Enter to start the game.</p>
-            
+
             <div class="dos-emulator">
                 <div class="emulator-header">
                     <span>MS-DOS Prompt</span>
@@ -210,10 +203,10 @@ Developed by [Your Name], April 2025
                     <input type="text" id="dos-input" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-            
+
             <h3>Source Code</h3>
             <p>Below is the Turbo Pascal source code for the Hangman game:</p>
-            
+
             <div class="code-container">
                 <div class="code-header">HANGMAN.PAS</div>
                 <pre class="source-code">
@@ -230,7 +223,7 @@ CONST
 TYPE
   WordArray = ARRAY[1..MaxWords] OF STRING[MaxWordLength];
   GuessArray = ARRAY['A'..'Z'] OF BOOLEAN;
-  
+
 VAR
   Words: WordArray;
   NumWords: INTEGER;
@@ -239,7 +232,7 @@ VAR
   WrongGuesses: INTEGER;
   GameOver: BOOLEAN;
   SoundEnabled: BOOLEAN;
-  
+
 { ASCII art for hangman stages }
 CONST
   HangmanArt: ARRAY[0..MaxGuesses] OF STRING[80] = (
@@ -261,7 +254,7 @@ BEGIN
   WriteLn('================================');
   WriteLn;
   TextColor(LightGray);
-  
+
   { Initialize game variables }
   FillChar(Guesses, SizeOf(Guesses), FALSE);
   WrongGuesses := 0;
@@ -276,7 +269,7 @@ VAR
   S: STRING;
 BEGIN
   NumWords := 0;
-  
+
   { Add some default words in case the file isn''t available }
   Words[1] := 'COMPUTER';
   Words[2] := 'PROGRAMMING';
@@ -284,13 +277,13 @@ BEGIN
   Words[4] := 'MONITOR';
   Words[5] := 'PASCAL';
   NumWords := 5;
-  
+
   { Try to open the word list file }
   {$I-}
   Assign(F, 'WORDS.TXT');
   Reset(F);
   {$I+}
-  
+
   IF IOResult = 0 THEN
   BEGIN
     WHILE (NOT EOF(F)) AND (NumWords < MaxWords) DO
@@ -304,7 +297,7 @@ BEGIN
     END;
     Close(F);
   END;
-  
+
   { Make sure we have at least some words }
   IF NumWords = 0 THEN
   BEGIN
@@ -332,12 +325,12 @@ BEGIN
   GotoXY(5, 6);
   WriteLn('  |   |  ');
   GotoXY(5, 7);
-  
+
   IF WrongGuesses > 0 THEN
     WriteLn('  |   O  ')
   ELSE
     WriteLn('  |      ');
-  
+
   GotoXY(5, 8);
   CASE WrongGuesses OF
     2: WriteLn('  |   |  ');
@@ -345,19 +338,19 @@ BEGIN
     4, 5, 6: WriteLn('  |  /|\ ');
     ELSE WriteLn('  |      ');
   END;
-  
+
   GotoXY(5, 9);
   CASE WrongGuesses OF
     5: WriteLn('  |  /   ');
     6: WriteLn('  |  / \ ');
     ELSE WriteLn('  |      ');
   END;
-  
+
   GotoXY(5, 10);
   WriteLn('  |      ');
   GotoXY(5, 11);
   WriteLn('=====    ');
-  
+
   TextColor(LightGray);
 END;
 
@@ -370,11 +363,11 @@ BEGIN
   GotoXY(30, 8);
   TextColor(White);
   Write('Word: ');
-  
+
   FOR I := 1 TO Length(CurrentWord) DO
   BEGIN
     Revealed := FALSE;
-    
+
     { Check if this letter has been guessed }
     IF Guesses[CurrentWord[I]] THEN
     BEGIN
@@ -384,7 +377,7 @@ BEGIN
     ELSE
       Write('_ ');
   END;
-  
+
   TextColor(LightGray);
   WriteLn;
 END;
@@ -397,14 +390,14 @@ BEGIN
   GotoXY(30, 10);
   TextColor(LightGreen);
   Write('Guessed: ');
-  
+
   FOR C := 'A' TO 'Z' DO
     IF Guesses[C] THEN
       Write(C, ' ');
-  
+
   TextColor(LightGray);
   WriteLn;
-  
+
   GotoXY(30, 12);
   TextColor(LightRed);
   WriteLn('Wrong guesses: ', WrongGuesses, ' of ', MaxGuesses);
@@ -417,7 +410,7 @@ VAR
   I: INTEGER;
 BEGIN
   CheckWin := TRUE;
-  
+
   FOR I := 1 TO Length(CurrentWord) DO
     IF NOT Guesses[CurrentWord[I]] THEN
     BEGIN
@@ -444,25 +437,25 @@ VAR
   I: INTEGER;
 BEGIN
   C := UpCase(C);
-  
+
   { Check if the letter has already been guessed }
   IF Guesses[C] THEN
     Exit;
-  
+
   { Mark this letter as guessed }
   Guesses[C] := TRUE;
-  
+
   { Check if the letter is in the word }
   Found := FALSE;
   FOR I := 1 TO Length(CurrentWord) DO
     IF CurrentWord[I] = C THEN
       Found := TRUE;
-  
+
   IF Found THEN
   BEGIN
     { Correct guess }
     Beep(1000, 100);
-    
+
     { Check if player has won }
     IF CheckWin THEN
     BEGIN
@@ -481,7 +474,7 @@ BEGIN
     { Wrong guess }
     Inc(WrongGuesses);
     Beep(200, 200);
-    
+
     { Check if player has lost }
     IF WrongGuesses >= MaxGuesses THEN
     BEGIN
@@ -521,7 +514,7 @@ BEGIN
   WriteLn;
   TextColor(Yellow);
   WriteLn('Press any key to return to the game...');
-  
+
   ReadKey;
   ClrScr;
   DrawHangman;
@@ -540,11 +533,11 @@ BEGIN
   DrawHangman;
   DisplayWord;
   DisplayGuesses;
-  
+
   WHILE NOT GameOver DO
   BEGIN
     Key := ReadKey;
-    
+
     CASE Key OF
       #0: BEGIN
         { Extended key }
@@ -554,7 +547,7 @@ BEGIN
           #60: SoundEnabled := NOT SoundEnabled; { F2 }
         END;
       END;
-      
+
       #27: BEGIN
         { ESC key - quit game }
         GotoXY(30, 15);
@@ -563,7 +556,7 @@ BEGIN
         TextColor(LightGray);
         GameOver := TRUE;
       END;
-      
+
       'A'..'Z', 'a'..'z': BEGIN
         MakeGuess(Key);
         DrawHangman;
@@ -572,12 +565,12 @@ BEGIN
       END;
     END;
   END;
-  
+
   GotoXY(20, 18);
   TextColor(Yellow);
   Write('Press any key to play again, ESC to quit...');
   TextColor(LightGray);
-  
+
   Key := ReadKey;
   IF Key <> #27 THEN
     PlayGame; { Recursive call to play again }
@@ -598,11 +591,24 @@ END.
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated first
+            const isAuthenticated = sessionStorage.getItem('authenticated');
+            console.log('Hangman page - Authentication status:', isAuthenticated);
+
+            if (isAuthenticated !== 'true') {
+                console.log('User not authenticated, redirecting to login...');
+                // Redirect to login page if not authenticated
+                window.location.href = '../login.html';
+                return;
+            }
+
+            console.log('User authenticated, loading hangman game...');
+
             const emulatorScreen = document.getElementById('emulator-screen');
             const dosInput = document.getElementById('dos-input');
             const resetBtn = document.getElementById('reset-btn');
             const helpBtn = document.getElementById('help-btn');
-            
+
             // Game state
             let gameRunning = false;
             let gameWon = false;
@@ -611,14 +617,14 @@ END.
             let guessedLetters = [];
             let wrongGuesses = 0;
             const maxGuesses = 6;
-            
+
             // Word list for hangman game
             const words = [
                 'COMPUTER', 'PROGRAMMING', 'KEYBOARD', 'MONITOR', 'PASCAL',
                 'FUNCTION', 'VARIABLE', 'ALGORITHM', 'DATABASE', 'NETWORK',
                 'INTERFACE', 'MEMORY', 'WINDOWS', 'SYSTEM', 'GRAPHICS'
             ];
-            
+
             // Hangman ASCII art stages
             const hangmanStages = [
                 [
@@ -685,7 +691,7 @@ END.
                     '==========='
                 ]
             ];
-            
+
             // Initialize emulator
             function initEmulator() {
                 emulatorScreen.textContent = '';
@@ -694,17 +700,17 @@ END.
                 writeLine('');
                 writeLine('C:\\>');
             }
-            
+
             // Write text to emulator
             function writeLine(text = '') {
                 emulatorScreen.textContent += text + '\n';
                 emulatorScreen.scrollTop = emulatorScreen.scrollHeight;
             }
-            
+
             // Handle command input
             function processCommand(cmd) {
                 cmd = cmd.trim().toUpperCase();
-                
+
                 if (gameRunning) {
                     // We're in the game, so handle game input
                     if (cmd.length === 1 && /[A-Z]/.test(cmd)) {
@@ -721,10 +727,10 @@ END.
                     }
                     return;
                 }
-                
+
                 // Regular DOS commands
                 writeLine('C:\\>' + cmd);
-                
+
                 if (cmd === '') {
                     // Do nothing for empty command
                 } else if (cmd === 'CLS') {
@@ -771,13 +777,13 @@ END.
                 } else {
                     writeLine('Bad command or file name');
                 }
-                
+
                 if (cmd !== 'HANGMAN' && !gameRunning) {
                     writeLine('');
                     writeLine('C:\\>');
                 }
             }
-            
+
             // Start the Hangman game
             function startHangmanGame() {
                 gameRunning = true;
@@ -785,23 +791,23 @@ END.
                 gameLost = false;
                 guessedLetters = [];
                 wrongGuesses = 0;
-                
+
                 // Select a random word
                 currentWord = words[Math.floor(Math.random() * words.length)];
-                
+
                 writeLine('');
                 writeLine('================================');
                 writeLine('         HANGMAN GAME');
                 writeLine('================================');
                 writeLine('');
-                
+
                 drawHangman();
                 drawWordStatus();
-                
+
                 writeLine('');
                 writeLine('Guess a letter (A-Z) or type HELP for instructions.');
             }
-            
+
             // Show hangman game help
             function showGameHelp() {
                 writeLine('');
@@ -821,7 +827,7 @@ END.
                 writeLine('- HELP: This help screen');
                 writeLine('');
             }
-            
+
             // Draw the hangman based on wrong guesses
             function drawHangman() {
                 const stage = hangmanStages[wrongGuesses];
@@ -831,12 +837,12 @@ END.
                 }
                 writeLine('');
             }
-            
+
             // Draw the current status of the word being guessed
             function drawWordStatus() {
                 let display = 'Word: ';
                 let allGuessed = true;
-                
+
                 for (let i = 0; i < currentWord.length; i++) {
                     if (guessedLetters.includes(currentWord[i])) {
                         display += currentWord[i] + ' ';
@@ -845,19 +851,19 @@ END.
                         allGuessed = false;
                     }
                 }
-                
+
                 writeLine(display);
-                
+
                 let guessedStr = 'Guessed letters: ';
                 if (guessedLetters.length > 0) {
                     guessedStr += guessedLetters.join(' ');
                 } else {
                     guessedStr += 'none';
                 }
-                
+
                 writeLine(guessedStr);
                 writeLine('Wrong guesses: ' + wrongGuesses + ' of ' + maxGuesses);
-                
+
                 // Check if game is won
                 if (allGuessed) {
                     gameWon = true;
@@ -867,7 +873,7 @@ END.
                     writeLine('');
                     writeLine('Type EXIT to return to DOS prompt or any key to play again.');
                 }
-                
+
                 // Check if game is lost
                 if (wrongGuesses >= maxGuesses) {
                     gameLost = true;
@@ -878,7 +884,7 @@ END.
                     writeLine('Type EXIT to return to DOS prompt or any key to play again.');
                 }
             }
-            
+
             // Handle input during the game
             function handleGameInput(letter) {
                 if (gameWon || gameLost) {
@@ -886,25 +892,25 @@ END.
                     startHangmanGame();
                     return;
                 }
-                
+
                 if (guessedLetters.includes(letter)) {
                     writeLine('You already guessed the letter ' + letter);
                     return;
                 }
-                
+
                 guessedLetters.push(letter);
-                
+
                 if (currentWord.includes(letter)) {
                     writeLine('Good guess! ' + letter + ' is in the word.');
                 } else {
                     writeLine('Sorry, ' + letter + ' is not in the word.');
                     wrongGuesses++;
                 }
-                
+
                 drawHangman();
                 drawWordStatus();
             }
-            
+
             // Event listeners
             dosInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
@@ -913,13 +919,13 @@ END.
                     dosInput.value = '';
                 }
             });
-            
+
             // Reset button
             resetBtn.addEventListener('click', function() {
                 gameRunning = false;
                 initEmulator();
             });
-            
+
             // Help button
             helpBtn.addEventListener('click', function() {
                 if (gameRunning) {
@@ -928,10 +934,10 @@ END.
                     processCommand('HELP');
                 }
             });
-            
+
             // Initialize on load
             initEmulator();
-            
+
             // Focus on input when user clicks the emulator
             emulatorScreen.addEventListener('click', function() {
                 dosInput.focus();
