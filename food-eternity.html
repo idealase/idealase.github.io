@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Eternity - My First Website</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Food Eternity</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="documents.html">Documents</a></li>
+                <li><a href="login.html">Private Area</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="food-eternity">
+            <h2>Food Eternity Document</h2>
+            <p>This document explores concepts related to food sustainability and preservation.</p>
+
+            <div class="document-viewer">
+                <h3>Document Viewer</h3>
+                <div class="pdf-container">
+                    <embed src="food-eternity.pdf"
+                           type="application/pdf"
+                           width="100%"
+                           height="600px"
+                           style="border: 1px solid #333; border-radius: 5px;">
+
+                    <!-- Fallback for browsers that don't support PDF embedding -->
+                    <p style="margin-top: 20px;">
+                        If the PDF doesn't display above, you can
+                        <a href="food-eternity.pdf" target="_blank" download>download the PDF file here</a>.
+                    </p>
+                </div>
+
+                <div class="document-actions" style="margin-top: 20px;">
+                    <a href="food-eternity.pdf" target="_blank" class="btn">Open in New Tab</a>
+                    <a href="food-eternity.pdf" download class="btn">Download PDF</a>
+                </div>
+            </div>
+
+            <div class="document-info" style="margin-top: 30px;">
+                <h3>About This Document</h3>
+                <p>This document contains important information about food preservation, sustainability practices, and long-term food storage solutions.</p>
+                <ul>
+                    <li>Food preservation techniques</li>
+                    <li>Sustainability practices</li>
+                    <li>Long-term storage solutions</li>
+                    <li>Best practices for food management</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 My First Website</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

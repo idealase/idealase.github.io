@@ -209,3 +209,84 @@ footer {
     border: 1px solid #444;
     cursor: pointer;
 }
+
+/* PDF Viewer and Document Page Styles */
+.document-viewer {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+.document-viewer h3 {
+    color: #88c0d0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.pdf-container {
+    margin: 15px 0;
+    background-color: #252525;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.pdf-container embed {
+    background-color: white;
+}
+
+.document-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #5e81ac;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    font-size: 0.9em;
+}
+
+.btn:hover {
+    background-color: #81a1c1;
+}
+
+.document-info {
+    background-color: #252525;
+    padding: 20px;
+    border-radius: 5px;
+    border-left: 3px solid #5e81ac;
+}
+
+.document-info h3 {
+    color: #88c0d0;
+    margin-bottom: 15px;
+}
+
+.document-info ul {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.document-info li {
+    margin-bottom: 5px;
+    color: #d8dee9;
+}
+
+/* Make document links in the document list more prominent */
+.document-list h4 a {
+    color: #88c0d0;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.document-list h4 a:hover {
+    color: #81a1c1;
+    text-decoration: underline;
+}
