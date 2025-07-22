@@ -5,7 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perth Beer Curator - My First Website</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
+        /* Header logo styles */
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
         /* Perth Beer Curator specific styles */
         .beer-curator-header {
             text-align: center;
@@ -276,7 +291,10 @@
 </head>
 <body>
     <header>
-        <h1>Perth Beer Curator</h1>
+        <div class="header-content">
+            <img src="logo192.png" alt="Perth Beer Curator Logo" class="header-logo">
+            <h1>Perth Beer Curator</h1>
+        </div>
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
@@ -469,8 +487,8 @@
                 card.className = 'beer-card';
                 card.innerHTML = `
                     <div class="beer-image">
-                        ${beer.imageUrl ? 
-                            `<img src="${beer.imageUrl}" alt="${beer.name}" onerror="this.parentElement.innerHTML='📷 Image not available'">` : 
+                        ${beer.imageUrl ?
+                            `<img src="${beer.imageUrl}" alt="${beer.name}" onerror="this.parentElement.innerHTML='📷 Image not available'">` :
                             '📷 No image available'
                         }
                     </div>
@@ -530,10 +548,13 @@
             }
 
             setupForm() {
+                // Initialize EmailJS
+                emailjs.init("sBWi2Myw71iv3sKXL");
+
                 const form = document.getElementById('beerReviewForm');
                 const successMessage = document.getElementById('successMessage');
 
-                form.addEventListener('submit', (e) => {
+                form.addEventListener('submit', async (e) => {
                     e.preventDefault();
 
                     const formData = new FormData(form);
@@ -552,25 +573,75 @@
                         return;
                     }
 
-                    // Add beer to the collection
-                    this.beers.unshift(newBeer); // Add to beginning
-                    this.saveBeers();
-                    this.renderBeers();
+                    // Disable submit button during submission
+                    const submitBtn = form.querySelector('.submit-btn');
+                    const originalText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Submitting...';
 
-                    // Show success message
-                    successMessage.style.display = 'block';
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 3000);
+                    try {
+                        // Send email notification via EmailJS
+                        const emailParams = {
+                            beer_name: newBeer.name,
+                            brewery: newBeer.brewery,
+                            style: newBeer.style,
+                            rating: `${newBeer.rating}/5 stars`,
+                            description: newBeer.description,
+                            image_url: newBeer.imageUrl || 'Not provided',
+                            from_name: 'Perth Beer Curator',
+                            to_name: 'Admin'
+                        };
 
-                    // Reset form
-                    form.reset();
-                    this.resetRating();
+                        await emailjs.send('service_szc0b2r', 'template_zxvpn0b', emailParams);
 
-                    // Scroll to top to see new beer
-                    document.getElementById('beerGallery').scrollIntoView({ 
-                        behavior: 'smooth' 
-                    });
+                        // Add beer to the collection
+                        this.beers.unshift(newBeer); // Add to beginning
+                        this.saveBeers();
+                        this.renderBeers();
+
+                        // Show success message
+                        successMessage.innerHTML = 'Beer review added successfully and notification sent! 🍻📧';
+                        successMessage.style.display = 'block';
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 4000);
+
+                        // Reset form
+                        form.reset();
+                        this.resetRating();
+
+                        // Scroll to top to see new beer
+                        document.getElementById('beerGallery').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+
+                    } catch (error) {
+                        console.error('EmailJS Error:', error);
+
+                        // Still add beer locally even if email fails
+                        this.beers.unshift(newBeer);
+                        this.saveBeers();
+                        this.renderBeers();
+
+                        // Show success message (noting email issue)
+                        successMessage.innerHTML = 'Beer review added successfully! 🍻<br><small>(Email notification failed, but review was saved)</small>';
+                        successMessage.style.display = 'block';
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 4000);
+
+                        // Reset form
+                        form.reset();
+                        this.resetRating();
+
+                        document.getElementById('beerGallery').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    } finally {
+                        // Re-enable submit button
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
                 });
             }
 
@@ -578,12 +649,12 @@
                 this.currentRating = 0;
                 const ratingStars = document.querySelectorAll('.rating-star');
                 const ratingDisplay = document.querySelector('.rating-display');
-                
+
                 ratingStars.forEach(star => {
                     star.classList.remove('active');
                     star.style.color = '#4c566a';
                 });
-                
+
                 ratingDisplay.textContent = '0/5';
                 document.getElementById('rating').value = '';
             }

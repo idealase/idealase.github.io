@@ -8,6 +8,7 @@ import AboutPage from './components/AboutPage';
 import DocumentsPage from './components/DocumentsPage';
 import DevelopmentPage from './components/DevelopmentPage';
 import LoginPage from './components/LoginPage';
+import PerthBeerCuratorPage from './components/PerthBeerCuratorPage';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -40,6 +41,7 @@ function App() {
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/development" element={<DevelopmentPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/perth-beer-curator" element={<PerthBeerCuratorPage />} />
             <Route path="/contact" element={<HomePage />} /> {/* Contact is part of HomePage */}
           </Routes>
         </MainContent>
