@@ -145,11 +145,6 @@ const Navigation: React.FC = () => {
           </Link>
         </NavItem>
         <NavItem>
-          <Link to="/perth-beer-curator" $isActive={location.pathname === '/perth-beer-curator'}>
-            Perth Beer Curator
-          </Link>
-        </NavItem>
-        <NavItem>
           <Link to="/login" $isActive={location.pathname === '/login'}>
             Private Area
           </Link>

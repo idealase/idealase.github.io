@@ -42,10 +42,10 @@ const LogoContainer = styled.div`
 `;
 
 const Logo = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 `;
 
 const BeerGallery = styled.div`
