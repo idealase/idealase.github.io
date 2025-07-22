@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import emailjs from '@emailjs/browser';
+import PBCLogo from './PBC.jpg';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -486,7 +487,7 @@ const PerthBeerCuratorPage: React.FC = () => {
     <Container>
       <Header>
         <LogoContainer>
-          <Logo src="/logo192.png" alt="Perth Beer Curator Logo" />
+          <Logo src={PBCLogo} alt="Perth Beer Curator Logo" />
           <HeaderTitle>🍺 Perth Beer Curator</HeaderTitle>
         </LogoContainer>
         <HeaderDescription>
