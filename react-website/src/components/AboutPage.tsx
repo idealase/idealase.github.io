@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -21,7 +21,7 @@ const Title = styled(motion.h2)`
   margin-bottom: 2rem;
   text-align: center;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -46,12 +46,12 @@ const SkillsList = styled.ul`
   list-style-position: inside;
   margin: 1rem 0 2rem;
   padding-left: 1rem;
-  
+
   li {
     margin-bottom: 0.5rem;
     position: relative;
     padding-left: 0.5rem;
-    
+
     &::before {
       content: "•";
       color: #88c0d0;
@@ -81,7 +81,7 @@ const StyledLink = styled.a`
   background-color: rgba(94, 129, 172, 0.2);
   border-radius: 4px;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: rgba(94, 129, 172, 0.3);
     transform: translateY(-2px);
@@ -89,6 +89,10 @@ const StyledLink = styled.a`
 `;
 
 const AboutPage: React.FC = () => {
+  useEffect(() => {
+    document.title = 'About - sandford.systems';
+  }, []);
+
   return (
     <AboutContainer>
       <ContentSection>
@@ -113,7 +117,7 @@ const AboutPage: React.FC = () => {
         >
           It was created as a learning project to understand the basics of modern front-end development.
         </motion.p>
-        
+
         <AboutContent>
           <SectionTitle>My Skills</SectionTitle>
           <SkillsList>
@@ -124,15 +128,15 @@ const AboutPage: React.FC = () => {
             <li>React</li>
             <li>Styled Components</li>
           </SkillsList>
-          
+
           <SectionTitle>My Background</SectionTitle>
           <p>I am a front-end developer learning how to build sophisticated websites with React. This website represents my evolution from simple HTML/CSS/JS to modern web development frameworks.</p>
-          
+
           <LinkSection>
             <SectionTitle>Project Repository</SectionTitle>
             <p>
-              <StyledLink 
-                href="https://github.com/yourusername/first-js" 
+              <StyledLink
+                href="https://github.com/yourusername/first-js"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -140,8 +144,8 @@ const AboutPage: React.FC = () => {
               </StyledLink>
             </p>
             <p>
-              <StyledLink 
-                href="https://github.com/yourusername/first-js/actions" 
+              <StyledLink
+                href="https://github.com/yourusername/first-js/actions"
                 target="_blank"
                 rel="noopener noreferrer"
               >

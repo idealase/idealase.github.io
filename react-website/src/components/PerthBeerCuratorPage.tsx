@@ -366,6 +366,8 @@ const PerthBeerCuratorPage: React.FC = () => {
   });
 
   useEffect(() => {
+    document.title = 'PBC';
+
     // Initialize EmailJS
     emailjs.init("sBWi2Myw71iv3sKXL");
 
@@ -434,7 +436,7 @@ const PerthBeerCuratorPage: React.FC = () => {
         to_name: 'Admin'
       };
 
-      await emailjs.send('service_szc0b2r', 'template_zxvpn0b', emailParams);
+      await emailjs.send('service_bhhay7a', 'template_zxvpn0b', emailParams);
 
       // Add beer to the collection
       const updatedBeers = [newBeer, ...beers];

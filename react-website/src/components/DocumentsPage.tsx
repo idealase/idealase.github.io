@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -21,7 +21,7 @@ const Title = styled(motion.h2)`
   margin-bottom: 2rem;
   text-align: center;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -47,7 +47,7 @@ const DocumentCard = styled(motion.div)`
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -57,7 +57,7 @@ const DocumentCard = styled(motion.div)`
 const DocumentHeader = styled.div`
   background: linear-gradient(135deg, #5e81ac, #88c0d0);
   padding: 1.5rem;
-  
+
   h3 {
     color: #ffffff;
     margin: 0;
@@ -67,7 +67,7 @@ const DocumentHeader = styled.div`
 
 const DocumentBody = styled.div`
   padding: 1.5rem;
-  
+
   p {
     font-size: 0.95rem;
     color: #b8b8b8;
@@ -84,7 +84,7 @@ const DocumentLink = styled.a`
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: rgba(94, 129, 172, 0.3);
     color: #afd4de;
@@ -153,6 +153,10 @@ const DocumentsPage: React.FC = () => {
     }
   ];
 
+  useEffect(() => {
+    document.title = 'Documents - sandford.systems';
+  }, []);
+
   return (
     <DocumentsContainer>
       <ContentSection>
@@ -170,7 +174,7 @@ const DocumentsPage: React.FC = () => {
         >
           Browse our collection of documents, guides, and resources to help you get the most out of our services.
         </motion.p>
-        
+
         <motion.div
           variants={containerVariants}
           initial="hidden"

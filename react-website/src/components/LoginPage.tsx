@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -61,7 +61,7 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  
+
   &:focus {
     outline: none;
     border-color: #88c0d0;
@@ -80,13 +80,13 @@ const LoginButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: linear-gradient(135deg, #4c6f99, #77b0c0);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(94, 129, 172, 0.4);
   }
-  
+
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -100,7 +100,7 @@ const ForgotPassword = styled.a`
   font-size: 0.9rem;
   text-decoration: none;
   margin-top: 0.5rem;
-  
+
   &:hover {
     text-decoration: underline;
   }
@@ -120,10 +120,14 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; success: boolean } | null>(null);
-  
+
+  useEffect(() => {
+    document.title = 'Login - sandford.systems';
+  }, []);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!username || !password) {
       setStatusMessage({
         text: 'Please enter both username and password.',
@@ -131,9 +135,9 @@ const LoginPage: React.FC = () => {
       });
       return;
     }
-    
+
     setIsLoggingIn(true);
-    
+
     // Simulate login process
     setTimeout(() => {
       if (username === 'demo' && password === 'password') {
@@ -141,7 +145,7 @@ const LoginPage: React.FC = () => {
           text: 'Login successful! Redirecting to private area...',
           success: true
         });
-        
+
         // In a real app, you would redirect to private area or set auth state
         setTimeout(() => {
           window.location.href = '/';
@@ -152,11 +156,11 @@ const LoginPage: React.FC = () => {
           success: false
         });
       }
-      
+
       setIsLoggingIn(false);
     }, 1000);
   };
-  
+
   return (
     <LoginContainer>
       <LoginCard
@@ -167,37 +171,37 @@ const LoginPage: React.FC = () => {
         <LoginHeader>
           <LoginTitle>Private Area</LoginTitle>
         </LoginHeader>
-        
+
         <LoginForm onSubmit={handleSubmit}>
           <FormGroup>
             <Label htmlFor="username">Username</Label>
-            <Input 
-              type="text" 
-              id="username" 
-              value={username} 
+            <Input
+              type="text"
+              id="username"
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username" 
+              placeholder="Enter your username"
               autoComplete="username"
             />
           </FormGroup>
-          
+
           <FormGroup>
             <Label htmlFor="password">Password</Label>
-            <Input 
-              type="password" 
-              id="password" 
-              value={password} 
+            <Input
+              type="password"
+              id="password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password" 
+              placeholder="Enter your password"
               autoComplete="current-password"
             />
             <ForgotPassword href="#">Forgot password?</ForgotPassword>
           </FormGroup>
-          
+
           <LoginButton type="submit" disabled={isLoggingIn}>
             {isLoggingIn ? 'Logging in...' : 'Log In'}
           </LoginButton>
-          
+
           {statusMessage && (
             <StatusMessage
               $success={statusMessage.success}
@@ -208,7 +212,7 @@ const LoginPage: React.FC = () => {
               {statusMessage.text}
             </StatusMessage>
           )}
-          
+
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

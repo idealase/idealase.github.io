@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -21,7 +21,7 @@ const Title = styled(motion.h2)`
   margin-bottom: 2rem;
   text-align: center;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -38,7 +38,7 @@ const TimelineContainer = styled.div`
   position: relative;
   margin: 4rem 0;
   padding-left: 2rem;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -55,7 +55,7 @@ const TimelineItem = styled(motion.div)`
   position: relative;
   margin-bottom: 3rem;
   padding-left: 1.5rem;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -90,22 +90,22 @@ const TimelineContent = styled.div`
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  
+
   p {
     font-size: 1rem;
     color: #b8b8b8;
     margin-bottom: 1rem;
   }
-  
+
   ul {
     list-style-position: inside;
     margin: 1rem 0;
     padding-left: 1rem;
-    
+
     li {
       margin-bottom: 0.5rem;
       color: #b8b8b8;
-      
+
       &::marker {
         color: #88c0d0;
       }
@@ -147,6 +147,10 @@ const itemVariants = {
 };
 
 const DevelopmentPage: React.FC = () => {
+  useEffect(() => {
+    document.title = 'Development - sandford.systems';
+  }, []);
+
   const developmentMilestones = [
     {
       id: 1,
@@ -212,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <CodeBlock>{`// React component example
 const Navigation: React.FC = () => {
   const location = useLocation();
-  
+
   return (
     <NavContainer>
       <NavList>
@@ -248,7 +252,7 @@ const Navigation: React.FC = () => {
         >
           Follow the evolution of this website from a simple HTML/CSS/JS project to a modern React application.
         </motion.p>
-        
+
         <TimelineContainer
           variants={containerVariants}
           initial="hidden"

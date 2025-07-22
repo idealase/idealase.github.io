@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ArrowVisualization from './ArrowVisualization';
@@ -20,7 +20,7 @@ const HeroSection = styled.section`
   background: linear-gradient(135deg, rgba(29, 29, 29, 0.95) 0%, rgba(35, 35, 35, 0.95) 100%);
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -40,7 +40,7 @@ const BackgroundPattern = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
+  background-image:
     linear-gradient(rgba(94, 129, 172, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(94, 129, 172, 0.05) 1px, transparent 1px);
   background-size: 30px 30px;
@@ -59,7 +59,7 @@ const Title = styled(motion.h1)`
   color: #e1e1e1;
   margin-bottom: 1.5rem;
   line-height: 1.1;
-  
+
   span {
     color: #88c0d0;
   }
@@ -92,7 +92,7 @@ const ScrollArrow = styled.div`
   width: 30px;
   height: 30px;
   margin-top: 10px;
-  
+
   svg {
     width: 100%;
     height: 100%;
@@ -112,7 +112,7 @@ const SectionTitle = styled.h2`
   margin-bottom: 2rem;
   text-align: center;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -126,6 +126,10 @@ const SectionTitle = styled.h2`
 `;
 
 const HomePage: React.FC = () => {
+  useEffect(() => {
+    document.title = 'sandford.systems';
+  }, []);
+
   const scrollToContent = () => {
     document.getElementById('content')?.scrollIntoView({ behavior: 'smooth' });
   };
