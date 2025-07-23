@@ -80,7 +80,6 @@ const ArrowVisualization: React.FC<ArrowVisualizationProps> = ({ title = 'Progre
     const arrowHeadSize = 15;
     
     // Colors for the visualization
-    const circleColor = '#333333';
     const arrowColor = '#88c0d0';
     const centerDotColor = '#5e81ac';
     const tickColor = '#444444';
