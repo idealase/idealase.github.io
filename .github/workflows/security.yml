@@ -206,11 +206,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SITE_CICD }}
           # Enable verbose logging for troubleshooting
           GITLEAKS_ENABLE_COMMENTS: true
+        with:
+          # Specify the custom configuration file to use our allowlist
+          config-path: .gitleaks.toml
         # Official Gitleaks action provides:
         # - Pre-configured rules for common secret patterns
         # - Automatic SARIF report generation
         # - Direct integration with GitHub Security tab
         # - Optimized performance for CI/CD environments
+        # - Custom configuration support for allowlists and exclusions
 
       - name: Upload Gitleaks SARIF report
         uses: github/codeql-action/upload-sarif@v2

@@ -1,0 +1,133 @@
+# =============================================================================
+# Gitleaks Configuration
+# =============================================================================
+# This configuration file customizes Gitleaks secret detection for the
+# idealase.github.io repository. It defines allowlists for known false
+# positives and example keys used in documentation.
+#
+# Documentation: https://github.com/gitleaks/gitleaks#configuration
+# =============================================================================
+
+# Global configuration settings
+title = "Gitleaks Configuration for idealase.github.io"
+
+# =============================================================================
+# Allowlist Configuration
+# =============================================================================
+# These entries prevent false positives from triggering security alerts.
+# Use this section to exclude:
+# - Example keys used in documentation
+# - Test data that looks like secrets but isn't
+# - Known safe patterns that trigger false positives
+# =============================================================================
+
+[[rules]]
+description = "Documentation Example Keys"
+id = "documentation-examples"
+regex = '''sk-1234567890abcdef'''
+keywords = [
+    "sk-1234567890abcdef",
+]
+
+# Add the example key from security documentation to allowlist
+[[allowlist]]
+description = "Example API key used in security documentation"
+regex = '''sk-1234567890abcdef'''
+commits = [ "all" ]
+paths = [ "**" ]
+
+# =============================================================================
+# Additional Allowlist Patterns
+# =============================================================================
+# Add more allowlist entries here as needed for:
+# - Other documentation examples
+# - Test fixtures
+# - Development placeholders
+# =============================================================================
+
+# Example: Allow placeholder patterns in test files
+# [[allowlist]]
+# description = "Test placeholder keys"
+# regex = '''(test|example|placeholder|dummy)[-_]?key'''
+# paths = [ "**/test/**", "**/tests/**", "**/*.test.*" ]
+
+# Example: Allow environment variable examples in documentation
+# [[allowlist]]
+# description = "Environment variable examples in docs"
+# regex = '''YOUR_API_KEY_HERE|REPLACE_WITH_YOUR_KEY'''
+# paths = [ "**/*.md", "**/*.rst", "**/*.txt" ]
+
+# =============================================================================
+# Custom Rules (Optional)
+# =============================================================================
+# Define custom secret detection patterns specific to your application
+# =============================================================================
+
+# Example: Custom API key pattern for your application
+# [[rules]]
+# description = "Custom API Key Pattern"
+# id = "custom-api-key"
+# regex = '''idealase[-_]api[-_]key[-_][a-zA-Z0-9]{32}'''
+# keywords = [
+#     "idealase_api_key",
+#     "idealase-api-key",
+# ]
+
+# =============================================================================
+# File and Path Exclusions
+# =============================================================================
+# Exclude entire files or directories from scanning
+# =============================================================================
+
+# Common exclusions for web projects
+[allowlist.paths]
+paths = [
+    # Build outputs and dependencies
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+
+    # Package files (may contain hashes that look like secrets)
+    "package-lock.json",
+    "yarn.lock",
+
+    # Generated files
+    "**/*.min.js",
+    "**/*.min.css",
+
+    # Test fixtures (if they contain mock secrets)
+    # "**/fixtures/**",
+    # "**/mocks/**",
+]
+
+# =============================================================================
+# Entropy Configuration
+# =============================================================================
+# Adjust entropy thresholds to reduce false positives
+# =============================================================================
+
+# Default entropy settings (uncomment and adjust if needed)
+# [entropy]
+# group1 = 3.5  # Minimum entropy for group 1 patterns
+# group2 = 4.0  # Minimum entropy for group 2 patterns
+# group3 = 5.0  # Minimum entropy for group 3 patterns
+
+# =============================================================================
+# Extend Configuration
+# =============================================================================
+# You can extend the default Gitleaks rules or completely override them
+# =============================================================================
+
+# Use default rules plus custom ones (recommended)
+extend = true
+
+# =============================================================================
+# Notes for Maintenance
+# =============================================================================
+# 1. Review this file regularly as your project evolves
+# 2. Add new example keys from documentation to the allowlist
+# 3. Test configuration changes with: gitleaks detect --config .gitleaks.toml
+# 4. Consider using commit-specific allowlists for one-time exceptions
+# 5. Document any allowlist additions with clear descriptions
+# =============================================================================
