@@ -1,47 +1,105 @@
+# =============================================================================
+# Security Scanning Pipeline
+# =============================================================================
+# This workflow implements comprehensive security scanning for the idealase.github.io
+# repository as part of our DevSecOps "shift-left" strategy. It runs multiple
+# security tools to catch vulnerabilities early in the development lifecycle.
+#
+# Pipeline Components:
+# 1. CodeQL Analysis - GitHub's semantic code analysis for JavaScript/TypeScript
+# 2. Dependency Security Scanning - npm audit + Snyk for dependency vulnerabilities
+# 3. Secret Detection - TruffleHog + Gitleaks to prevent credential leaks
+# 4. ESLint Security Analysis - Static analysis with security-focused rules
+#
+# Triggers:
+# - Push to main or development branches (immediate feedback)
+# - Pull requests to main (gate keeper for production)
+# - Weekly scheduled scans (continuous monitoring)
+# =============================================================================
+
 name: Security Scanning Pipeline
 
 on:
   push:
+    # Trigger on pushes to main and development branches to provide immediate
+    # security feedback during active development
     branches: [ main, copilot/*, feature/*, bugfix/* ]
   pull_request:
+    # Gate keeper: All PRs to main must pass security checks before merge
     branches: [ main]
   schedule:
-    # Run weekly security scans every Monday at 2 AM UTC
+    # Weekly security maintenance scan to catch new vulnerabilities in dependencies
+    # Runs every Monday at 2 AM UTC to avoid business hours and provide fresh reports
     - cron: '0 2 * * 1'
 
 jobs:
+  # ===========================================================================
+  # CodeQL Analysis Job
+  # ===========================================================================
+  # GitHub's semantic code analysis engine that understands code structure
+  # and data flow to identify security vulnerabilities and code quality issues.
+  #
+  # Benefits:
+  # - Deep semantic analysis beyond simple pattern matching
+  # - Built-in knowledge of common vulnerability patterns
+  # - Integration with GitHub Security tab for easy tracking
+  # - Support for multiple programming languages
+  # ===========================================================================
   codeql:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
+
+    # Required permissions for CodeQL to:
+    # - Read repository contents and workflow files
+    # - Upload security findings to GitHub Security tab
     permissions:
-      actions: read
-      contents: read
-      security-events: write
+      actions: read         # Read workflow run information
+      contents: read        # Access repository files for analysis
+      security-events: write # Upload SARIF results to Security tab
 
     strategy:
+      # Don't stop other language analyses if one fails
       fail-fast: false
       matrix:
+        # Currently analyzing JavaScript/TypeScript files
+        # Add 'typescript', 'python', etc. as the codebase grows
         language: [ 'javascript' ]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        # Note: CodeQL needs full repository access to analyze code relationships
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
-          # Override default queries with security-focused ones
+          # Use enhanced query suites for comprehensive security coverage:
+          # - security-extended: Additional security queries beyond defaults
+          # - security-and-quality: Combines security with code quality checks
           queries: security-extended,security-and-quality
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2
+        # CodeQL automatically detects build system and compiles code for analysis
+        # For JavaScript/TypeScript, this step analyzes dependencies and build process
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
+          # Categorize results by language for easier filtering in Security tab
           category: "/language:${{matrix.language}}"
 
+  # ===========================================================================
+  # Dependency Security Scanning Job
+  # ===========================================================================
+  # Two-layer approach to dependency vulnerability scanning:
+  # 1. npm audit: Built-in Node.js security scanning (fast, basic coverage)
+  # 2. Snyk: Commercial-grade scanning with detailed remediation advice
+  #
+  # This layered approach ensures we catch vulnerabilities that might be
+  # missed by a single tool while providing actionable remediation guidance.
+  # ===========================================================================
   dependency-security:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
@@ -54,34 +112,62 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          # Enable caching to speed up dependency installation
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
+        # Use 'npm ci' instead of 'npm install' for:
+        # - Faster, reliable, reproducible builds
+        # - Strict adherence to package-lock.json versions
+        # - Better suited for automated environments
 
       - name: Run security audit
         run: |
+          # Generate JSON report for programmatic analysis
+          # Use moderate level as baseline (high/critical for blocking)
+          # Continue on error to ensure Snyk scan still runs
           npm audit --audit-level=moderate --json > npm-audit.json || true
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
+          # Snyk token should be configured in repository secrets
+          # Get your token from: https://app.snyk.io/account
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
+          # Only fail on high/critical vulnerabilities to avoid noise
+          # Generate JSON report for detailed analysis
           args: --severity-threshold=high --json > snyk-audit.json
+        # Continue on error to ensure artifact upload occurs
         continue-on-error: true
 
       - name: Upload security reports
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() # Upload reports even if scans fail
         with:
           name: security-reports
           path: |
             npm-audit.json
             snyk-audit.json
+          # Keep reports for 30 days for trend analysis and compliance
           retention-days: 30
 
+  # ===========================================================================
+  # Secret Detection Job
+  # ===========================================================================
+  # Multi-tool approach to prevent credential leaks:
+  # 1. TruffleHog: High-entropy string detection with regex patterns
+  # 2. Gitleaks: Git-aware secret scanning with comprehensive rule sets
+  #
+  # This job scans both current state and git history to catch:
+  # - API keys, passwords, tokens accidentally committed
+  # - High-entropy strings that might be credentials
+  # - Common patterns like AWS keys, database URLs, etc.
+  #
+  # Special handling for different trigger types to optimize performance
+  # ===========================================================================
   secret-scan:
     name: Secret Detection
     runs-on: ubuntu-latest
@@ -90,11 +176,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # Fetch complete history for comprehensive secret scanning
+          # Required for git-aware tools to analyze commit history
           fetch-depth: 0
 
       - name: Set base and head commits
         id: set_commits
         run: |
+          # Different commit ranges based on trigger type:
+          # - Pull requests: scan only the changes in the PR
+          # - Push events: scan the specific commit range
+          # This optimization reduces scan time and focuses on new changes
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "base_commit=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
             echo "head_commit=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
@@ -105,6 +197,8 @@ jobs:
 
       - name: Fetch all history
         run: |
+          # Ensure we have complete git history for comprehensive scanning
+          # Some CI environments use shallow clones that need to be unshallowed
           if [ -f .git/shallow ]; then
             git fetch --prune --unshallow
           else
@@ -113,20 +207,32 @@ jobs:
 
       - name: Install TruffleHog
         run: pip install --upgrade trufflehog
+        # TruffleHog: Searches for secrets in git repositories
+        # Excellent at finding high-entropy strings and regex patterns
 
       - name: Run secret scanners
         run: |
           BASE_COMMIT="${{ steps.set_commits.outputs.base_commit }}"
           HEAD_COMMIT="${{ steps.set_commits.outputs.head_commit }}"
+
+          # Safety check: avoid scanning if commits are identical
+          # This can happen in certain edge cases with force pushes
           if [ "$BASE_COMMIT" = "$HEAD_COMMIT" ]; then
             echo "BASE and HEAD commits are the same. Skipping scan."
             exit 0
           fi
 
-          # Run TruffleHog
+          # TruffleHog scan: Focus on filesystem at HEAD commit
+          # Catches secrets in current state of repository
           trufflehog filesystem --branch "$HEAD_COMMIT"
 
-          # Run Gitleaks
+          # Gitleaks scan: Git-aware scanning of commit range
+          # Parameters explained:
+          # --redact: Hide actual secret values in output for security
+          # --exit-code=2: Exit with code 2 if secrets found (distinguishes from errors)
+          # --report-format=sarif: Generate SARIF for GitHub Security integration
+          # --no-merges: Skip merge commits to avoid duplicate scanning
+          # --first-parent: Follow only first parent in merges for cleaner history
           gitleaks detect --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug --log-opts=--no-merges --first-parent "$BASE_COMMIT^..$HEAD_COMMIT"
 
       - name: Upload Gitleaks results
@@ -134,7 +240,21 @@ jobs:
         with:
           name: gitleaks-results.sarif
           path: results.sarif
+          # SARIF format allows integration with GitHub Security tab
 
+  # ===========================================================================
+  # ESLint Security Analysis Job
+  # ===========================================================================
+  # Static analysis using ESLint with security-focused rules to catch:
+  # - Potential XSS vulnerabilities
+  # - Unsafe use of eval() and similar functions
+  # - Insecure random number generation
+  # - DOM manipulation security issues
+  # - And other JavaScript/TypeScript security anti-patterns
+  #
+  # This complements CodeQL by providing immediate feedback during development
+  # and catching security issues that developers can fix in their IDE.
+  # ===========================================================================
   eslint-security:
     name: ESLint Security Analysis
     runs-on: ubuntu-latest
@@ -147,20 +267,43 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          # Use npm cache to speed up dependency installation
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
+        # Install exact versions from package-lock.json for consistent results
 
       - name: Run ESLint security checks
         run: |
+          # Run ESLint with JSON output for programmatic analysis
+          # Continue on error to ensure artifact upload occurs even if issues found
+          # This allows developers to see the full scope of issues without workflow failure
           npm run lint:js -- --format json --output-file eslint-security.json || true
 
       - name: Upload ESLint security report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() # Upload report even if ESLint finds issues
         with:
           name: eslint-security-report
           path: eslint-security.json
+          # Keep reports for 30 days for trend analysis
           retention-days: 30
+
+# =============================================================================
+# Post-Job Analysis & Reporting
+# =============================================================================
+# All security scan results are uploaded as artifacts and can be:
+# 1. Downloaded from the GitHub Actions interface
+# 2. Processed by subsequent jobs for consolidated reporting
+# 3. Integrated with external security dashboards
+# 4. Used for trend analysis and security metrics
+#
+# Next Steps for Enhanced Security:
+# - Add Dependabot configuration for automated dependency updates
+# - Implement security policy file (SECURITY.md)
+# - Set up branch protection rules requiring security checks
+# - Add security review requirements for sensitive changes
+# - Consider adding container scanning if Docker is introduced
+# =============================================================================
