@@ -11,8 +11,18 @@
     "lint:js": "eslint \"js/*.js\"",
     "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
     "test": "npm run lint && node tests/run-tests.js",
+    "test:ci": "npm run lint && npm run test:unit && npm run test:integration",
+    "test:unit": "node tests/run-tests.js",
+    "test:integration": "echo 'Integration tests would run here'",
+    "test:e2e": "echo 'E2E tests would run here'",
     "security:audit": "npm audit --audit-level=moderate",
-    "security:fix": "npm audit fix"
+    "security:fix": "npm audit fix",
+    "health:check": "./scripts/health-check.sh",
+    "deploy:staging": "./scripts/deploy-staging.sh",
+    "deploy:staging:dry-run": "./scripts/deploy-staging.sh --dry-run",
+    "preview:cleanup": "./scripts/cleanup-preview.sh",
+    "build": "echo 'Build process completed - static site ready'",
+    "validate": "npm run lint && npm run test && npm run health:check"
   },
   "keywords": [
     "html",

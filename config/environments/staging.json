@@ -1,0 +1,49 @@
+{
+  "environment": "staging",
+  "name": "Staging Environment",
+  "description": "Pre-production testing and validation",
+  "url": "https://idealase.github.io/staging",
+  "api_url": "https://staging-api.idealase.com",
+  "debug": false,
+  "logging": {
+    "level": "info",
+    "console": true,
+    "file": true
+  },
+  "features": {
+    "analytics": true,
+    "error_tracking": true,
+    "performance_monitoring": true,
+    "a_b_testing": true
+  },
+  "security": {
+    "csp_policy": "staging",
+    "https_only": true,
+    "security_headers": true
+  },
+  "cache": {
+    "enabled": true,
+    "ttl": 300
+  },
+  "deployment": {
+    "strategy": "rolling",
+    "health_check_url": "/health",
+    "health_check_timeout": 30,
+    "rollback_enabled": true,
+    "approval_required": false
+  },
+  "monitoring": {
+    "enabled": true,
+    "alerts": true,
+    "metrics": [
+      "response_time",
+      "error_rate",
+      "availability"
+    ]
+  },
+  "testing": {
+    "smoke_tests": true,
+    "performance_tests": true,
+    "security_tests": true
+  }
+}

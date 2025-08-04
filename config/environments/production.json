@@ -1,0 +1,70 @@
+{
+  "environment": "production",
+  "name": "Production Environment",
+  "description": "Live production environment serving end users",
+  "url": "https://idealase.github.io",
+  "api_url": "https://api.idealase.com",
+  "debug": false,
+  "logging": {
+    "level": "warn",
+    "console": false,
+    "file": true,
+    "structured": true
+  },
+  "features": {
+    "analytics": true,
+    "error_tracking": true,
+    "performance_monitoring": true,
+    "a_b_testing": true
+  },
+  "security": {
+    "csp_policy": "strict",
+    "https_only": true,
+    "security_headers": true,
+    "hsts": true
+  },
+  "cache": {
+    "enabled": true,
+    "ttl": 3600,
+    "cdn_enabled": true
+  },
+  "deployment": {
+    "strategy": "blue_green",
+    "health_check_url": "/health",
+    "health_check_timeout": 60,
+    "rollback_enabled": true,
+    "approval_required": true,
+    "canary": {
+      "enabled": true,
+      "percentage": 5,
+      "duration": 300,
+      "success_threshold": 99.5
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "alerts": true,
+    "metrics": [
+      "response_time",
+      "error_rate",
+      "availability",
+      "throughput",
+      "user_satisfaction"
+    ],
+    "sla": {
+      "availability": 99.9,
+      "response_time": 200
+    }
+  },
+  "testing": {
+    "smoke_tests": true,
+    "performance_tests": true,
+    "security_tests": true,
+    "user_acceptance_tests": true
+  },
+  "backup": {
+    "enabled": true,
+    "frequency": "daily",
+    "retention": 30
+  }
+}
