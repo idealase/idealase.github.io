@@ -26,3 +26,7 @@ node_modules/
 # Build directories
 /dist
 /build
+
+# Security configuration files
+config.js
+.secrets.baseline

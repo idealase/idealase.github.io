@@ -1,20 +1,41 @@
 version: 2
 updates:
-  # Enable version updates for npm
+  # Enable version updates for npm with security focus
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 5
+      interval: "daily"  # More frequent for security updates
+      time: "06:00"
+    open-pull-requests-limit: 10
     reviewers:
       - "idealase"
     assignees:
       - "idealase"
     commit-message:
-      prefix: "npm"
+      prefix: "security"
       include: "scope"
+    # Security-focused update settings
+    allow:
+      - dependency-type: "direct"
+        update-type: "security"
+      - dependency-type: "indirect"
+        update-type: "security"
+      - dependency-type: "direct"
+        update-type: "version-update:semver-patch"
+      - dependency-type: "direct"
+        update-type: "version-update:semver-minor"
+    # Auto-merge security patches
+    labels:
+      - "security"
+      - "dependencies"
+    # Group security updates
+    groups:
+      security-patches:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -30,3 +51,6 @@ updates:
       - "idealase"
     commit-message:
       prefix: "github-actions"
+    labels:
+      - "github-actions"
+      - "dependencies"

@@ -1,0 +1,62 @@
+# ZAP Baseline Rules Configuration
+# Format: rule_id	WARN|FAIL|INFO|IGNORE	comment
+
+# Ignore rules for static GitHub Pages site
+10020	IGNORE	Anti-clickjacking Header
+10021	IGNORE	X-Content-Type-Options Header Missing
+10023	IGNORE	Information Disclosure - Debug Error Messages
+10025	IGNORE	Information Disclosure - Sensitive Information in URL
+10026	IGNORE	HTTP Parameter Override
+10027	IGNORE	Information Disclosure - Suspicious Comments
+10028	IGNORE	Open Redirect
+10029	IGNORE	Cookie Poisoning
+10030	IGNORE	User Controllable Charset
+10031	IGNORE	User Controllable HTML Element Attribute (Potential XSS)
+10032	IGNORE	Viewstate Scanner
+10033	IGNORE	Directory Browsing
+10034	IGNORE	Heartbleed OpenSSL Vulnerability
+10035	IGNORE	Strict-Transport-Security Header Missing
+10036	IGNORE	HTTP Server Response Header
+10037	IGNORE	Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s)
+10038	IGNORE	Content Security Policy (CSP) Header Not Set
+10040	IGNORE	Secure Pages Include Mixed Content
+10041	IGNORE	HTTP to HTTPS Insecure Transition in Form Post
+10042	IGNORE	HTTPS to HTTP Insecure Transition in Form Post
+10043	IGNORE	User Controllable JavaScript Event (XSS)
+10044	IGNORE	Big Redirect Detected (Potential Sensitive Information Leak)
+10045	IGNORE	Source Code Disclosure - /WEB-INF folder
+10046	IGNORE	Source Code Disclosure - /META-INF folder
+10047	IGNORE	Source Code Disclosure - Suspected
+10048	IGNORE	Remote Code Execution - Shell Shock
+10049	IGNORE	Content Cacheability
+10050	IGNORE	Retrieved from Cache
+10051	IGNORE	Relative Path Confusion
+10052	IGNORE	X-ChromeLogger-Data (XCOLD) Header Information Leak
+10053	IGNORE	Apache Range Header DoS (CVE-2011-3192)
+10054	IGNORE	Cookie Without Secure Flag
+10055	IGNORE	CSP Scanner
+10056	IGNORE	X-Debug-Token Information Leak
+10057	IGNORE	Username Hash Found
+10058	IGNORE	GET for POST
+10059	IGNORE	HTTP Parameter Pollution
+10061	IGNORE	WSDL File Passive Scanner
+10062	IGNORE	PII Disclosure
+10063	IGNORE	Feature Policy Header Not Set
+10094	IGNORE	Base64 Disclosure
+10095	IGNORE	Backup File Disclosure
+10096	IGNORE	Timestamp Disclosure
+10097	IGNORE	Hash Disclosure
+10098	IGNORE	Cross-Domain Misconfiguration
+10099	IGNORE	Source Code Disclosure
+10105	IGNORE	Weak Authentication Method
+10106	IGNORE	HTTP Only Site
+10107	IGNORE	Httpoxy - Proxy Header Misuse
+10108	IGNORE	Reverse Tabnabbing
+10109	IGNORE	Modern Web Application
+10110	IGNORE	Dangerous JS Functions
+2	IGNORE	Private IP Disclosure
+50001	IGNORE	Script Passive Scanner
+90001	IGNORE	Insecure JSF ViewState
+90011	IGNORE	Charset Mismatch
+90022	IGNORE	Application Error Disclosure
+90033	IGNORE	Loosely Scoped Cookie

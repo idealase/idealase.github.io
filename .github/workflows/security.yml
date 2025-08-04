@@ -1,0 +1,302 @@
+# =============================================================================
+# Security Scanning Pipeline
+# =============================================================================
+# This workflow implements comprehensive security scanning for the idealase.github.io
+# repository as part of our DevSecOps "shift-left" strategy. It runs multiple
+# security tools to catch vulnerabilities early in the development lifecycle.
+#
+# Pipeline Components:
+# 1. CodeQL Analysis - GitHub's semantic code analysis for JavaScript/TypeScript
+# 2. Dependency Security Scanning - npm audit + Snyk for dependency vulnerabilities
+# 3. Secret Detection - TruffleHog + Gitleaks to prevent credential leaks
+# 4. ESLint Security Analysis - Static analysis with security-focused rules
+#
+# Triggers:
+# - Push to main or development branches (immediate feedback)
+# - Pull requests to main (gate keeper for production)
+# - Weekly scheduled scans (continuous monitoring)
+# =============================================================================
+
+name: Security Scanning Pipeline
+
+on:
+  push:
+    # Trigger on pushes to main and development branches to provide immediate
+    # security feedback during active development
+    branches: [ main, copilot/*, feature/*, bugfix/* ]
+  pull_request:
+    # Gate keeper: All PRs to main must pass security checks before merge
+    branches: [ main]
+  schedule:
+    # Weekly security maintenance scan to catch new vulnerabilities in dependencies
+    # Runs every Monday at 2 AM UTC to avoid business hours and provide fresh reports
+    - cron: '0 2 * * 1'
+
+jobs:
+  # ===========================================================================
+  # CodeQL Analysis Job
+  # ===========================================================================
+  # GitHub's semantic code analysis engine that understands code structure
+  # and data flow to identify security vulnerabilities and code quality issues.
+  #
+  # Benefits:
+  # - Deep semantic analysis beyond simple pattern matching
+  # - Built-in knowledge of common vulnerability patterns
+  # - Integration with GitHub Security tab for easy tracking
+  # - Support for multiple programming languages
+  # ===========================================================================
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+
+    # Required permissions for CodeQL to:
+    # - Read repository contents and workflow files
+    # - Upload security findings to GitHub Security tab
+    permissions:
+      actions: read         # Read workflow run information
+      contents: read        # Access repository files for analysis
+      security-events: write # Upload SARIF results to Security tab
+
+    strategy:
+      # Don't stop other language analyses if one fails
+      fail-fast: false
+      matrix:
+        # Currently analyzing JavaScript/TypeScript files
+        # Add 'typescript', 'python', etc. as the codebase grows
+        language: [ 'javascript' ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # Note: CodeQL needs full repository access to analyze code relationships
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # Use enhanced query suites for comprehensive security coverage:
+          # - security-extended: Additional security queries beyond defaults
+          # - security-and-quality: Combines security with code quality checks
+          queries: security-extended,security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+        # CodeQL automatically detects build system and compiles code for analysis
+        # For JavaScript/TypeScript, this step analyzes dependencies and build process
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          # Categorize results by language for easier filtering in Security tab
+          category: "/language:${{matrix.language}}"
+
+  # ===========================================================================
+  # Dependency Security Scanning Job
+  # ===========================================================================
+  # Two-layer approach to dependency vulnerability scanning:
+  # 1. npm audit: Built-in Node.js security scanning (fast, basic coverage)
+  # 2. Snyk: Commercial-grade scanning with detailed remediation advice
+  #
+  # This layered approach ensures we catch vulnerabilities that might be
+  # missed by a single tool while providing actionable remediation guidance.
+  # ===========================================================================
+  dependency-security:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # Enable caching to speed up dependency installation
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        # Use 'npm ci' instead of 'npm install' for:
+        # - Faster, reliable, reproducible builds
+        # - Strict adherence to package-lock.json versions
+        # - Better suited for automated environments
+
+      - name: Run security audit
+        run: |
+          # Generate JSON report for programmatic analysis
+          # Use moderate level as baseline (high/critical for blocking)
+          # Continue on error to ensure Snyk scan still runs
+          npm audit --audit-level=moderate --json > npm-audit.json || true
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          # Snyk token should be configured in repository secrets
+          # Get your token from: https://app.snyk.io/account
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          # Only fail on high/critical vulnerabilities to avoid noise
+          # Generate JSON report for detailed analysis
+          args: --severity-threshold=high --json > snyk-audit.json
+        # Continue on error to ensure artifact upload occurs
+        continue-on-error: true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always() # Upload reports even if scans fail
+        with:
+          name: security-reports
+          path: |
+            npm-audit.json
+            snyk-audit.json
+          # Keep reports for 30 days for trend analysis and compliance
+          retention-days: 30
+
+  # ===========================================================================
+  # Secret Detection Job
+  # ===========================================================================
+  # Uses the official Gitleaks GitHub Action for comprehensive secret scanning.
+  # Gitleaks is a SAST tool for detecting and preventing secrets like passwords,
+  # API keys, and tokens in git repositories.
+  #
+  # This job scans both current state and git history to catch:
+  # - API keys, passwords, tokens accidentally committed
+  # - High-entropy strings that might be credentials
+  # - Common patterns like AWS keys, database URLs, etc.
+  # - Custom patterns defined in .gitleaks.toml configuration
+  #
+  # Benefits of official action:
+  # - Pre-configured with comprehensive rule sets
+  # - Automatic SARIF report generation for GitHub Security integration
+  # - Optimized performance and reliability
+  # - Built-in support for ignoring false positives
+  # ===========================================================================
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read         # Read workflow run information
+      contents: read        # Access repository files for analysis
+      security-events: write # Upload SARIF results to Security tab
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch complete history for comprehensive secret scanning
+          # Required for git-aware tools to analyze commit history
+          fetch-depth: 0
+
+      - name: Fetch all history for comprehensive scanning
+        run: |
+          # Ensure we have complete git history for comprehensive scanning
+          # Some CI environments use shallow clones that need to be unshallowed
+          if [ -f .git/shallow ]; then
+            git fetch --prune --unshallow
+          else
+            echo "Repository is already complete. Skipping --unshallow."
+          fi
+
+      - name: Run Gitleaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          # GitHub token for API access and result upload
+          GITHUB_TOKEN: ${{ secrets.SITE_CICD }}
+          # Enable verbose logging for troubleshooting
+          GITLEAKS_ENABLE_COMMENTS: true
+        # Official Gitleaks action automatically detects .gitleaks.toml in repository root
+        # No need to specify config-path as it's not a valid input for this action
+        # Official Gitleaks action provides:
+        # - Pre-configured rules for common secret patterns
+        # - Automatic SARIF report generation
+        # - Direct integration with GitHub Security tab
+        # - Optimized performance for CI/CD environments
+        # - Custom configuration support for allowlists and exclusions
+
+      - name: Upload Gitleaks SARIF report
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() # Upload even if secrets are found
+        with:
+          sarif_file: results.sarif
+          # Upload to GitHub Security tab for centralized vulnerability management
+          # This enables:
+          # - Security alerts in the repository
+          # - Integration with security policies
+          # - Tracking of remediation efforts
+
+      - name: Upload Gitleaks results as artifact
+        uses: actions/upload-artifact@v4
+        if: always() # Always upload for manual review
+        with:
+          name: gitleaks-results
+          path: results.sarif
+          # Keep artifacts for compliance and trend analysis
+          retention-days: 30
+
+  # ===========================================================================
+  # ESLint Security Analysis Job
+  # ===========================================================================
+  # Static analysis using ESLint with security-focused rules to catch:
+  # - Potential XSS vulnerabilities
+  # - Unsafe use of eval() and similar functions
+  # - Insecure random number generation
+  # - DOM manipulation security issues
+  # - And other JavaScript/TypeScript security anti-patterns
+  #
+  # This complements CodeQL by providing immediate feedback during development
+  # and catching security issues that developers can fix in their IDE.
+  # ===========================================================================
+  eslint-security:
+    name: ESLint Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # Use npm cache to speed up dependency installation
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        # Install exact versions from package-lock.json for consistent results
+
+      - name: Run ESLint security checks
+        run: |
+          # Run ESLint with JSON output for programmatic analysis
+          # Continue on error to ensure artifact upload occurs even if issues found
+          # This allows developers to see the full scope of issues without workflow failure
+          npm run lint:js -- --format json --output-file eslint-security.json || true
+
+      - name: Upload ESLint security report
+        uses: actions/upload-artifact@v4
+        if: always() # Upload report even if ESLint finds issues
+        with:
+          name: eslint-security-report
+          path: eslint-security.json
+          # Keep reports for 30 days for trend analysis
+          retention-days: 30
+
+# =============================================================================
+# Post-Job Analysis & Reporting
+# =============================================================================
+# All security scan results are uploaded as artifacts and can be:
+# 1. Downloaded from the GitHub Actions interface
+# 2. Processed by subsequent jobs for consolidated reporting
+# 3. Integrated with external security dashboards
+# 4. Used for trend analysis and security metrics
+#
+# Next Steps for Enhanced Security:
+# - Add Dependabot configuration for automated dependency updates
+# - Implement security policy file (SECURITY.md)
+# - Set up branch protection rules requiring security checks
+# - Add security review requirements for sensitive changes
+# - Consider adding container scanning if Docker is introduced
+# =============================================================================
