@@ -124,7 +124,7 @@ jobs:
           fi
 
           # Run TruffleHog
-          trufflehog git --branch "$HEAD_COMMIT"
+          trufflehog git https://github.com/idealase/idealase.github.io.git --branch "$HEAD_COMMIT"
 
           # Run Gitleaks
           gitleaks detect --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug --log-opts=--no-merges --first-parent "$BASE_COMMIT^..$HEAD_COMMIT"
