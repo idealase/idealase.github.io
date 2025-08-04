@@ -2,9 +2,9 @@ name: Security Scanning Pipeline
 
 on:
   push:
-    branches: [ main, copilot/fix-21 ]
+    branches: [ main, copilot/*, feature/*, bugfix/* ]
   pull_request:
-    branches: [ main, copilot/fix-21 ]
+    branches: [ main]
   schedule:
     # Run weekly security scans every Monday at 2 AM UTC
     - cron: '0 2 * * 1'
@@ -124,7 +124,7 @@ jobs:
           fi
 
           # Run TruffleHog
-          trufflehog git https://github.com/idealase/idealase.github.io.git --branch "$HEAD_COMMIT"
+          trufflehog filesystem . --branch "$HEAD_COMMIT"
 
           # Run Gitleaks
           gitleaks detect --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug --log-opts=--no-merges --first-parent "$BASE_COMMIT^..$HEAD_COMMIT"
