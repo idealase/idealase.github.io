@@ -27,14 +27,14 @@ export default [
       }
     },
     rules: {
-      'indent': 'off', // Too many warnings, focus on security
-      'linebreak-style': ['warn', 'unix'],
-      'quotes': ['warn', 'single'],
-      'semi': ['warn', 'always'],
-      'no-unused-vars': ['warn'],
+      'indent': ['error', 2], // Strengthen to error
+      'linebreak-style': ['error', 'unix'],
+      'quotes': ['error', 'single'],
+      'semi': ['error', 'always'],
+      'no-unused-vars': ['error'],
       'no-console': ['off'],
-      'no-undef': 'warn',
-      'no-redeclare': 'warn',
+      'no-undef': 'error',
+      'no-redeclare': 'error',
       // Security rules - these are the important ones
       'security/detect-object-injection': 'error',
       'security/detect-non-literal-fs-filename': 'error',
