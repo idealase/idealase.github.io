@@ -80,7 +80,8 @@ paths = [ "**" ]
 # =============================================================================
 
 # Common exclusions for web projects
-[allowlist.paths]
+[allowlist]
+description = "Global path exclusions for build artifacts and dependencies"
 paths = [
     # Build outputs and dependencies
     "**/node_modules/**",

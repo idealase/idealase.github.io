@@ -71,7 +71,7 @@ jobs:
         # Note: CodeQL needs full repository access to analyze code relationships
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           # Use enhanced query suites for comprehensive security coverage:
@@ -80,12 +80,12 @@ jobs:
           queries: security-extended,security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
         # CodeQL automatically detects build system and compiles code for analysis
         # For JavaScript/TypeScript, this step analyzes dependencies and build process
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           # Categorize results by language for easier filtering in Security tab
           category: "/language:${{matrix.language}}"
@@ -217,7 +217,7 @@ jobs:
         # - Custom configuration support for allowlists and exclusions
 
       - name: Upload Gitleaks SARIF report
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always() # Upload even if secrets are found
         with:
           sarif_file: results.sarif
