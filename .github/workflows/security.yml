@@ -2,9 +2,9 @@ name: Security Scanning Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, copilot/fix-21 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, copilot/fix-21 ]
   schedule:
     # Run weekly security scans every Monday at 2 AM UTC
     - cron: '0 2 * * 1'
@@ -24,111 +24,135 @@ jobs:
         language: [ 'javascript' ]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-        # Override default queries with security-focused ones
-        queries: security-extended,security-and-quality
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+          # Override default queries with security-focused ones
+          queries: security-extended,security-and-quality
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}"
 
   dependency-security:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: package-lock.json
+      - name: Checkout repository
+        uses: actions/checkout@v4
         
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run security audit
-      run: |
-        npm audit --audit-level=moderate --json > npm-audit.json || true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+          
+      - name: Install dependencies
+        run: npm ci
         
-    - name: Run Snyk to check for vulnerabilities
-      uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        args: --severity-threshold=high --json > snyk-audit.json
-      continue-on-error: true
-        
-    - name: Upload security reports
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: security-reports
-        path: |
-          npm-audit.json
-          snyk-audit.json
-        retention-days: 30
+      - name: Run security audit
+        run: |
+          npm audit --audit-level=moderate --json > npm-audit.json || true
+          
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --json > snyk-audit.json
+        continue-on-error: true
+          
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            npm-audit.json
+            snyk-audit.json
+          retention-days: 30
 
   secret-scan:
     name: Secret Detection
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Run Trufflesec TruffleHog OSS
-      uses: trufflesecurity/trufflehog@main
-      with:
-        path: ./
-        base: main
-        head: HEAD
-        extra_args: --debug --only-verified
-        
-    - name: Run GitLeaks
-      uses: zricethezav/gitleaks-action@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set base and head commits
+        id: set_commits
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "base_commit=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
+            echo "head_commit=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "base_commit=${{ github.event.before }}" >> $GITHUB_OUTPUT
+            echo "head_commit=${{ github.event.after }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fetch all history
+        run: git fetch --prune --unshallow
+
+      - name: Run secret scanners
+        run: |
+          BASE_COMMIT="${{ steps.set_commits.outputs.base_commit }}"
+          HEAD_COMMIT="${{ steps.set_commits.outputs.head_commit }}"
+          if [ "$BASE_COMMIT" = "$HEAD_COMMIT" ]; then
+            echo "BASE and HEAD commits are the same. Skipping scan."
+            exit 0
+          fi
+
+          # Run TruffleHog
+          trufflehog git --since-commit "$BASE_COMMIT" --branch "$HEAD_COMMIT" --fail --no-update --github-actions
+
+          # Run Gitleaks
+          gitleaks detect --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug --log-opts=--no-merges --first-parent "$BASE_COMMIT^..$HEAD_COMMIT"
+
+      - name: Upload Gitleaks results
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-results.sarif
+          path: results.sarif
 
   eslint-security:
     name: ESLint Security Analysis  
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: package-lock.json
+      - name: Checkout repository
+        uses: actions/checkout@v4
         
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run ESLint security checks
-      run: |
-        npm run lint:js -- --format json --output-file eslint-security.json || true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+          
+      - name: Install dependencies
+        run: npm ci
         
-    - name: Upload ESLint security report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: eslint-security-report
-        path: eslint-security.json
-        retention-days: 30
+      - name: Run ESLint security checks
+        run: |
+          npm run lint:js -- --format json --output-file eslint-security.json || true
+          
+      - name: Upload ESLint security report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eslint-security-report
+          path: eslint-security.json
+          retention-days: 30
