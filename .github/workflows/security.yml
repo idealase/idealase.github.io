@@ -104,7 +104,12 @@ jobs:
           fi
 
       - name: Fetch all history
-        run: git fetch --prune --unshallow
+        run: |
+          if [ -f .git/shallow ]; then
+            git fetch --prune --unshallow
+          else
+            echo "Repository is already complete. Skipping --unshallow."
+          fi
 
       - name: Run secret scanners
         run: |
