@@ -4,10 +4,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // EmailJS initialization
     (function() {
-        // Initialize EmailJS with your public key
-        emailjs.init({
-            publicKey: "sBWi2Myw71iv3sKXL"
-        });
+        // Initialize EmailJS with public key from environment
+        const publicKey = window.EMAILJS_PUBLIC_KEY || process.env.EMAILJS_PUBLIC_KEY;
+        if (publicKey) {
+            emailjs.init({
+                publicKey: publicKey
+            });
+        } else {
+            console.warn('EmailJS public key not configured');
+        }
     })();
     
     // Get elements we'll work with
@@ -76,9 +81,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 message: document.getElementById('message').value
             };
             
-            // Service ID, Template ID and template parameters
-            const serviceID = "service_szc0b2r";
-            const templateID = "template_zxvpn0b";
+            // Service ID, Template ID and template parameters from environment
+            const serviceID = window.EMAILJS_SERVICE_ID || process.env.EMAILJS_SERVICE_ID;
+            const templateID = window.EMAILJS_TEMPLATE_ID || process.env.EMAILJS_TEMPLATE_ID;
+            // Validate that we have the required EmailJS configuration
+            if (!serviceID || !templateID) {
+                console.error('EmailJS service or template ID not configured');
+                alert('Email service is not properly configured. Please contact the administrator.');
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            
             const templateParams = {
                 from_name: formData.name,
                 from_email: formData.email,
