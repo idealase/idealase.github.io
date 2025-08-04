@@ -199,7 +199,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           # GitHub token for API access and result upload
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SITE_CICD }}
           # Enable verbose logging for troubleshooting
           GITLEAKS_ENABLE_COMMENTS: true
         # Official Gitleaks action provides:
