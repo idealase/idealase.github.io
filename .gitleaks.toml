@@ -21,40 +21,25 @@ title = "Gitleaks Configuration for idealase.github.io"
 # - Known safe patterns that trigger false positives
 # =============================================================================
 
-[[rules]]
-description = "Documentation Example Keys"
-id = "documentation-examples"
-regex = '''sk-1234567890abcdef'''
-keywords = [
-    "sk-1234567890abcdef",
-]
-
 # Add the example key from security documentation to allowlist
 [[allowlist]]
 description = "Example API key used in security documentation"
+regexTarget = "match"
 regex = '''sk-1234567890abcdef'''
 commits = [ "all" ]
-paths = [ "**" ]
 
 # Path exclusions for build artifacts and dependencies
 [[allowlist]]
 description = "Global path exclusions for build artifacts and dependencies"
 paths = [
-    # Build outputs and dependencies
     "**/node_modules/**",
     "**/dist/**",
     "**/build/**",
     "**/.next/**",
-
-    # Package files (may contain hashes that look like secrets)
     "package-lock.json",
     "yarn.lock",
-
-    # Generated files
     "**/*.min.js",
     "**/*.min.css",
-
-    # Test fixtures (if they contain mock secrets)
     # "**/fixtures/**",
     # "**/mocks/**",
 ]
