@@ -22,27 +22,13 @@ title = "Gitleaks Configuration for idealase.github.io"
 # =============================================================================
 
 # Add the example key from security documentation to allowlist
-[[allowlist]]
+[allowlist]
 description = "Example API key used in security documentation"
 regexTarget = "match"
 regex = '''sk-1234567890abcdef'''
 commits = [ "all" ]
 
-# Path exclusions for build artifacts and dependencies
-[[allowlist]]
-description = "Global path exclusions for build artifacts and dependencies"
-paths = [
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/build/**",
-    "**/.next/**",
-    "package-lock.json",
-    "yarn.lock",
-    "**/*.min.js",
-    "**/*.min.css",
-    # "**/fixtures/**",
-    # "**/mocks/**",
-]
+
 
 # =============================================================================
 # Additional Allowlist Patterns
@@ -54,13 +40,13 @@ paths = [
 # =============================================================================
 
 # Example: Allow placeholder patterns in test files
-# [[allowlist]]
+# [allowlist]
 # description = "Test placeholder keys"
 # regex = '''(test|example|placeholder|dummy)[-_]?key'''
 # paths = [ "**/test/**", "**/tests/**", "**/*.test.*" ]
 
 # Example: Allow environment variable examples in documentation
-# [[allowlist]]
+# [allowlist]
 # description = "Environment variable examples in docs"
 # regex = '''YOUR_API_KEY_HERE|REPLACE_WITH_YOUR_KEY'''
 # paths = [ "**/*.md", "**/*.rst", "**/*.txt" ]
