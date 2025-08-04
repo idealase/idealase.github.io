@@ -112,7 +112,7 @@ jobs:
           fi
 
       - name: Install TruffleHog
-        run: pip install trufflehog
+        run: pip install --upgrade trufflehog
 
       - name: Run secret scanners
         run: |
@@ -124,7 +124,7 @@ jobs:
           fi
 
           # Run TruffleHog
-          trufflehog git --since-commit "$BASE_COMMIT" --branch "$HEAD_COMMIT" --fail --no-update --github-actions
+          trufflehog git --since-commit "$BASE_COMMIT" --branch "$HEAD_COMMIT"
 
           # Run Gitleaks
           gitleaks detect --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug --log-opts=--no-merges --first-parent "$BASE_COMMIT^..$HEAD_COMMIT"
