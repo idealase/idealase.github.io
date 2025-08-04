@@ -45,25 +45,25 @@ jobs:
   dependency-security:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: package-lock.json
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run security audit
         run: |
           npm audit --audit-level=moderate --json > npm-audit.json || true
-          
+
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
@@ -71,7 +71,7 @@ jobs:
         with:
           args: --severity-threshold=high --json > snyk-audit.json
         continue-on-error: true
-          
+
       - name: Upload security reports
         uses: actions/upload-artifact@v4
         if: always()
@@ -124,7 +124,7 @@ jobs:
           fi
 
           # Run TruffleHog
-          trufflehog git --since-commit "$BASE_COMMIT" --branch "$HEAD_COMMIT"
+          trufflehog git --branch "$HEAD_COMMIT"
 
           # Run Gitleaks
           gitleaks detect --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug --log-opts=--no-merges --first-parent "$BASE_COMMIT^..$HEAD_COMMIT"
@@ -136,27 +136,27 @@ jobs:
           path: results.sarif
 
   eslint-security:
-    name: ESLint Security Analysis  
+    name: ESLint Security Analysis
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: package-lock.json
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run ESLint security checks
         run: |
           npm run lint:js -- --format json --output-file eslint-security.json || true
-          
+
       - name: Upload ESLint security report
         uses: actions/upload-artifact@v4
         if: always()
