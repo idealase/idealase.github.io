@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, HashRouter } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import GlobalStyles from './GlobalStyles';
 import Navigation from './components/Navigation';
@@ -9,6 +9,7 @@ import DocumentsPage from './components/DocumentsPage';
 import DevelopmentPage from './components/DevelopmentPage';
 import LoginPage from './components/LoginPage';
 import PerthBeerCuratorPage from './components/PerthBeerCuratorPage';
+import ContactPage from './components/ContactPage';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -42,7 +43,7 @@ function App() {
             <Route path="/development" element={<DevelopmentPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/perth-beer-curator" element={<PerthBeerCuratorPage />} />
-            <Route path="/contact" element={<HomePage />} /> {/* Contact is part of HomePage */}
+            <Route path="/contact" element={<ContactPage />} />
           </Routes>
         </MainContent>
         <Footer>
