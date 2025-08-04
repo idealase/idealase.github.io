@@ -157,16 +157,21 @@ jobs:
   # ===========================================================================
   # Secret Detection Job
   # ===========================================================================
-  # Multi-tool approach to prevent credential leaks:
-  # 1. TruffleHog: High-entropy string detection with regex patterns
-  # 2. Gitleaks: Git-aware secret scanning with comprehensive rule sets
+  # Uses the official Gitleaks GitHub Action for comprehensive secret scanning.
+  # Gitleaks is a SAST tool for detecting and preventing secrets like passwords,
+  # API keys, and tokens in git repositories.
   #
   # This job scans both current state and git history to catch:
   # - API keys, passwords, tokens accidentally committed
   # - High-entropy strings that might be credentials
   # - Common patterns like AWS keys, database URLs, etc.
+  # - Custom patterns defined in .gitleaks.toml configuration
   #
-  # Special handling for different trigger types to optimize performance
+  # Benefits of official action:
+  # - Pre-configured with comprehensive rule sets
+  # - Automatic SARIF report generation for GitHub Security integration
+  # - Optimized performance and reliability
+  # - Built-in support for ignoring false positives
   # ===========================================================================
   secret-scan:
     name: Secret Detection
@@ -180,22 +185,7 @@ jobs:
           # Required for git-aware tools to analyze commit history
           fetch-depth: 0
 
-      - name: Set base and head commits
-        id: set_commits
-        run: |
-          # Different commit ranges based on trigger type:
-          # - Pull requests: scan only the changes in the PR
-          # - Push events: scan the specific commit range
-          # This optimization reduces scan time and focuses on new changes
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "base_commit=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
-            echo "head_commit=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
-          else
-            echo "base_commit=${{ github.event.before }}" >> $GITHUB_OUTPUT
-            echo "head_commit=${{ github.event.after }}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Fetch all history
+      - name: Fetch all history for comprehensive scanning
         run: |
           # Ensure we have complete git history for comprehensive scanning
           # Some CI environments use shallow clones that need to be unshallowed
@@ -205,43 +195,38 @@ jobs:
             echo "Repository is already complete. Skipping --unshallow."
           fi
 
-      - name: Install TruffleHog
-        run: pip install --upgrade trufflehog
-        # TruffleHog: Searches for secrets in git repositories
-        # Excellent at finding high-entropy strings and regex patterns
+      - name: Run Gitleaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          # GitHub token for API access and result upload
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Enable verbose logging for troubleshooting
+          GITLEAKS_ENABLE_COMMENTS: true
+        # Official Gitleaks action provides:
+        # - Pre-configured rules for common secret patterns
+        # - Automatic SARIF report generation
+        # - Direct integration with GitHub Security tab
+        # - Optimized performance for CI/CD environments
 
-      - name: Run secret scanners
-        run: |
-          BASE_COMMIT="${{ steps.set_commits.outputs.base_commit }}"
-          HEAD_COMMIT="${{ steps.set_commits.outputs.head_commit }}"
-
-          # Safety check: avoid scanning if commits are identical
-          # This can happen in certain edge cases with force pushes
-          if [ "$BASE_COMMIT" = "$HEAD_COMMIT" ]; then
-            echo "BASE and HEAD commits are the same. Skipping scan."
-            exit 0
-          fi
-
-          # TruffleHog scan: Focus on filesystem at HEAD commit
-          # Catches secrets in current state of repository
-          echo "WARNING: TruffleHog scan disabled"
-          # trufflehog filesystem --branch "$HEAD_COMMIT"
-
-          # Gitleaks scan: Git-aware scanning of commit range
-          # Parameters explained:
-          # --redact: Hide actual secret values in output for security
-          # --exit-code=2: Exit with code 2 if secrets found (distinguishes from errors)
-          # --report-format=sarif: Generate SARIF for GitHub Security integration
-          # --no-merges: Skip merge commits to avoid duplicate scanning
-          # --first-parent: Follow only first parent in merges for cleaner history
-          gitleaks detect --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug --log-opts=--no-merges --first-parent "$BASE_COMMIT^..$HEAD_COMMIT"
-
-      - name: Upload Gitleaks results
-        uses: actions/upload-artifact@v4
+      - name: Upload Gitleaks SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        if: always() # Upload even if secrets are found
         with:
-          name: gitleaks-results.sarif
+          sarif_file: results.sarif
+          # Upload to GitHub Security tab for centralized vulnerability management
+          # This enables:
+          # - Security alerts in the repository
+          # - Integration with security policies
+          # - Tracking of remediation efforts
+
+      - name: Upload Gitleaks results as artifact
+        uses: actions/upload-artifact@v4
+        if: always() # Always upload for manual review
+        with:
+          name: gitleaks-results
           path: results.sarif
-          # SARIF format allows integration with GitHub Security tab
+          # Keep artifacts for compliance and trend analysis
+          retention-days: 30
 
   # ===========================================================================
   # ESLint Security Analysis Job
