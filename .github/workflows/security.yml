@@ -206,9 +206,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SITE_CICD }}
           # Enable verbose logging for troubleshooting
           GITLEAKS_ENABLE_COMMENTS: true
-        with:
-          # Specify the custom configuration file to use our allowlist
-          config-path: .gitleaks.toml
+        # Official Gitleaks action automatically detects .gitleaks.toml in repository root
+        # No need to specify config-path as it's not a valid input for this action
         # Official Gitleaks action provides:
         # - Pre-configured rules for common secret patterns
         # - Automatic SARIF report generation

@@ -36,6 +36,29 @@ regex = '''sk-1234567890abcdef'''
 commits = [ "all" ]
 paths = [ "**" ]
 
+# Path exclusions for build artifacts and dependencies
+[[allowlist]]
+description = "Global path exclusions for build artifacts and dependencies"
+paths = [
+    # Build outputs and dependencies
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+
+    # Package files (may contain hashes that look like secrets)
+    "package-lock.json",
+    "yarn.lock",
+
+    # Generated files
+    "**/*.min.js",
+    "**/*.min.css",
+
+    # Test fixtures (if they contain mock secrets)
+    # "**/fixtures/**",
+    # "**/mocks/**",
+]
+
 # =============================================================================
 # Additional Allowlist Patterns
 # =============================================================================
@@ -76,31 +99,8 @@ paths = [ "**" ]
 # =============================================================================
 # File and Path Exclusions
 # =============================================================================
-# Exclude entire files or directories from scanning
+# Path exclusions are now handled in the allowlist sections above
 # =============================================================================
-
-# Common exclusions for web projects
-[allowlist]
-description = "Global path exclusions for build artifacts and dependencies"
-paths = [
-    # Build outputs and dependencies
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/build/**",
-    "**/.next/**",
-
-    # Package files (may contain hashes that look like secrets)
-    "package-lock.json",
-    "yarn.lock",
-
-    # Generated files
-    "**/*.min.js",
-    "**/*.min.css",
-
-    # Test fixtures (if they contain mock secrets)
-    # "**/fixtures/**",
-    # "**/mocks/**",
-]
 
 # =============================================================================
 # Entropy Configuration
