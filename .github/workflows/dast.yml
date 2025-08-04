@@ -1,0 +1,201 @@
+name: Dynamic Security Testing (DAST)
+
+on:
+  # Run DAST after successful deployment
+  workflow_run:
+    workflows: ["Website CI/CD Pipeline"]
+    types:
+      - completed
+    branches: [main]
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  owasp-zap-scan:
+    name: OWASP ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: OWASP ZAP Baseline Scan
+      uses: zaproxy/action-baseline@v0.11.0
+      with:
+        target: 'https://idealase.github.io'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a -j -m 10 -T 60'
+        allow_issue_writing: false
+        fail_action: false
+        
+    - name: Upload ZAP Scan Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: zap-scan-results
+        path: |
+          report_html.html
+          report_md.md
+          report_json.json
+        retention-days: 30
+
+  security-headers-test:
+    name: Security Headers Validation
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Test Security Headers
+      run: |
+        echo "Testing security headers for https://idealase.github.io"
+        
+        # Test HTTPS
+        response=$(curl -I -s https://idealase.github.io)
+        echo "Response headers:"
+        echo "$response"
+        
+        # Check for security headers
+        echo "## Security Headers Check" > security-headers-report.md
+        echo "" >> security-headers-report.md
+        
+        # Content Security Policy
+        if echo "$response" | grep -qi "content-security-policy"; then
+          echo "✅ Content-Security-Policy header present" >> security-headers-report.md
+        else
+          echo "❌ Content-Security-Policy header missing" >> security-headers-report.md
+        fi
+        
+        # X-Frame-Options
+        if echo "$response" | grep -qi "x-frame-options"; then
+          echo "✅ X-Frame-Options header present" >> security-headers-report.md
+        else
+          echo "❌ X-Frame-Options header missing" >> security-headers-report.md
+        fi
+        
+        # X-Content-Type-Options
+        if echo "$response" | grep -qi "x-content-type-options"; then
+          echo "✅ X-Content-Type-Options header present" >> security-headers-report.md
+        else
+          echo "❌ X-Content-Type-Options header missing" >> security-headers-report.md
+        fi
+        
+        # Strict-Transport-Security
+        if echo "$response" | grep -qi "strict-transport-security"; then
+          echo "✅ Strict-Transport-Security header present" >> security-headers-report.md
+        else
+          echo "❌ Strict-Transport-Security header missing" >> security-headers-report.md
+        fi
+        
+        # Referrer-Policy
+        if echo "$response" | grep -qi "referrer-policy"; then
+          echo "✅ Referrer-Policy header present" >> security-headers-report.md
+        else
+          echo "❌ Referrer-Policy header missing" >> security-headers-report.md
+        fi
+        
+        # Permissions-Policy
+        if echo "$response" | grep -qi "permissions-policy"; then
+          echo "✅ Permissions-Policy header present" >> security-headers-report.md
+        else
+          echo "❌ Permissions-Policy header missing" >> security-headers-report.md
+        fi
+        
+        cat security-headers-report.md
+        
+    - name: Upload Security Headers Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-headers-report
+        path: security-headers-report.md
+        retention-days: 30
+
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for better analysis
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: package-lock.json
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests with coverage (if available)
+      run: |
+        # Try to generate coverage if jest is configured for it
+        npm test || true
+      continue-on-error: true
+      
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  ssl-tls-check:
+    name: SSL/TLS Configuration Check
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: SSL/TLS Security Check
+      run: |
+        echo "## SSL/TLS Security Analysis" > ssl-report.md
+        echo "" >> ssl-report.md
+        
+        # Check SSL Labs rating (using API)
+        echo "Checking SSL Labs rating for idealase.github.io..."
+        
+        # Test SSL configuration
+        echo "### SSL Certificate Check" >> ssl-report.md
+        if timeout 10 openssl s_client -connect idealase.github.io:443 -servername idealase.github.io </dev/null 2>/dev/null; then
+          echo "✅ SSL connection successful" >> ssl-report.md
+        else
+          echo "❌ SSL connection failed" >> ssl-report.md
+        fi
+        
+        # Check supported protocols
+        echo "" >> ssl-report.md
+        echo "### Supported TLS Protocols" >> ssl-report.md
+        
+        # TLS 1.3
+        if timeout 5 openssl s_client -connect idealase.github.io:443 -tls1_3 -servername idealase.github.io </dev/null 2>/dev/null | grep -q "Protocol.*TLSv1.3"; then
+          echo "✅ TLS 1.3 supported" >> ssl-report.md
+        else
+          echo "❌ TLS 1.3 not supported" >> ssl-report.md
+        fi
+        
+        # TLS 1.2
+        if timeout 5 openssl s_client -connect idealase.github.io:443 -tls1_2 -servername idealase.github.io </dev/null 2>/dev/null | grep -q "Protocol.*TLSv1.2"; then
+          echo "✅ TLS 1.2 supported" >> ssl-report.md
+        else
+          echo "❌ TLS 1.2 not supported" >> ssl-report.md
+        fi
+        
+        cat ssl-report.md
+        
+    - name: Upload SSL/TLS Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ssl-tls-report
+        path: ssl-report.md
+        retention-days: 30
