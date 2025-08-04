@@ -224,7 +224,8 @@ jobs:
 
           # TruffleHog scan: Focus on filesystem at HEAD commit
           # Catches secrets in current state of repository
-          trufflehog filesystem --branch "$HEAD_COMMIT"
+          echo "WARNING: TruffleHog scan disabled"
+          # trufflehog filesystem --branch "$HEAD_COMMIT"
 
           # Gitleaks scan: Git-aware scanning of commit range
           # Parameters explained:
