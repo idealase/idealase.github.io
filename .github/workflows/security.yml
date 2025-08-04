@@ -111,6 +111,9 @@ jobs:
             echo "Repository is already complete. Skipping --unshallow."
           fi
 
+      - name: Install TruffleHog
+        run: pip install trufflehog
+
       - name: Run secret scanners
         run: |
           BASE_COMMIT="${{ steps.set_commits.outputs.base_commit }}"
