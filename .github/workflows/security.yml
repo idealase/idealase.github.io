@@ -176,6 +176,10 @@ jobs:
   secret-scan:
     name: Secret Detection
     runs-on: ubuntu-latest
+    permissions:
+      actions: read         # Read workflow run information
+      contents: read        # Access repository files for analysis
+      security-events: write # Upload SARIF results to Security tab
 
     steps:
       - name: Checkout repository
