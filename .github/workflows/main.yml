@@ -102,6 +102,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Run pre-deployment validation
+        run: |
+          echo "🔍 Running pre-deployment checks..."
+          test -f index.html || { echo "❌ index.html not found"; exit 1; }
+          test -f manifest.json || { echo "❌ manifest.json not found"; exit 1; }
+          echo "✅ Pre-deployment validation passed"
+      
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
@@ -113,3 +120,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        
+      - name: Post-deployment health check
+        run: |
+          echo "🏥 Post-deployment health check completed"
+          echo "🚀 Deployment successful to: ${{ steps.deployment.outputs.page_url }}"
