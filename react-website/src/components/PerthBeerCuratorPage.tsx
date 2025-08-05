@@ -302,52 +302,52 @@ interface Beer {
 
 const defaultBeers: Beer[] = [
   {
-    name: "Little Dove Pale Ale",
-    brewery: "Little Creatures",
-    style: "Pale Ale",
-    description: "A crisp and hoppy pale ale with citrus notes and a clean finish. Perfect for Perth's sunny weather.",
+    name: 'Little Dove Pale Ale',
+    brewery: 'Little Creatures',
+    style: 'Pale Ale',
+    description: 'A crisp and hoppy pale ale with citrus notes and a clean finish. Perfect for Perth\'s sunny weather.',
     rating: 4,
-    imageUrl: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400"
+    imageUrl: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400'
   },
   {
-    name: "Feral Hop Hog IPA",
-    brewery: "Feral Brewing",
-    style: "IPA",
-    description: "Bold and bitter with tropical fruit aromas. A true West Australian classic that showcases local hops.",
+    name: 'Feral Hop Hog IPA',
+    brewery: 'Feral Brewing',
+    style: 'IPA',
+    description: 'Bold and bitter with tropical fruit aromas. A true West Australian classic that showcases local hops.',
     rating: 5,
-    imageUrl: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400"
+    imageUrl: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400'
   },
   {
-    name: "Gage Roads Single Fin",
-    brewery: "Gage Roads",
-    style: "Lager",
-    description: "Light, refreshing summer ale with subtle hop character. Great for beach days and BBQs.",
+    name: 'Gage Roads Single Fin',
+    brewery: 'Gage Roads',
+    style: 'Lager',
+    description: 'Light, refreshing summer ale with subtle hop character. Great for beach days and BBQs.',
     rating: 3,
-    imageUrl: "https://images.unsplash.com/photo-1618183479302-1e0aa382c36b?w=400"
+    imageUrl: 'https://images.unsplash.com/photo-1618183479302-1e0aa382c36b?w=400'
   },
   {
-    name: "Rocky Ridge Rifleman",
-    brewery: "Rocky Ridge Brewing",
-    style: "IPA",
-    description: "Smooth West Coast IPA with pine and grapefruit notes. Balanced bitterness with a malty backbone.",
+    name: 'Rocky Ridge Rifleman',
+    brewery: 'Rocky Ridge Brewing',
+    style: 'IPA',
+    description: 'Smooth West Coast IPA with pine and grapefruit notes. Balanced bitterness with a malty backbone.',
     rating: 4,
-    imageUrl: "https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7?w=400"
+    imageUrl: 'https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7?w=400'
   },
   {
-    name: "Nail Red Ale",
-    brewery: "Nail Brewing",
-    style: "Red Ale",
-    description: "Rich caramel maltiness with earthy hop character. A warming beer perfect for Perth winter evenings.",
+    name: 'Nail Red Ale',
+    brewery: 'Nail Brewing',
+    style: 'Red Ale',
+    description: 'Rich caramel maltiness with earthy hop character. A warming beer perfect for Perth winter evenings.',
     rating: 4,
-    imageUrl: "https://images.unsplash.com/photo-1612528443702-f6741f70a049?w=400"
+    imageUrl: 'https://images.unsplash.com/photo-1612528443702-f6741f70a049?w=400'
   },
   {
-    name: "Blackman's Porter",
-    brewery: "Blackman's Brewery",
-    style: "Porter",
-    description: "Dark and roasty with chocolate and coffee notes. Creamy texture with a smooth, dry finish.",
+    name: 'Blackman\'s Porter',
+    brewery: 'Blackman\'s Brewery',
+    style: 'Porter',
+    description: 'Dark and roasty with chocolate and coffee notes. Creamy texture with a smooth, dry finish.',
     rating: 5,
-    imageUrl: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400"
+    imageUrl: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400'
   }
 ];
 
@@ -369,7 +369,7 @@ const PerthBeerCuratorPage: React.FC = () => {
     document.title = 'PBC';
 
     // Initialize EmailJS
-    emailjs.init("sBWi2Myw71iv3sKXL");
+    emailjs.init('sBWi2Myw71iv3sKXL');
 
     // Load beers from localStorage
     const savedBeers = localStorage.getItem('perthBeers');
