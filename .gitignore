@@ -15,6 +15,7 @@ npm-debug.log*
 
 # Dependency directories
 node_modules/
+/react-website/node_modules
 
 # Environment variables
 .env
@@ -30,3 +31,10 @@ node_modules/
 # Security configuration files
 config.js
 .secrets.baseline
+
+# Testing coverage
+/coverage
+/react-website/coverage
+
+# Temporary files
+/tmp/
