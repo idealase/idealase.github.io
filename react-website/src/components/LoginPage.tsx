@@ -123,6 +123,13 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     document.title = 'Login - sandford.systems';
+
+    // Check if user is already authenticated
+    const isAuthenticated = sessionStorage.getItem('authenticated');
+    if (isAuthenticated === 'true') {
+      console.log('User already authenticated, redirecting to private area...');
+      window.location.href = '/private.html';
+    }
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -140,19 +147,36 @@ const LoginPage: React.FC = () => {
 
     // Simulate login process
     setTimeout(() => {
-      if (username === 'demo' && password === 'password') {
+      // Check credentials - support same credentials as static HTML login
+      const validCredentials = [
+        { username: 'demo', password: 'password' },
+        { username: 'demo', password: 'aaa' },
+        { username: 'admin', password: 'aaa' },
+        { username: 'user', password: 'aaa' }
+      ];
+
+      const isValid = validCredentials.some(cred => 
+        cred.username === username && cred.password === password
+      );
+
+      if (isValid) {
         setStatusMessage({
           text: 'Login successful! Redirecting to private area...',
           success: true
         });
 
-        // In a real app, you would redirect to private area or set auth state
+        // Set authentication status in session storage (same as HTML login)
+        sessionStorage.setItem('authenticated', 'true');
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('loginTime', new Date().toISOString());
+
+        // Redirect to private area after a short delay
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = '/private.html';
         }, 1500);
       } else {
         setStatusMessage({
-          text: 'Invalid username or password. Try using demo/password.',
+          text: 'Invalid username or password. Try demo/password or demo/aaa.',
           success: false
         });
       }
@@ -219,7 +243,7 @@ const LoginPage: React.FC = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
             style={{ fontSize: '0.9rem', color: '#b8b8b8', marginTop: '1rem', textAlign: 'center' }}
           >
-            Hint: Use "demo" / "password" to log in
+            Hint: Use "demo" / "password" or try "aaa" for the password
           </motion.p>
         </LoginForm>
       </LoginCard>

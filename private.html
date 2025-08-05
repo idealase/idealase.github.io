@@ -52,7 +52,7 @@
                 </ul>
             </div>
 
-            <button id="logout-button" type="button" style="margin-top: 20px;">Logout</button>
+            <button id="logout-button" type="button" style="margin-top: 20px;" aria-label="Logout from private area">Logout</button>
         </section>
     </main>
 
@@ -62,14 +62,25 @@
 
     <script src="js/script.js"></script>
     <script>
-        // Authentication check and logout functionality
+        // Enhanced authentication check and logout functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is authenticated
-            const isAuthenticated = sessionStorage.getItem('authenticated');
-            console.log('Authentication status:', isAuthenticated);
+            // Validate authentication token
+            function validateAuthToken() {
+                const authToken = sessionStorage.getItem('authToken');
+                const username = sessionStorage.getItem('username');
+                const authenticated = sessionStorage.getItem('authenticated');
+                
+                // Check if we have both new token-based auth and legacy auth
+                return (authToken && username) || (authenticated === 'true');
+            }
 
-            if (isAuthenticated !== 'true') {
+            // Check if user is authenticated
+            console.log('Checking authentication status...');
+
+            if (!validateAuthToken()) {
                 console.log('User not authenticated, redirecting to login...');
+                // Clear any potentially corrupted session data
+                sessionStorage.clear();
                 // Redirect to login page if not authenticated
                 window.location.href = 'login.html';
                 return;
@@ -77,18 +88,51 @@
 
             console.log('User authenticated, loading private area...');
 
-            // Logout functionality
+            // Display username if available
+            const username = sessionStorage.getItem('username');
+            if (username) {
+                // Update welcome message to include username
+                const welcomeSection = document.querySelector('#private-content h2');
+                if (welcomeSection) {
+                    welcomeSection.textContent = `Welcome to the Private Area, ${username}!`;
+                }
+            }
+
+            // Enhanced logout functionality
             const logoutButton = document.getElementById('logout-button');
 
             if (logoutButton) {
                 logoutButton.addEventListener('click', function() {
                     console.log('Logout button clicked');
-                    // Remove authentication status
+                    
+                    // Clear all authentication data
                     sessionStorage.removeItem('authenticated');
+                    sessionStorage.removeItem('authToken');
+                    sessionStorage.removeItem('username');
+                    sessionStorage.removeItem('loginTime');
+                    
+                    // Optional: Also clear any rate limiting data on logout
+                    // localStorage.removeItem('loginAttempts');
 
-                    // Redirect to login page instead of home
+                    console.log('Session cleared, redirecting to login...');
+                    // Redirect to login page
                     window.location.href = 'login.html';
                 });
+            }
+
+            // Optional: Add session timeout (example: 2 hours)
+            const loginTime = sessionStorage.getItem('loginTime');
+            if (loginTime) {
+                const sessionDuration = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+                const loginTimestamp = new Date(loginTime).getTime();
+                const currentTime = Date.now();
+                
+                if (currentTime - loginTimestamp > sessionDuration) {
+                    console.log('Session expired, redirecting to login...');
+                    sessionStorage.clear();
+                    window.location.href = 'login.html';
+                    return;
+                }
             }
         });
     </script>

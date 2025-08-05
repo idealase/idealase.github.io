@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Private Area</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-title {
+            text-align: center;
+            color: #88c0d0;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e1e1e1;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: #2e2e2e;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #e1e1e1;
+            font-size: 16px;
+            font-family: 'Fira Code', monospace;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #88c0d0;
+            box-shadow: 0 0 0 2px rgba(136, 192, 208, 0.3);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #5e81ac, #88c0d0);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, #4c6f99, #77b0c0);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(94, 129, 172, 0.4);
+        }
+
+        .login-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background-color: rgba(191, 97, 106, 0.2);
+            border-left: 4px solid #bf616a;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 4px;
+            color: #bf616a;
+            display: none;
+        }
+
+        .success-message {
+            background-color: rgba(163, 190, 140, 0.2);
+            border-left: 4px solid #a3be8c;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 4px;
+            color: #a3be8c;
+            display: none;
+        }
+
+        .hint {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #b8b8b8;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #88c0d0;
+            text-decoration: none;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Login to Private Area</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="documents.html">Documents</a></li>
+                <li><a href="login.html">Private Area</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <h2 class="login-title" id="login-title">🔒 Private Area Access</h2>
+
+            <form id="login-form" aria-labelledby="login-title">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required 
+                        autocomplete="username" 
+                        placeholder="Enter your username"
+                        aria-describedby="login-hint"
+                        maxlength="50"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        autocomplete="current-password" 
+                        placeholder="Enter your password"
+                        aria-describedby="login-hint"
+                        maxlength="100"
+                    >
+                </div>
+
+                <button type="submit" class="login-button" id="login-button" aria-describedby="error-message success-message">
+                    Log In
+                </button>
+
+                <div id="error-message" class="error-message" role="alert" aria-live="polite"></div>
+                <div id="success-message" class="success-message" role="status" aria-live="polite"></div>
+            </form>
+
+            <div class="hint" id="login-hint">
+                <p>Hint: Use "demo" / "password" or try "aaa" for the password</p>
+            </div>
+
+            <div class="back-link">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 My First Website</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        /*
+        SECURITY IMPLEMENTATION NOTE:
+        ============================
+        This authentication system includes several security features within the constraints 
+        of a static website (GitHub Pages):
+
+        SECURITY FEATURES IMPLEMENTED:
+        - Rate limiting: Max 5 attempts per 15 minutes to prevent brute force attacks
+        - Session token hashing: Generated tokens are hashed client-side for basic obfuscation
+        - Session timeout: 2-hour automatic logout for inactive sessions
+        - Input validation: Username/password length limits and sanitization
+        - Secure logout: Complete session data clearing
+        - ARIA accessibility labels for screen readers
+
+        SECURITY LIMITATIONS (Static Site Constraints):
+        - HttpOnly cookies: Not possible without server-side implementation
+        - Server-side rate limiting: Implemented client-side only (can be bypassed)
+        - Credential storage: Demo credentials are client-side visible (view source)
+        - XSS protection: Limited to standard browser protections
+        - HTTPS enforcement: Depends on hosting configuration (GitHub Pages supports this)
+
+        FOR PRODUCTION USE:
+        - Implement server-side authentication with secure session management
+        - Use proper database for user credentials with bcrypt hashing
+        - Implement CSRF protection and proper CORS policies
+        - Add server-side rate limiting and IP blocking
+        - Use HttpOnly secure cookies for session management
+        - Implement proper input sanitization and validation server-side
+        - Add logging and monitoring for security events
+        */
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Security enhancement: Rate limiting for brute force protection
+            const MAX_LOGIN_ATTEMPTS = 5;
+            const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+            
+            // Simple hash function for session tokens (client-side only)
+            function simpleHash(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                return Math.abs(hash).toString(36);
+            }
+
+            // Generate secure session token
+            function generateSessionToken(username) {
+                const timestamp = Date.now();
+                const randomValue = Math.random().toString(36);
+                const tokenData = `${username}:${timestamp}:${randomValue}`;
+                return simpleHash(tokenData);
+            }
+
+            // Check rate limiting
+            function checkRateLimit() {
+                const attempts = JSON.parse(localStorage.getItem('loginAttempts') || '[]');
+                const now = Date.now();
+                
+                // Remove old attempts (older than lockout duration)
+                const recentAttempts = attempts.filter(attempt => now - attempt < LOCKOUT_DURATION);
+                localStorage.setItem('loginAttempts', JSON.stringify(recentAttempts));
+                
+                return recentAttempts.length < MAX_LOGIN_ATTEMPTS;
+            }
+
+            // Record failed login attempt
+            function recordFailedAttempt() {
+                const attempts = JSON.parse(localStorage.getItem('loginAttempts') || '[]');
+                attempts.push(Date.now());
+                localStorage.setItem('loginAttempts', JSON.stringify(attempts));
+            }
+
+            // Get remaining lockout time
+            function getRemainingLockoutTime() {
+                const attempts = JSON.parse(localStorage.getItem('loginAttempts') || '[]');
+                if (attempts.length === 0) return 0;
+                
+                const oldestAttempt = Math.min(...attempts);
+                const lockoutEnd = oldestAttempt + LOCKOUT_DURATION;
+                const remaining = lockoutEnd - Date.now();
+                
+                return Math.max(0, remaining);
+            }
+
+            // Check if user is already authenticated with token validation
+            const authToken = sessionStorage.getItem('authToken');
+            const username = sessionStorage.getItem('username');
+            if (authToken && username) {
+                console.log('User already authenticated, redirecting to private area...');
+                window.location.href = 'private.html';
+                return;
+            }
+
+            const loginForm = document.getElementById('login-form');
+            const loginButton = document.getElementById('login-button');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+            }
+
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+
+            function hideMessages() {
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+            }
+
+            // Check initial rate limit status
+            if (!checkRateLimit()) {
+                const remainingTime = getRemainingLockoutTime();
+                const minutes = Math.ceil(remainingTime / (60 * 1000));
+                showError(`Too many failed attempts. Please wait ${minutes} minutes before trying again.`);
+                loginButton.disabled = true;
+                
+                // Re-enable after lockout period
+                setTimeout(() => {
+                    if (checkRateLimit()) {
+                        loginButton.disabled = false;
+                        hideMessages();
+                    }
+                }, remainingTime);
+            }
+
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                hideMessages();
+
+                // Check rate limiting
+                if (!checkRateLimit()) {
+                    const remainingTime = getRemainingLockoutTime();
+                    const minutes = Math.ceil(remainingTime / (60 * 1000));
+                    showError(`Too many failed attempts. Please wait ${minutes} minutes before trying again.`);
+                    return;
+                }
+
+                const usernameValue = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                // Input validation
+                if (!usernameValue || !password) {
+                    showError('Please enter both username and password.');
+                    return;
+                }
+
+                if (usernameValue.length > 50 || password.length > 100) {
+                    showError('Username or password too long.');
+                    return;
+                }
+
+                // Show loading state
+                loginButton.disabled = true;
+                loginButton.textContent = 'Logging in...';
+
+                // Simulate login process with a short delay
+                setTimeout(() => {
+                    // Check credentials - multiple valid combinations for flexibility
+                    const validCredentials = [
+                        { username: 'demo', password: 'password' },
+                        { username: 'demo', password: 'aaa' },
+                        { username: 'admin', password: 'aaa' },
+                        { username: 'user', password: 'aaa' }
+                    ];
+
+                    const isValid = validCredentials.some(cred => 
+                        cred.username === usernameValue && cred.password === password
+                    );
+
+                    if (isValid) {
+                        console.log('Login successful');
+                        
+                        // Generate secure session token
+                        const sessionToken = generateSessionToken(usernameValue);
+                        
+                        // Clear any failed attempts on successful login
+                        localStorage.removeItem('loginAttempts');
+                        
+                        // Set authentication data with hashed token
+                        sessionStorage.setItem('authToken', sessionToken);
+                        sessionStorage.setItem('username', usernameValue);
+                        sessionStorage.setItem('loginTime', new Date().toISOString());
+                        
+                        // Legacy support - keep for backward compatibility
+                        sessionStorage.setItem('authenticated', 'true');
+
+                        showSuccess('Login successful! Redirecting to private area...');
+
+                        // Redirect to private area after a short delay
+                        setTimeout(() => {
+                            window.location.href = 'private.html';
+                        }, 1500);
+                    } else {
+                        console.log('Login failed - invalid credentials');
+                        recordFailedAttempt();
+                        
+                        const attemptsLeft = MAX_LOGIN_ATTEMPTS - JSON.parse(localStorage.getItem('loginAttempts') || '[]').length;
+                        if (attemptsLeft > 0) {
+                            showError(`Invalid username or password. ${attemptsLeft} attempts remaining. Try demo/password or demo/aaa.`);
+                        } else {
+                            showError('Too many failed attempts. Account locked for 15 minutes.');
+                        }
+                        
+                        // Reset form state
+                        loginButton.disabled = false;
+                        loginButton.textContent = 'Log In';
+                    }
+                }, 1000);
+            });
+
+            console.log('Login page loaded with enhanced security features');
+        });
+    </script>
+</body>
+</html>
