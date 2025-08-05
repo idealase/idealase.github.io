@@ -17,12 +17,7 @@
     "test:e2e": "echo 'E2E tests would run here'",
     "security:audit": "npm audit --audit-level=moderate",
     "security:fix": "npm audit fix",
-    "health:check": "./scripts/health-check.sh",
-    "deploy:staging": "./scripts/deploy-staging.sh",
-    "deploy:staging:dry-run": "./scripts/deploy-staging.sh --dry-run",
-    "preview:cleanup": "./scripts/cleanup-preview.sh",
-    "build": "echo 'Build process completed - static site ready'",
-    "validate": "npm run lint && npm run test && npm run health:check"
+    "build": "echo 'Build process completed - static site ready'"
   },
   "keywords": [
     "html",

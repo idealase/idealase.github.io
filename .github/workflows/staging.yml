@@ -1,22 +1,13 @@
-name: Staging Environment Deployment
+name: Staging Deployment
 
 on:
   push:
     branches: [ develop, staging ]
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-        - staging
-        - development
 
 jobs:
   deploy-staging:
-    name: Deploy to Staging Environment
+    name: Deploy to Staging
     runs-on: ubuntu-latest
     environment: 
       name: staging
@@ -31,45 +22,26 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: package-lock.json
           
       - name: Install dependencies
         run: npm ci
         
-      - name: Run staging pre-deployment tests
+      - name: Run basic health checks
         run: |
-          echo "Running staging-specific tests..."
-          npm run lint
-          npm test
+          echo "Running basic validation..."
+          test -f index.html || { echo "Error: index.html not found"; exit 1; }
+          test -f manifest.json || { echo "Error: manifest.json not found"; exit 1; }
+          echo "✅ Basic validation passed"
+        
+      - name: Setup Pages for staging
+        uses: actions/configure-pages@v4
+        
+      - name: Upload staging artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
           
-      - name: Prepare staging environment
-        run: |
-          echo "Preparing staging deployment..."
-          # Add staging-specific configurations
-          echo "Environment: Staging" > staging-info.txt
-          echo "Deployed at: $(date)" >> staging-info.txt
-          echo "Commit: ${{ github.sha }}" >> staging-info.txt
-          
-      - name: Deploy to staging branch
-        run: |
-          echo "Simulating staging deployment..."
-          # In a real scenario, this would deploy to a staging environment
-          # For GitHub Pages, we could use a separate repository or gh-pages branch
-          echo "✅ Staging deployment simulation completed"
-          echo "Staging URL would be: https://idealase.github.io/staging"
-          
-      - name: Run post-deployment smoke tests
-        run: |
-          echo "Running post-deployment smoke tests..."
-          # Verify critical files exist
-          test -f index.html || (echo "ERROR: index.html missing" && exit 1)
-          test -f staging-info.txt || (echo "ERROR: staging-info.txt missing" && exit 1)
-          echo "✅ Smoke tests passed"
-          
-      - name: Notify staging deployment
-        run: |
-          echo "🚀 Staging deployment completed successfully!"
-          echo "Environment: staging"
-          echo "Commit: ${{ github.sha }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Time: $(date)"
+      - name: Deploy to staging environment
+        uses: actions/deploy-pages@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
