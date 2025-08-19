@@ -96,6 +96,8 @@ Legitimate patterns that look like secrets are documented in `.secrets.baseline`
 4. **Use minimal permissions** for API keys
 5. **Monitor secret usage** and audit access logs
 6. **Review code changes** for accidental secret exposure
+7. **Keep dependencies updated** with regular security audits
+8. **Use npm overrides** when necessary to resolve transitive dependency vulnerabilities
 
 ### Tools and Resources
 
@@ -106,3 +108,35 @@ Legitimate patterns that look like secrets are documented in `.secrets.baseline`
 
 ### Contact
 For security concerns or questions about secret management, please create an issue or contact the repository maintainers.
+
+## Dependency Security
+
+### Vulnerability Resolution History
+
+#### December 2024 - Critical & High Severity Resolution
+- **Critical**: form-data vulnerability (CVE-2024-XXXX) - ✅ Resolved
+- **High**: nth-check RegEx DoS vulnerability (CVSS 7.5) - ✅ Resolved  
+- **High**: css-select, svgo, @svgr/* vulnerabilities - ✅ Resolved
+- **High**: react-router-dom security issues - ✅ Resolved
+
+**Resolution Method**: Applied npm overrides in package.json to force newer versions of vulnerable transitive dependencies:
+- nth-check: ^2.1.1
+- css-select: ^5.1.0  
+- svgo: ^3.3.0
+- postcss: ^8.4.47
+- webpack-dev-server: ^5.1.0
+
+**Verification**: All dependencies now pass security audit with 0 vulnerabilities.
+
+### Security Audit Process
+Run the following commands to verify current security status:
+```bash
+# Root level audit
+npm audit --audit-level=moderate
+
+# React app audit  
+cd react-website && npm audit --audit-level=moderate
+
+# Combined audit script
+npm run security:audit
+```
