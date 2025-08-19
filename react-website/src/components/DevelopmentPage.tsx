@@ -154,8 +154,8 @@ const DevelopmentPage: React.FC = () => {
   const developmentMilestones = [
     {
       id: 1,
-      date: "April 10, 2025",
-      title: "Project Initialization",
+      date: 'April 10, 2025',
+      title: 'Project Initialization',
       content: (
         <>
           <p>Started the website project with a simple HTML structure and basic CSS styling.</p>
@@ -169,8 +169,8 @@ const DevelopmentPage: React.FC = () => {
     },
     {
       id: 2,
-      date: "April 12, 2025",
-      title: "JavaScript Features Implementation",
+      date: 'April 12, 2025',
+      title: 'JavaScript Features Implementation',
       content: (
         <>
           <p>Added interactive elements and functionality with vanilla JavaScript.</p>
@@ -187,8 +187,8 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       id: 3,
-      date: "April 15, 2025",
-      title: "EmailJS Integration",
+      date: 'April 15, 2025',
+      title: 'EmailJS Integration',
       content: (
         <>
           <p>Implemented the contact form functionality with EmailJS to enable sending actual emails from the contact form.</p>
@@ -202,8 +202,8 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       id: 4,
-      date: "April 20, 2025",
-      title: "React Transformation",
+      date: 'April 20, 2025',
+      title: 'React Transformation',
       content: (
         <>
           <p>Transformed the entire website into a modern React application with TypeScript.</p>

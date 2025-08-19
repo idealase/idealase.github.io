@@ -117,39 +117,39 @@ const DocumentsPage: React.FC = () => {
   const documents = [
     {
       id: 1,
-      title: "Getting Started Guide",
-      description: "Learn the basics of setting up and using our platform with this comprehensive guide.",
-      link: "#"
+      title: 'Getting Started Guide',
+      description: 'Learn the basics of setting up and using our platform with this comprehensive guide.',
+      link: '#'
     },
     {
       id: 2,
-      title: "API Documentation",
-      description: "Technical reference for developers working with our API endpoints and integration options.",
-      link: "#"
+      title: 'API Documentation',
+      description: 'Technical reference for developers working with our API endpoints and integration options.',
+      link: '#'
     },
     {
       id: 3,
-      title: "User Manual",
-      description: "Detailed instructions for navigating and using all features of our software.",
-      link: "#"
+      title: 'User Manual',
+      description: 'Detailed instructions for navigating and using all features of our software.',
+      link: '#'
     },
     {
       id: 4,
-      title: "Best Practices",
-      description: "Recommendations and tips for getting the most out of our tools and services.",
-      link: "#"
+      title: 'Best Practices',
+      description: 'Recommendations and tips for getting the most out of our tools and services.',
+      link: '#'
     },
     {
       id: 5,
-      title: "Release Notes",
-      description: "Stay updated with the latest features, improvements, and bug fixes in our software releases.",
-      link: "#"
+      title: 'Release Notes',
+      description: 'Stay updated with the latest features, improvements, and bug fixes in our software releases.',
+      link: '#'
     },
     {
       id: 6,
-      title: "Security Guidelines",
-      description: "Important information about keeping your account and data secure while using our services.",
-      link: "#"
+      title: 'Security Guidelines',
+      description: 'Important information about keeping your account and data secure while using our services.',
+      link: '#'
     }
   ];
 

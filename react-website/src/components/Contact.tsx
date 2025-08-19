@@ -125,8 +125,8 @@ const Contact: React.FC = () => {
   // Initialize EmailJS once when component mounts
   useEffect(() => {
     // Using legacy initialization method
-    emailjs.init("sBWi2Myw71iv3sKXL");
-    console.log("EmailJS initialized");
+    emailjs.init('sBWi2Myw71iv3sKXL');
+    console.log('EmailJS initialized');
   }, []);
   
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
@@ -144,7 +144,7 @@ const Contact: React.FC = () => {
       message: formData.get('message'),
     };
     
-    console.log("Attempting to send email with template parameters:", templateParams);
+    console.log('Attempting to send email with template parameters:', templateParams);
     
     // Use your correct service ID from your EmailJS dashboard
     // The current one 'service_szc0b2r' doesn't exist according to the error message
