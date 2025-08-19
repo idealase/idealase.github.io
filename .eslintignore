@@ -1,0 +1,11 @@
+# Build artifacts
+build/
+static/
+dist/
+*.min.js
+
+# Dependencies
+node_modules/
+
+# Generated files
+react-website/build/
