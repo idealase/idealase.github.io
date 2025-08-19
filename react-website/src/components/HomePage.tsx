@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ArrowVisualization from './ArrowVisualization';
 import Contact from './Contact';
+import ReadmeContent from './ReadmeContent';
 
 const HomeContainer = styled.div`
   min-height: 100vh;
@@ -180,8 +181,8 @@ const HomePage: React.FC = () => {
       </HeroSection>
 
       <ContentSection id="content">
-        <SectionTitle>Home</SectionTitle>
-        <p>Welcome to my first React website! This is a modern and sophisticated version of my original JavaScript site. With VS Code Copilot Agent mode, and little else, I am making this website, one prompt at a time.</p>
+        <SectionTitle>About sandford.systems</SectionTitle>
+        <ReadmeContent />
         <ArrowVisualization />
       </ContentSection>
 
