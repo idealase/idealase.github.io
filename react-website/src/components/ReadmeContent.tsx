@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -151,6 +151,71 @@ const MarkdownContent = styled.div`
   }
 `;
 
+// Component to handle decrypted markdown rendering
+const DecryptedMarkdown: React.FC<{ content: string }> = ({ content }) => {
+  const [decryptedContent, setDecryptedContent] = useState('');
+  
+  useEffect(() => {
+    if (!content) return;
+
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+    let currentIndex = 0;
+    
+    // Initial scrambled state - preserve line structure
+    const initialScrambled = content
+      .split('')
+      .map(char => {
+        if (char === '\n' || char === ' ' || char === '\t' || char.match(/[#*`\-_=]/)) {
+          return char; // Preserve markdown structure characters
+        }
+        return chars[Math.floor(Math.random() * chars.length)];
+      })
+      .join('');
+    
+    setDecryptedContent(initialScrambled);
+
+    // Decryption animation
+    const interval = setInterval(() => {
+      setDecryptedContent(() => {
+        const newContent = content
+          .split('')
+          .map((char, index) => {
+            if (index < currentIndex) {
+              return char; // Already decrypted
+            }
+            if (char === '\n' || char === ' ' || char === '\t' || char.match(/[#*`\-_=]/)) {
+              return char; // Preserve structure
+            }
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join('');
+        
+        return newContent;
+      });
+      
+      // Skip structural characters when incrementing
+      do {
+        currentIndex++;
+      } while (
+        currentIndex < content.length && 
+        (content[currentIndex] === '\n' || 
+         content[currentIndex] === ' ' || 
+         content[currentIndex] === '\t' ||
+         content[currentIndex].match(/[#*`\-_=]/))
+      );
+      
+      if (currentIndex >= content.length) {
+        clearInterval(interval);
+        setDecryptedContent(content);
+      }
+    }, 50); // Fast animation
+
+    return () => clearInterval(interval);
+  }, [content]);
+
+  return <ReactMarkdown>{decryptedContent}</ReactMarkdown>;
+};
+
 const LoadingState = styled.div`
   display: flex;
   justify-content: center;
@@ -171,6 +236,8 @@ const ReadmeContent: React.FC = () => {
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [shouldStartDecryption, setShouldStartDecryption] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchReadme = async () => {
@@ -192,6 +259,26 @@ const ReadmeContent: React.FC = () => {
     fetchReadme();
   }, []);
 
+  // Start decryption effect when component becomes visible
+  useEffect(() => {
+    if (!loading && content && containerRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !shouldStartDecryption) {
+              setShouldStartDecryption(true);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(containerRef.current);
+
+      return () => observer.disconnect();
+    }
+  }, [loading, content, shouldStartDecryption]);
+
   if (loading) {
     return (
       <ReadmeContainer>
@@ -210,12 +297,17 @@ const ReadmeContent: React.FC = () => {
 
   return (
     <ReadmeContainer
+      ref={containerRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.3 }}
     >
       <MarkdownContent>
-        <ReactMarkdown>{content}</ReactMarkdown>
+        {shouldStartDecryption ? (
+          <DecryptedMarkdown content={content} />
+        ) : (
+          <ReactMarkdown>{content}</ReactMarkdown>
+        )}
       </MarkdownContent>
     </ReadmeContainer>
   );
