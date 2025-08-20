@@ -19,28 +19,19 @@ const HeroSection = styled.section`
   align-items: center;
   text-align: center;
   padding: 0 2rem;
-  background: linear-gradient(135deg, rgba(29, 29, 29, 0.95) 0%, rgba(35, 35, 35, 0.95) 100%);
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle, transparent 20%, #1d1d1d 80%);
-    opacity: 0.7;
-    z-index: 1;
-  }
 `;
 
 
 const HeroContent = styled.div`
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
   max-width: 800px;
+  width: 100%;
 `;
 
 const Title = styled(motion.h1)`
@@ -127,27 +118,33 @@ const HomePage: React.FC = () => {
   return (
     <HomeContainer>
       <HeroSection>
-        <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-          <FaultyTerminal
-            scale={1.5}
-            gridMul={[2, 1]}
-            digitSize={1.2}
-            timeScale={1}
-            pause={false}
-            scanlineIntensity={1}
-            glitchAmount={1}
-            flickerAmount={1}
-            noiseAmp={1}
-            chromaticAberration={0}
-            dither={0}
-            curvature={0}
-            tint="#ffffff"
-            mouseReact={true}
-            mouseStrength={0.5}
-            pageLoadAnimation={false}
-            brightness={1}
-          />
-        </div>
+        <FaultyTerminal
+          scale={3}
+          gridMul={[2, 1]}
+          digitSize={1.4}
+          timeScale={1.9}
+          pause={false}
+          scanlineIntensity={2}
+          glitchAmount={1}
+          flickerAmount={1}
+          noiseAmp={0.6}
+          chromaticAberration={0}
+          dither={0}
+          curvature={0.17}
+          tint="#4b6f8b"
+          mouseReact={true}
+          mouseStrength={1.4}
+          pageLoadAnimation={false}
+          brightness={0.5}
+          style={{ 
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 0
+          }}
+        />
         <HeroContent>
           <Title
             initial={{ opacity: 0, y: 20 }}
