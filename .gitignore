@@ -29,6 +29,16 @@ node_modules/
 /dist
 /build
 
+# Build artifacts copied to root (GitHub Pages deployment)
+asset-manifest.json
+index.html
+static/
+manifest.json
+favicon.ico
+logo192.png
+logo512.png
+robots.txt
+
 # Security configuration files
 config.js
 .secrets.baseline
