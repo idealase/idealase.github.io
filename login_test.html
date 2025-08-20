@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test Page</title>
+    <style>
+        body { 
+            font-family: monospace; 
+            padding: 20px; 
+            background-color: #1e1e1e; 
+            color: #e1e1e1; 
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #2e2e2e;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #5e81ac;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .success { color: #a3be8c; }
+        .error { color: #bf616a; }
+        .info { color: #88c0d0; }
+    </style>
+</head>
+<body>
+    <h1>Login Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Credential Validation</h2>
+        <div id="credential-test-results"></div>
+        <button onclick="testCredentials()">Test Credentials</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Session Storage</h2>
+        <div id="session-test-results"></div>
+        <button onclick="testSessionStorage()">Test Session Storage</button>
+        <button onclick="clearSession()">Clear Session</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Authentication Flow</h2>
+        <div id="auth-test-results"></div>
+        <button onclick="simulateLogin()">Simulate Login Flow</button>
+        <button onclick="testRedirect()">Test Redirect to Private</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Current Session Status</h2>
+        <div id="session-status"></div>
+        <button onclick="updateSessionStatus()">Refresh Status</button>
+    </div>
+
+    <script>
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            element.innerHTML += `<div class="${className}">[${new Date().toLocaleTimeString()}] ${message}</div>`;
+        }
+
+        function testCredentials() {
+            const resultsId = 'credential-test-results';
+            document.getElementById(resultsId).innerHTML = '';
+            
+            // Same credentials as in login.html
+            const validCredentials = [
+                { username: 'demo', password: 'password' },
+                { username: 'demo', password: 'aaa' },
+                { username: 'admin', password: 'aaa' },
+                { username: 'user', password: 'aaa' }
+            ];
+            
+            const testCases = [
+                { username: 'demo', password: 'password', expected: true },
+                { username: 'demo', password: 'aaa', expected: true },
+                { username: 'admin', password: 'aaa', expected: true },
+                { username: 'user', password: 'aaa', expected: true },
+                { username: 'demo', password: 'wrong', expected: false },
+                { username: 'wrong', password: 'aaa', expected: false }
+            ];
+            
+            testCases.forEach(test => {
+                const isValid = validCredentials.some(cred => 
+                    cred.username === test.username && cred.password === test.password
+                );
+                
+                const type = isValid === test.expected ? 'success' : 'error';
+                const symbol = isValid === test.expected ? '✓' : '✗';
+                log(resultsId, `${symbol} ${test.username}/${test.password} -> ${isValid} (expected: ${test.expected})`, type);
+            });
+        }
+
+        function testSessionStorage() {
+            const resultsId = 'session-test-results';
+            document.getElementById(resultsId).innerHTML = '';
+            
+            try {
+                // Test setting values
+                sessionStorage.setItem('test', 'value');
+                log(resultsId, '✓ Can write to sessionStorage', 'success');
+                
+                // Test reading values
+                const value = sessionStorage.getItem('test');
+                if (value === 'value') {
+                    log(resultsId, '✓ Can read from sessionStorage', 'success');
+                } else {
+                    log(resultsId, '✗ Cannot read from sessionStorage', 'error');
+                }
+                
+                // Test removing values
+                sessionStorage.removeItem('test');
+                const removedValue = sessionStorage.getItem('test');
+                if (removedValue === null) {
+                    log(resultsId, '✓ Can remove from sessionStorage', 'success');
+                } else {
+                    log(resultsId, '✗ Cannot remove from sessionStorage', 'error');
+                }
+                
+            } catch (error) {
+                log(resultsId, `✗ SessionStorage error: ${error.message}`, 'error');
+            }
+        }
+
+        function simulateLogin() {
+            const resultsId = 'auth-test-results';
+            document.getElementById(resultsId).innerHTML = '';
+            
+            // Simulate the same login process as in login.html
+            const username = 'demo';
+            const password = 'password';
+            
+            log(resultsId, `Attempting login with ${username}/${password}`, 'info');
+            
+            const validCredentials = [
+                { username: 'demo', password: 'password' },
+                { username: 'demo', password: 'aaa' },
+                { username: 'admin', password: 'aaa' },
+                { username: 'user', password: 'aaa' }
+            ];
+
+            const isValid = validCredentials.some(cred => 
+                cred.username === username && cred.password === password
+            );
+
+            if (isValid) {
+                log(resultsId, '✓ Credentials valid', 'success');
+                
+                // Generate session token (same logic as login.html)
+                function simpleHash(str) {
+                    let hash = 0;
+                    for (let i = 0; i < str.length; i++) {
+                        const char = str.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash;
+                    }
+                    return Math.abs(hash).toString(36);
+                }
+
+                function generateSessionToken(username) {
+                    const timestamp = Date.now();
+                    const randomValue = Math.random().toString(36);
+                    const tokenData = `${username}:${timestamp}:${randomValue}`;
+                    return simpleHash(tokenData);
+                }
+                
+                const sessionToken = generateSessionToken(username);
+                log(resultsId, `Generated session token: ${sessionToken}`, 'info');
+                
+                // Set authentication data
+                sessionStorage.setItem('authToken', sessionToken);
+                sessionStorage.setItem('username', username);
+                sessionStorage.setItem('loginTime', new Date().toISOString());
+                sessionStorage.setItem('authenticated', 'true');
+                
+                log(resultsId, '✓ Session data set successfully', 'success');
+                updateSessionStatus();
+                
+            } else {
+                log(resultsId, '✗ Invalid credentials', 'error');
+            }
+        }
+
+        function testRedirect() {
+            const resultsId = 'auth-test-results';
+            log(resultsId, 'Testing redirect to private.html...', 'info');
+            
+            // Check if we're authenticated
+            function validateAuthToken() {
+                const authToken = sessionStorage.getItem('authToken');
+                const username = sessionStorage.getItem('username');
+                const authenticated = sessionStorage.getItem('authenticated');
+                
+                return (authToken && username) || (authenticated === 'true');
+            }
+            
+            if (validateAuthToken()) {
+                log(resultsId, '✓ User is authenticated, redirect would succeed', 'success');
+                log(resultsId, 'Note: Not actually redirecting in test mode', 'info');
+                // Uncomment next line to actually redirect:
+                // window.location.href = 'private.html';
+            } else {
+                log(resultsId, '✗ User not authenticated, redirect would fail', 'error');
+            }
+        }
+
+        function clearSession() {
+            sessionStorage.clear();
+            updateSessionStatus();
+            log('session-test-results', 'Session cleared', 'info');
+        }
+
+        function updateSessionStatus() {
+            const statusDiv = document.getElementById('session-status');
+            statusDiv.innerHTML = '<h3>Session Storage Contents:</h3>';
+            
+            if (sessionStorage.length === 0) {
+                statusDiv.innerHTML += '<p class="info">No session data found</p>';
+            } else {
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    const value = sessionStorage.getItem(key);
+                    statusDiv.innerHTML += `<p class="success"><strong>${key}:</strong> ${value}</p>`;
+                }
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSessionStatus();
+            console.log('Login test page loaded');
+        });
+    </script>
+</body>
+</html>
