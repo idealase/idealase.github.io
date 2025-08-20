@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ArrowVisualization from './ArrowVisualization';
 import Contact from './Contact';
 import ReadmeContent from './ReadmeContent';
+import ScrollReveal from './ScrollReveal';
 import FaultyTerminal from './FaultyTerminal';
 
 const HomeContainer = styled.div`
@@ -188,7 +189,14 @@ const HomePage: React.FC = () => {
 
       <ContentSection id="content">
         <SectionTitle>About sandford.systems</SectionTitle>
-        <ReadmeContent />
+        <ScrollReveal
+          baseOpacity={0}
+          enableBlur={true}
+          baseRotation={5}
+          blurStrength={10}
+        >
+          <ReadmeContent />
+        </ScrollReveal>
         <ArrowVisualization />
       </ContentSection>
 
