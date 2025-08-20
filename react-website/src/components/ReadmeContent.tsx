@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import DecryptedText from './DecryptedText';
 
 const ReadmeContainer = styled(motion.div)`
   max-width: 900px;
@@ -151,69 +152,19 @@ const MarkdownContent = styled.div`
   }
 `;
 
-// Component to handle decrypted markdown rendering
-const DecryptedMarkdown: React.FC<{ content: string }> = ({ content }) => {
-  const [decryptedContent, setDecryptedContent] = useState('');
-  
-  useEffect(() => {
-    if (!content) return;
-
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-    let currentIndex = 0;
-    
-    // Initial scrambled state - preserve line structure
-    const initialScrambled = content
-      .split('')
-      .map(char => {
-        if (char === '\n' || char === ' ' || char === '\t' || char.match(/[#*`\-_=]/)) {
-          return char; // Preserve markdown structure characters
-        }
-        return chars[Math.floor(Math.random() * chars.length)];
-      })
-      .join('');
-    
-    setDecryptedContent(initialScrambled);
-
-    // Decryption animation
-    const interval = setInterval(() => {
-      setDecryptedContent(() => {
-        const newContent = content
-          .split('')
-          .map((char, index) => {
-            if (index < currentIndex) {
-              return char; // Already decrypted
-            }
-            if (char === '\n' || char === ' ' || char === '\t' || char.match(/[#*`\-_=]/)) {
-              return char; // Preserve structure
-            }
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join('');
-        
-        return newContent;
-      });
-      
-      // Skip structural characters when incrementing
-      do {
-        currentIndex++;
-      } while (
-        currentIndex < content.length && 
-        (content[currentIndex] === '\n' || 
-         content[currentIndex] === ' ' || 
-         content[currentIndex] === '\t' ||
-         content[currentIndex].match(/[#*`\-_=]/))
-      );
-      
-      if (currentIndex >= content.length) {
-        clearInterval(interval);
-        setDecryptedContent(content);
-      }
-    }, 50); // Fast animation
-
-    return () => clearInterval(interval);
-  }, [content]);
-
-  return <ReactMarkdown>{decryptedContent}</ReactMarkdown>;
+// Component to render markdown content with decryption effect
+const DecryptedMarkdownContent: React.FC<{ content: string }> = ({ content }) => {
+  return (
+    <DecryptedText 
+      text={content}
+      animateOn="view"
+      sequential={true}
+      revealDirection="start"
+      speed={25}
+      maxIterations={15}
+      useOriginalCharsOnly={true}
+    />
+  );
 };
 
 const LoadingState = styled.div`
@@ -304,7 +255,7 @@ const ReadmeContent: React.FC = () => {
     >
       <MarkdownContent>
         {shouldStartDecryption ? (
-          <DecryptedMarkdown content={content} />
+          <DecryptedMarkdownContent content={content} />
         ) : (
           <ReactMarkdown>{content}</ReactMarkdown>
         )}
