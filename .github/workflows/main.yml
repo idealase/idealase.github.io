@@ -1,10 +1,16 @@
 name: Website CI/CD Pipeline
 
+# Streamlined CI/CD focusing on PR automation and essential deployment
+# - PR triggers: Comprehensive checks before merge (security, tests, build validation)
+# - Push to main: Deployment only (assumes checks passed in PR)
+# This eliminates duplicate deployment workflows and race conditions
+
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
+  push:
+    branches: [ main ]
+    # Only deploy on push to main, not for general CI checks
 
 jobs:
   security-checks:
@@ -78,8 +84,10 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: [security-checks, test]
+    # Only deploy on push to main branch, not on PRs
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
