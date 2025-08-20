@@ -163,16 +163,18 @@ This project showcases how natural language prompts translate into functional fe
 
 ## 🚀 Deployment & CI/CD
 
-### Current Infrastructure Issues
-⚠️ **Active Issue**: Duplicate deployment workflows causing race conditions
-- Custom GitHub Actions workflow (`main.yml`)
-- Automatic GitHub Pages deployment
-- **Impact**: Resource waste and unpredictable deployments
+### Streamlined CI/CD Pipeline
+✅ **Optimized**: Focused on PR automation with minimal resource usage
+- **PR Workflow**: Comprehensive security checks, tests, and build validation before merge
+- **Main Branch**: Streamlined deployment on merge to main
+- **Post-Deployment**: Automated DAST security testing of live site
+- **Scheduled**: Weekly security scans for ongoing monitoring
 
 ### Hosting Strategy
 - **Primary**: GitHub Pages at `idealase.github.io`
 - **Source**: React build artifacts in `/build` directory
 - **Domain**: `sandford.systems` (configured via DNS)
+- **Deployment**: Automated on merge to main branch
 
 ## 🧪 Testing Philosophy
 
