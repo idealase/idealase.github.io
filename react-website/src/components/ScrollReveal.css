@@ -1,0 +1,22 @@
+.scroll-reveal {
+  /* Base container styling */
+}
+
+.scroll-reveal > * {
+  /* Allow child elements to be animated */
+  transform-origin: 0% 50%;
+}
+
+/* Ensure text elements are visible during animation */
+.scroll-reveal p,
+.scroll-reveal h1,
+.scroll-reveal h2,
+.scroll-reveal h3,
+.scroll-reveal h4,
+.scroll-reveal h5,
+.scroll-reveal h6,
+.scroll-reveal li,
+.scroll-reveal div,
+.scroll-reveal span {
+  will-change: opacity, filter;
+}
