@@ -28,6 +28,15 @@ node_modules/
 # Build directories
 /dist
 /build
+# Root-level build artifacts (copied from react-website/build for GitHub Pages)
+/asset-manifest.json
+/index.html
+/static/
+/manifest.json
+/favicon.ico
+/logo192.png
+/logo512.png
+/robots.txt
 
 # Security configuration files
 config.js
