@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ArrowVisualization from './ArrowVisualization';
 import Contact from './Contact';
 import ReadmeContent from './ReadmeContent';
+import FaultyTerminal from './FaultyTerminal';
 
 const HomeContainer = styled.div`
   min-height: 100vh;
@@ -35,18 +36,6 @@ const HeroSection = styled.section`
   }
 `;
 
-const BackgroundPattern = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    linear-gradient(rgba(94, 129, 172, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(94, 129, 172, 0.05) 1px, transparent 1px);
-  background-size: 30px 30px;
-  z-index: 0;
-`;
 
 const HeroContent = styled.div`
   position: relative;
@@ -138,7 +127,7 @@ const HomePage: React.FC = () => {
   return (
     <HomeContainer>
       <HeroSection>
-        <BackgroundPattern />
+        <FaultyTerminal />
         <HeroContent>
           <Title
             initial={{ opacity: 0, y: 20 }}
