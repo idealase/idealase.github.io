@@ -117,39 +117,39 @@ const DocumentsPage: React.FC = () => {
   const documents = [
     {
       id: 1,
-      title: 'Getting Started Guide',
-      description: 'Learn the basics of setting up and using our platform with this comprehensive guide.',
-      link: '#'
+      title: 'Project README',
+      description: 'Main project documentation covering the website architecture, features, and development philosophy.',
+      link: 'https://github.com/idealase/idealase.github.io/blob/main/README.md'
     },
     {
       id: 2,
-      title: 'API Documentation',
-      description: 'Technical reference for developers working with our API endpoints and integration options.',
-      link: '#'
+      title: 'React App Documentation',
+      description: 'Technical reference for the modern React application including setup, features, and deployment.',
+      link: 'https://github.com/idealase/idealase.github.io/blob/main/react-website/README.md'
     },
     {
       id: 3,
-      title: 'User Manual',
-      description: 'Detailed instructions for navigating and using all features of our software.',
-      link: '#'
+      title: 'Security Guidelines',
+      description: 'Comprehensive security documentation covering secret management, dependency security, and best practices.',
+      link: 'https://github.com/idealase/idealase.github.io/blob/main/SECURITY.md'
     },
     {
       id: 4,
-      title: 'Best Practices',
-      description: 'Recommendations and tips for getting the most out of our tools and services.',
-      link: '#'
+      title: 'GitHub Actions',
+      description: 'View the CI/CD pipeline, workflow runs, and deployment automation for this project.',
+      link: 'https://github.com/idealase/idealase.github.io/actions'
     },
     {
       id: 5,
-      title: 'Release Notes',
-      description: 'Stay updated with the latest features, improvements, and bug fixes in our software releases.',
-      link: '#'
+      title: 'Repository Issues',
+      description: 'Browse open and closed issues, bug reports, and feature requests for the project.',
+      link: 'https://github.com/idealase/idealase.github.io/issues'
     },
     {
       id: 6,
-      title: 'Security Guidelines',
-      description: 'Important information about keeping your account and data secure while using our services.',
-      link: '#'
+      title: 'Pull Requests',
+      description: 'Review code changes, contributions, and development history through pull requests.',
+      link: 'https://github.com/idealase/idealase.github.io/pulls'
     }
   ];
 
@@ -188,7 +188,7 @@ const DocumentsPage: React.FC = () => {
                 </DocumentHeader>
                 <DocumentBody>
                   <p>{doc.description}</p>
-                  <DocumentLink href={doc.link}>View Document</DocumentLink>
+                  <DocumentLink href={doc.link} target="_blank" rel="noopener noreferrer">View Document</DocumentLink>
                 </DocumentBody>
               </DocumentCard>
             ))}
