@@ -1,9 +1,8 @@
 # =============================================================================
-# Security Scanning Pipeline
+# Security Scanning Pipeline - Streamlined for PR Automation
 # =============================================================================
-# This workflow implements comprehensive security scanning for the idealase.github.io
-# repository as part of our DevSecOps "shift-left" strategy. It runs multiple
-# security tools to catch vulnerabilities early in the development lifecycle.
+# This workflow implements comprehensive security scanning with a focus on
+# PR automation while minimizing unnecessary resource usage from push triggers.
 #
 # Pipeline Components:
 # 1. CodeQL Analysis - GitHub's semantic code analysis for JavaScript/TypeScript
@@ -12,21 +11,20 @@
 # 4. ESLint Security Analysis - Static analysis with security-focused rules
 #
 # Triggers:
-# - Push to main or development branches (immediate feedback)
 # - Pull requests to main (gate keeper for production)
+# - Push to main branch only (post-merge validation)
 # - Weekly scheduled scans (continuous monitoring)
 # =============================================================================
 
 name: Security Scanning Pipeline
 
 on:
-  push:
-    # Trigger on pushes to main and development branches to provide immediate
-    # security feedback during active development
-    branches: [ main, copilot/*, feature/*, bugfix/* ]
   pull_request:
     # Gate keeper: All PRs to main must pass security checks before merge
-    branches: [ main]
+    branches: [ main ]
+  push:
+    # Only run security checks on main branch pushes, not feature branches
+    branches: [ main ]
   schedule:
     # Weekly security maintenance scan to catch new vulnerabilities in dependencies
     # Runs every Monday at 2 AM UTC to avoid business hours and provide fresh reports
