@@ -22,6 +22,16 @@ const HeroSection = styled.section`
   padding: 0 2rem;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: 80vh;
+    min-height: 600px;
+  }
+
+  @media (max-width: 480px) {
+    height: 70vh;
+    min-height: 500px;
+  }
 `;
 
 
@@ -49,14 +59,14 @@ const Title = styled(motion.h1)`
 
 const Subtitle = styled(motion.p)`
   font-size: clamp(1.1rem, 3vw, 1.5rem);
-  color: #b8b8b8;
+  color: #d8dee9;
   margin-bottom: 3rem;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 `;
 
-const ScrollPrompt = styled(motion.div)`
+const ScrollPrompt = styled(motion.button)`
   position: absolute;
   bottom: 2rem;
   left: 50%;
@@ -66,8 +76,33 @@ const ScrollPrompt = styled(motion.div)`
   align-items: center;
   color: #88c0d0;
   font-size: 0.9rem;
+  background: none;
+  border: none;
   cursor: pointer;
   z-index: 2;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(136, 192, 208, 0.1);
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  &:focus {
+    outline: 2px solid #88c0d0;
+    outline-offset: 2px;
+    background-color: rgba(136, 192, 208, 0.1);
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #88c0d0;
+    outline-offset: 2px;
+  }
 `;
 
 const ScrollArrow = styled.div`
@@ -116,9 +151,16 @@ const HomePage: React.FC = () => {
     document.getElementById('content')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      scrollToContent();
+    }
+  };
+
   return (
     <HomeContainer>
-      <HeroSection>
+      <HeroSection role="banner" aria-label="Welcome section">
         <FaultyTerminal
           scale={3}
           gridMul={[2, 1]}
@@ -148,6 +190,7 @@ const HomePage: React.FC = () => {
         />
         <HeroContent>
           <Title
+            as="h1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -164,13 +207,17 @@ const HomePage: React.FC = () => {
         </HeroContent>
         <ScrollPrompt
           onClick={scrollToContent}
+          onKeyDown={handleKeyDown}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.5 }}
-          whileHover={{ y: 5 }}
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          aria-label="Scroll down to main content"
+          title="Click or press Enter/Space to scroll to main content"
         >
-          Scroll Down
-          <ScrollArrow>
+          <span>Scroll Down to Explore</span>
+          <ScrollArrow aria-hidden="true">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -187,20 +234,22 @@ const HomePage: React.FC = () => {
         </ScrollPrompt>
       </HeroSection>
 
-      <ContentSection id="content">
-        <SectionTitle>About sandford.systems</SectionTitle>
-        <ScrollReveal
-          baseOpacity={0}
-          enableBlur={true}
-          baseRotation={5}
-          blurStrength={10}
-        >
-          <ReadmeContent />
-        </ScrollReveal>
-        <ArrowVisualization />
-      </ContentSection>
+      <main>
+        <ContentSection id="content" aria-label="Main content">
+          <SectionTitle as="h2">About sandford.systems</SectionTitle>
+          <ScrollReveal
+            baseOpacity={0}
+            enableBlur={true}
+            baseRotation={5}
+            blurStrength={10}
+          >
+            <ReadmeContent />
+          </ScrollReveal>
+          <ArrowVisualization />
+        </ContentSection>
 
-      <Contact />
+        <Contact />
+      </main>
     </HomeContainer>
   );
 };
