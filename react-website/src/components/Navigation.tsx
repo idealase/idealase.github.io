@@ -87,6 +87,7 @@ const Navigation: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [prevPathname, setPrevPathname] = useState(location.pathname);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,6 +101,19 @@ const Navigation: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateViewport = () => {
+      setIsMobileViewport(window.matchMedia('(max-width: 768px)').matches);
+    };
+
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+
+    return () => {
+      window.removeEventListener('resize', updateViewport);
     };
   }, []);
 
@@ -120,10 +134,20 @@ const Navigation: React.FC = () => {
 
   return (
     <NavContainer style={{ backgroundColor: scrolled ? 'rgba(25, 25, 25, 0.95)' : 'rgba(37, 37, 37, 0.8)' }}>
-      <MobileMenuButton onClick={toggleMobileMenu}>
+      <MobileMenuButton
+        onClick={toggleMobileMenu}
+        type="button"
+        aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+        aria-expanded={isMobileMenuOpen}
+        aria-controls="primary-navigation"
+      >
         {isMobileMenuOpen ? '✕' : '☰'}
       </MobileMenuButton>
-      <NavList $isOpen={isMobileMenuOpen}>
+      <NavList
+        $isOpen={isMobileMenuOpen}
+        id="primary-navigation"
+        aria-hidden={isMobileViewport ? !isMobileMenuOpen : false}
+      >
         <NavItem>
           <Link to="/" $isActive={location.pathname === '/'}>
             Home
