@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import DecryptedText from './DecryptedText';
 
-const ReadmeContainer = styled(motion.div)`
+const ReadmeContainer = styled.div`
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem 0;
@@ -152,21 +150,6 @@ const MarkdownContent = styled.div`
   }
 `;
 
-// Component to render markdown content with decryption effect
-const DecryptedMarkdownContent: React.FC<{ content: string }> = ({ content }) => {
-  return (
-    <DecryptedText 
-      text={content}
-      animateOn="view"
-      sequential={true}
-      revealDirection="start"
-      speed={25}
-      maxIterations={15}
-      useOriginalCharsOnly={true}
-    />
-  );
-};
-
 const LoadingState = styled.div`
   display: flex;
   justify-content: center;
@@ -187,8 +170,6 @@ const ReadmeContent: React.FC = () => {
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [shouldStartDecryption, setShouldStartDecryption] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchReadme = async () => {
@@ -210,26 +191,6 @@ const ReadmeContent: React.FC = () => {
     fetchReadme();
   }, []);
 
-  // Start decryption effect when component becomes visible
-  useEffect(() => {
-    if (!loading && content && containerRef.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !shouldStartDecryption) {
-              setShouldStartDecryption(true);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-
-      observer.observe(containerRef.current);
-
-      return () => observer.disconnect();
-    }
-  }, [loading, content, shouldStartDecryption]);
-
   if (loading) {
     return (
       <ReadmeContainer>
@@ -247,18 +208,9 @@ const ReadmeContent: React.FC = () => {
   }
 
   return (
-    <ReadmeContainer
-      ref={containerRef}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-    >
+    <ReadmeContainer>
       <MarkdownContent>
-        {shouldStartDecryption ? (
-          <DecryptedMarkdownContent content={content} />
-        ) : (
-          <ReactMarkdown>{content}</ReactMarkdown>
-        )}
+        <ReactMarkdown>{content}</ReactMarkdown>
       </MarkdownContent>
     </ReadmeContainer>
   );
