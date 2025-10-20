@@ -60,16 +60,30 @@
         <p>&copy; 2025 My First Website</p>
     </footer>
 
+    <script src="js/storage-utils.js"></script>
     <script src="js/script.js"></script>
     <script>
         // Enhanced authentication check and logout functionality
         document.addEventListener('DOMContentLoaded', function() {
+            if (!window.StorageUtils) {
+                console.error('Storage utilities failed to load. Redirecting to login...');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const storageStatus = StorageUtils.getStatus();
+            if (!storageStatus.sessionEnabled) {
+                console.warn('Session storage unavailable on private page. Using fallback storage mechanisms.');
+            }
+
+            const SESSION_KEYS = ['authenticated', 'authToken', 'username', 'loginTime'];
+
             // Validate authentication token
             function validateAuthToken() {
-                const authToken = sessionStorage.getItem('authToken');
-                const username = sessionStorage.getItem('username');
-                const authenticated = sessionStorage.getItem('authenticated');
-                
+                const authToken = StorageUtils.getItem('authToken');
+                const username = StorageUtils.getItem('username');
+                const authenticated = StorageUtils.getItem('authenticated');
+
                 // Check if we have both new token-based auth and legacy auth
                 return (authToken && username) || (authenticated === 'true');
             }
@@ -80,7 +94,7 @@
             if (!validateAuthToken()) {
                 console.log('User not authenticated, redirecting to login...');
                 // Clear any potentially corrupted session data
-                sessionStorage.clear();
+                StorageUtils.clearKeys(SESSION_KEYS);
                 // Redirect to login page if not authenticated
                 window.location.href = 'login.html';
                 return;
@@ -89,7 +103,7 @@
             console.log('User authenticated, loading private area...');
 
             // Display username if available
-            const username = sessionStorage.getItem('username');
+            const username = StorageUtils.getItem('username');
             if (username) {
                 // Update welcome message to include username
                 const welcomeSection = document.querySelector('#private-content h2');
@@ -104,13 +118,10 @@
             if (logoutButton) {
                 logoutButton.addEventListener('click', function() {
                     console.log('Logout button clicked');
-                    
+
                     // Clear all authentication data
-                    sessionStorage.removeItem('authenticated');
-                    sessionStorage.removeItem('authToken');
-                    sessionStorage.removeItem('username');
-                    sessionStorage.removeItem('loginTime');
-                    
+                    StorageUtils.clearKeys(SESSION_KEYS);
+
                     // Optional: Also clear any rate limiting data on logout
                     // localStorage.removeItem('loginAttempts');
 
@@ -121,15 +132,15 @@
             }
 
             // Optional: Add session timeout (example: 2 hours)
-            const loginTime = sessionStorage.getItem('loginTime');
+            const loginTime = StorageUtils.getItem('loginTime');
             if (loginTime) {
                 const sessionDuration = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
                 const loginTimestamp = new Date(loginTime).getTime();
                 const currentTime = Date.now();
-                
+
                 if (currentTime - loginTimestamp > sessionDuration) {
                     console.log('Session expired, redirecting to login...');
-                    sessionStorage.clear();
+                    StorageUtils.clearKeys(SESSION_KEYS);
                     window.location.href = 'login.html';
                     return;
                 }

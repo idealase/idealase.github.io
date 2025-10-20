@@ -189,6 +189,7 @@
         <p>&copy; 2025 My First Website</p>
     </footer>
 
+    <script src="js/storage-utils.js"></script>
     <script src="js/script.js"></script>
     <script>
         /*
@@ -223,9 +224,26 @@
         */
 
         document.addEventListener('DOMContentLoaded', function() {
+            if (!window.StorageUtils) {
+                console.error('Storage utilities failed to load. Authentication cannot continue.');
+                return;
+            }
+
+            const storageStatus = StorageUtils.getStatus();
+            const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60; // 2 hours
+            const rateLimitKey = 'loginAttempts';
+
             // Security enhancement: Rate limiting for brute force protection
             const MAX_LOGIN_ATTEMPTS = 5;
             const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+
+            if (!storageStatus.sessionEnabled) {
+                console.warn('Session storage is unavailable. Falling back to less secure storage.');
+            }
+
+            if (!storageStatus.sessionEnabled && !storageStatus.localEnabled && !storageStatus.cookiesEnabled) {
+                console.error('No available storage mechanisms. Login functionality will be disabled.');
+            }
             
             // Simple hash function for session tokens (client-side only)
             function simpleHash(str) {
@@ -248,28 +266,34 @@
 
             // Check rate limiting
             function checkRateLimit() {
-                const attempts = JSON.parse(localStorage.getItem('loginAttempts') || '[]');
+                const attempts = StorageUtils.getJSON(rateLimitKey, []);
                 const now = Date.now();
-                
+
                 // Remove old attempts (older than lockout duration)
                 const recentAttempts = attempts.filter(attempt => now - attempt < LOCKOUT_DURATION);
-                localStorage.setItem('loginAttempts', JSON.stringify(recentAttempts));
-                
+                StorageUtils.setJSON(rateLimitKey, recentAttempts, {
+                    maxAgeSeconds: LOCKOUT_DURATION / 1000,
+                    allowMemory: true
+                });
+
                 return recentAttempts.length < MAX_LOGIN_ATTEMPTS;
             }
 
             // Record failed login attempt
             function recordFailedAttempt() {
-                const attempts = JSON.parse(localStorage.getItem('loginAttempts') || '[]');
+                const attempts = StorageUtils.getJSON(rateLimitKey, []);
                 attempts.push(Date.now());
-                localStorage.setItem('loginAttempts', JSON.stringify(attempts));
+                StorageUtils.setJSON(rateLimitKey, attempts, {
+                    maxAgeSeconds: LOCKOUT_DURATION / 1000,
+                    allowMemory: true
+                });
             }
 
             // Get remaining lockout time
             function getRemainingLockoutTime() {
-                const attempts = JSON.parse(localStorage.getItem('loginAttempts') || '[]');
+                const attempts = StorageUtils.getJSON(rateLimitKey, []);
                 if (attempts.length === 0) return 0;
-                
+
                 const oldestAttempt = Math.min(...attempts);
                 const lockoutEnd = oldestAttempt + LOCKOUT_DURATION;
                 const remaining = lockoutEnd - Date.now();
@@ -278,8 +302,8 @@
             }
 
             // Check if user is already authenticated with token validation
-            const authToken = sessionStorage.getItem('authToken');
-            const username = sessionStorage.getItem('username');
+            const authToken = StorageUtils.getItem('authToken');
+            const username = StorageUtils.getItem('username');
             if (authToken && username) {
                 console.log('User already authenticated, redirecting to private area...');
                 window.location.href = 'private.html';
@@ -290,6 +314,12 @@
             const loginButton = document.getElementById('login-button');
             const errorMessage = document.getElementById('error-message');
             const successMessage = document.getElementById('success-message');
+
+            if (!storageStatus.sessionEnabled && !storageStatus.localEnabled && !storageStatus.cookiesEnabled) {
+                showError('Login is currently unavailable because your browser is blocking all forms of storage. Please enable cookies or storage access and refresh the page.');
+                loginButton.disabled = true;
+                return;
+            }
 
             function showError(message) {
                 errorMessage.textContent = message;
@@ -337,7 +367,9 @@
                 }
 
                 const usernameValue = document.getElementById('username').value.trim();
-                const password = document.getElementById('password').value;
+                const passwordInput = document.getElementById('password');
+                const password = passwordInput.value.trim();
+                passwordInput.value = password;
 
                 // Input validation
                 if (!usernameValue || !password) {
@@ -375,17 +407,37 @@
                         const sessionToken = generateSessionToken(usernameValue);
                         
                         // Clear any failed attempts on successful login
-                        localStorage.removeItem('loginAttempts');
-                        
+                        StorageUtils.removeItem(rateLimitKey);
+
                         // Set authentication data with hashed token
-                        sessionStorage.setItem('authToken', sessionToken);
-                        sessionStorage.setItem('username', usernameValue);
-                        sessionStorage.setItem('loginTime', new Date().toISOString());
-                        
-                        // Legacy support - keep for backward compatibility
-                        sessionStorage.setItem('authenticated', 'true');
+                        const sessionOptions = {
+                            maxAgeSeconds: SESSION_MAX_AGE_SECONDS,
+                            allowMemory: false
+                        };
+
+                        const authResults = [
+                            StorageUtils.setItem('authToken', sessionToken, sessionOptions),
+                            StorageUtils.setItem('username', usernameValue, sessionOptions),
+                            StorageUtils.setItem('loginTime', new Date().toISOString(), sessionOptions),
+                            StorageUtils.setItem('authenticated', 'true', sessionOptions)
+                        ];
+
+                        const storageSuccess = authResults.every(result => result.success);
+
+                        if (!storageSuccess) {
+                            console.error('Failed to persist authentication data.');
+                            showError('Unable to complete login because your browser is blocking storage. Please enable cookies or storage access and try again.');
+                            loginButton.disabled = false;
+                            loginButton.textContent = 'Log In';
+                            return;
+                        }
 
                         showSuccess('Login successful! Redirecting to private area...');
+
+                        const usedFallback = authResults.some(result => result.mode === 'cookie');
+                        if (usedFallback) {
+                            console.warn('Authentication data stored using cookie fallback.');
+                        }
 
                         // Redirect to private area after a short delay
                         setTimeout(() => {
@@ -395,7 +447,7 @@
                         console.log('Login failed - invalid credentials');
                         recordFailedAttempt();
                         
-                        const attemptsLeft = MAX_LOGIN_ATTEMPTS - JSON.parse(localStorage.getItem('loginAttempts') || '[]').length;
+                        const attemptsLeft = MAX_LOGIN_ATTEMPTS - StorageUtils.getJSON(rateLimitKey, []).length;
                         if (attemptsLeft > 0) {
                             showError(`Invalid username or password. ${attemptsLeft} attempts remaining. Try demo/password or demo/aaa.`);
                         } else {
