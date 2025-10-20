@@ -209,6 +209,10 @@ const ArrowVisualization: React.FC<ArrowVisualizationProps> = ({ title = 'Progre
     };
     
     const handleTouchMove = (e: TouchEvent) => {
+      if (!e.touches.length) {
+        return;
+      }
+
       const touch = e.touches[0];
       
       const rect = canvas.getBoundingClientRect();
