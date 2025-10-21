@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ArrowVisualization from './ArrowVisualization';
 import Contact from './Contact';
-import ReadmeContent from './ReadmeContent';
-import ScrollReveal from './ScrollReveal';
 import FaultyTerminal from './FaultyTerminal';
 
 const HomeContainer = styled.div`
@@ -142,6 +140,15 @@ const SectionTitle = styled.h2`
   }
 `;
 
+const IntroText = styled.p`
+  max-width: 760px;
+  margin: 0 auto 2.5rem auto;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  text-align: center;
+  color: #d8dee9;
+`;
+
 const HomePage: React.FC = () => {
   useEffect(() => {
     document.title = 'sandford.systems';
@@ -237,14 +244,13 @@ const HomePage: React.FC = () => {
       <main>
         <ContentSection id="content" aria-label="Main content">
           <SectionTitle as="h2">About sandford.systems</SectionTitle>
-          <ScrollReveal
-            baseOpacity={0}
-            enableBlur={true}
-            baseRotation={5}
-            blurStrength={10}
-          >
-            <ReadmeContent />
-          </ScrollReveal>
+          <IntroText>
+            sandford.systems is a digital playground for ideas around secure-by-
+            design software, resilient infrastructure, and thoughtful product
+            development. Expect deep dives into tooling, experiments with user
+            experience, and the occasional detour into creative technology
+            tangents.
+          </IntroText>
           <ArrowVisualization />
         </ContentSection>
 
