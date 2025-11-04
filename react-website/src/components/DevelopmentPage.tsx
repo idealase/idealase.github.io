@@ -154,48 +154,56 @@ const DevelopmentPage: React.FC = () => {
   const developmentMilestones = [
     {
       id: 1,
-      date: 'April 10, 2025',
-      title: 'Project Initialization',
+      date: 'April 15, 2025',
+      title: 'Foundations of the vibe-coded meta-site',
       content: (
         <>
-          <p>Started the website project with a simple HTML structure and basic CSS styling.</p>
+          <p>
+            Commit <code>60a6bc7</code> lit the first neon signposts for sandford.systems, carving out a
+            multi-page structure, animated transitions, and the original arrow visualization that set the
+            tone for a playful, liminal experience.
+          </p>
           <ul>
-            <li>Created initial HTML files for main pages</li>
-            <li>Set up project structure and Git repository</li>
-            <li>Implemented basic CSS styling</li>
+            <li>Structured the HTML scaffolding for <code>about.html</code>, <code>documents.html</code>, and friends.</li>
+            <li>Introduced early canvas experiments that hinted at today&apos;s motion-heavy hero section.</li>
+            <li>Locked in the cool-night palette that still permeates the design language.</li>
           </ul>
         </>
       )
     },
     {
       id: 2,
-      date: 'April 12, 2025',
-      title: 'JavaScript Features Implementation',
+      date: 'April 15, 2025',
+      title: 'Secret doors and narrative intrigue',
       content: (
         <>
-          <p>Added interactive elements and functionality with vanilla JavaScript.</p>
-          <CodeBlock>{`// Sample code from early development
-document.addEventListener('DOMContentLoaded', function() {
-    const contactForm = document.getElementById('contact-form');
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('Form submitted!');
-    });
-});`}</CodeBlock>
+          <p>
+            A few commits later, <code>c72f6b1</code> ushered in the password-protected <code>private.html</code>,
+            leaning into the site&apos;s meta-fiction and inviting visitors to chase hidden lore.
+          </p>
+          <ul>
+            <li>Mirrored authentication hints across static HTML and future React flows.</li>
+            <li>Documented intentional backdoors (like <code>demo/aaa</code>) to keep the experience playful.</li>
+            <li>Set the stage for session-driven gating that the React login later reimagined.</li>
+          </ul>
         </>
       )
     },
     {
       id: 3,
       date: 'April 15, 2025',
-      title: 'EmailJS Integration',
+      title: 'Automation joins the ritual',
       content: (
         <>
-          <p>Implemented the contact form functionality with EmailJS to enable sending actual emails from the contact form.</p>
+          <p>
+            With <code>df6b49f</code> and the follow-up GitHub Actions upgrades (<code>14416c2</code>, <code>46b51b4</code>),
+            the repo gained CI/CD guardians that linted, tested, and shipped every change straight into the
+            GitHub Pages ether.
+          </p>
           <ul>
-            <li>Added EmailJS library to the project</li>
-            <li>Created an email template in EmailJS dashboard</li>
-            <li>Configured form submission to trigger email sending</li>
+            <li>Added reusable workflows so each merge rehearsed the deployment choreography.</li>
+            <li>Swapped to <code>upload-pages-artifact@v3</code> and later v4 as new Actions dropped.</li>
+            <li>Codified artifact retention so even failed runs left behind breadcrumbs.</li>
           </ul>
         </>
       )
@@ -203,33 +211,147 @@ document.addEventListener('DOMContentLoaded', function() {
     {
       id: 4,
       date: 'April 20, 2025',
-      title: 'React Transformation',
+      title: 'React renaissance and the HashRouter pivot',
       content: (
         <>
-          <p>Transformed the entire website into a modern React application with TypeScript.</p>
+          <p>
+            Pull Request #18 (commit <code>adeee51</code>) refactored the static experiment into a full React +
+            TypeScript SPA, while <code>6df5ab2</code> paired it with <code>HashRouter</code> so GitHub Pages could
+            follow along without server rewrites.
+          </p>
+          <CodeBlock>{`<HashRouter>
+  <AppContainer>
+    <GlobalStyles />
+    <Navigation />
+    <MainContent>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        {/* ... */}
+      </Routes>
+    </MainContent>
+    <Footer>
+      <p>&copy; 2025 My Website | <a href="https://github.com/idealase/idealase.github.io">GitHub</a></p>
+    </Footer>
+  </AppContainer>
+</HashRouter>`}</CodeBlock>
           <ul>
-            <li>Implemented component-based architecture</li>
-            <li>Added routing with React Router</li>
-            <li>Enhanced UI with styled-components and framer-motion</li>
-            <li>Improved contact form with better state management and validation</li>
+            <li>Rebuilt navigation, documents, development, and login pages with styled-components.</li>
+            <li>Introduced motion primitives from Framer Motion to replace ad-hoc CSS tricks.</li>
+            <li>Laid groundwork for future component experiments like FaultyTerminal and DecryptedText.</li>
           </ul>
-          <CodeBlock>{`// React component example
-const Navigation: React.FC = () => {
-  const location = useLocation();
-
-  return (
-    <NavContainer>
-      <NavList>
-        <NavItem>
-          <Link to="/" $isActive={location.pathname === '/'}>
-            Home
-          </Link>
-        </NavItem>
-        // More nav items...
-      </NavList>
-    </NavContainer>
-  );
-};`}</CodeBlock>
+        </>
+      )
+    },
+    {
+      id: 5,
+      date: 'July 23, 2025',
+      title: 'Hybrid architecture ceasefire',
+      content: (
+        <>
+          <p>
+            Commit <code>c15e433</code> closed the long-running saga of routing conflicts between the legacy HTML
+            paths and the new SPA, part of a trilogy of &quot;Fix hybrid architecture&quot; pull requests culminating in
+            PR #9.
+          </p>
+          <ul>
+            <li>Unified navigation so React and static pages shared consistent URLs and menu intent.</li>
+            <li>Preserved GitHub Pages compatibility while maintaining instant SPA transitions.</li>
+            <li>Kept the nostalgic static pages alive for lore hunters who prefer raw HTML vibes.</li>
+          </ul>
+        </>
+      )
+    },
+    {
+      id: 6,
+      date: 'August 4–5, 2025',
+      title: 'Security gauntlet, phases I–IV',
+      content: (
+        <>
+          <p>
+            A rapid-fire sequence of commits (<code>987653c</code>, <code>d1f4fa0</code>, <code>52d1eed</code>) layered
+            professional-grade security tooling onto the project—CodeQL, Snyk, DAST, secret scanning, and
+            SonarCloud—proving that a vibe-coded meta-site can still take AppSec seriously.
+          </p>
+          <ul>
+            <li>Expanded Dependabot coverage and added SARIF uploads for every scanner.</li>
+            <li>Swapped brittle TruffleHog scripts for curated Gitleaks rules via PR #26.</li>
+            <li>Documented threat models so future contributors could keep the rituals intact.</li>
+          </ul>
+        </>
+      )
+    },
+    {
+      id: 7,
+      date: 'August 4–5, 2025',
+      title: 'The login labyrinth gets luxe',
+      content: (
+        <>
+          <p>
+            Starting with <code>ac2ad99</code> and polished through <code>58b64b2</code> and <code>df0363e</code>, the
+            private-area flow became a cinematic detour—sessionStorage mirroring the static login, accessibility
+            tweaks for screen readers, and documentation that spells out the intentional security theatre.
+          </p>
+          <ul>
+            <li>React login mirrors static credentials while gracefully redirecting authenticated users.</li>
+            <li>ARIA-labelled error and success messaging keeps the experience inclusive.</li>
+            <li>CI gating ensures only built artifacts (not secrets) touch the GitHub Pages deploy job.</li>
+          </ul>
+        </>
+      )
+    },
+    {
+      id: 8,
+      date: 'August 20, 2025',
+      title: 'Atmospherics: Faulty terminals and decrypted lore',
+      content: (
+        <>
+          <p>
+            Commits <code>616917b</code>, <code>4ab3ecb</code>, and <code>752e78b</code> dialed up the ambience with a
+            WebGL FaultyTerminal backdrop and decrypted-text reveals, transforming the home page into a living
+            control room.
+          </p>
+          <ul>
+            <li>Injected GPU-driven shaders that respond to cursor movement for a tactile welcome.</li>
+            <li>Animated README excerpts to glitch into legibility before settling into readable copy.</li>
+            <li>Cleaned the repo by banishing build artifacts, keeping the git history crisp.</li>
+          </ul>
+        </>
+      )
+    },
+    {
+      id: 9,
+      date: 'September 10, 2025',
+      title: 'Accessibility polish for every traveler',
+      content: (
+        <>
+          <p>
+            With <code>0d0ffd6</code> the hero interactions, scroll prompts, and focus management earned new shine,
+            ensuring that the dreamy visuals stayed usable on keyboard and touch alike.
+          </p>
+          <ul>
+            <li>Added focus-visible styling and aria cues to the scroll prompt button.</li>
+            <li>Balanced layout responsiveness for small screens without losing cinematic height.</li>
+            <li>Aligned design tokens across components to keep contrasts WCAG-friendly.</li>
+          </ul>
+        </>
+      )
+    },
+    {
+      id: 10,
+      date: 'October 21 – November 4, 2025',
+      title: 'Curating the canon',
+      content: (
+        <>
+          <p>
+            The autumn refresh (<code>40591ed</code>, PR #92) stripped the home page of the README wall while commit
+            <code>f518df0</code> and PR #97 grounded the documents archive with the &quot;Hypermodernity&quot; essay—proof that the
+            vibe-coded shell houses real, growing artifacts.
+          </p>
+          <ul>
+            <li>Refocused the landing narrative on bespoke copy instead of autogenerated markdown.</li>
+            <li>Expanded <code>DocumentsPage</code> with long-form writing that anchors the project&apos;s themes.</li>
+            <li>Kept navigation, accessibility, and login fixes rolling through PRs #88–#91.</li>
+          </ul>
         </>
       )
     }
@@ -250,7 +372,8 @@ const Navigation: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          Follow the evolution of this website from a simple HTML/CSS/JS project to a modern React application.
+          Follow the repo&apos;s glow-up from static sketches to a security-hardened, vibe-coded meta-site chronicled
+          commit by commit.
         </motion.p>
 
         <TimelineContainer
