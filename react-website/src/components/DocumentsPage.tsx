@@ -117,36 +117,42 @@ const DocumentsPage: React.FC = () => {
   const documents = [
     {
       id: 1,
+      title: 'Hypermodernity and Technology: An Essay in Six Chapters',
+      description: 'An in-depth essay exploring the intersection of hypermodernity, technology, and contemporary society through six analytical chapters.',
+      link: '/hypermodernity_essay.html'
+    },
+    {
+      id: 2,
       title: 'Project README',
       description: 'Main project documentation covering the website architecture, features, and development philosophy.',
       link: 'https://github.com/idealase/idealase.github.io/blob/main/README.md'
     },
     {
-      id: 2,
+      id: 3,
       title: 'React App Documentation',
       description: 'Technical reference for the modern React application including setup, features, and deployment.',
       link: 'https://github.com/idealase/idealase.github.io/blob/main/react-website/README.md'
     },
     {
-      id: 3,
+      id: 4,
       title: 'Security Guidelines',
       description: 'Comprehensive security documentation covering secret management, dependency security, and best practices.',
       link: 'https://github.com/idealase/idealase.github.io/blob/main/SECURITY.md'
     },
     {
-      id: 4,
+      id: 5,
       title: 'GitHub Actions',
       description: 'View the CI/CD pipeline, workflow runs, and deployment automation for this project.',
       link: 'https://github.com/idealase/idealase.github.io/actions'
     },
     {
-      id: 5,
+      id: 6,
       title: 'Repository Issues',
       description: 'Browse open and closed issues, bug reports, and feature requests for the project.',
       link: 'https://github.com/idealase/idealase.github.io/issues'
     },
     {
-      id: 6,
+      id: 7,
       title: 'Pull Requests',
       description: 'Review code changes, contributions, and development history through pull requests.',
       link: 'https://github.com/idealase/idealase.github.io/pulls'
