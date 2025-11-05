@@ -38,6 +38,14 @@ const ContactForm = styled.form`
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 `;
 
+const Description = styled.p`
+  color: #d8dee9;
+  line-height: 1.6;
+  margin: 0 auto 2rem;
+  max-width: 640px;
+  text-align: center;
+`;
+
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -176,6 +184,12 @@ const Contact: React.FC = () => {
   return (
     <ContactSection id="contact">
       <Title>Contact sandford.systems</Title>
+      <Description>
+        Have an idea for a new feature, prompt, or improvement? Send it our way!
+        We&apos;re building a pipeline where your suggestions will soon be auto-coded,
+        opened as pull requests, merged, and shipped live—so share what you&apos;d like to
+        see next.
+      </Description>
       <ContactForm ref={form} onSubmit={sendEmail}>
         <FormGroup>
           <Label htmlFor="name">Name</Label>
