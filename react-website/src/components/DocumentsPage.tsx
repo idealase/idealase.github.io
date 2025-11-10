@@ -117,42 +117,48 @@ const DocumentsPage: React.FC = () => {
   const documents = [
     {
       id: 1,
+      title: 'The Fatal Economy: A Re-examination of the Pax Britannica and the Origins of the Great War',
+      description: 'An alternative historical analysis examining how Britain\'s hypothetical 1906 decision to forego the HMS Dreadnought could have reshaped the strategic balance leading to World War I.',
+      link: '/the-fatal-economy.html'
+    },
+    {
+      id: 2,
       title: 'Hypermodernity and Technology: An Essay in Six Chapters',
       description: 'An in-depth essay exploring the intersection of hypermodernity, technology, and contemporary society through six analytical chapters.',
       link: '/hypermodernity_essay.html'
     },
     {
-      id: 2,
+      id: 3,
       title: 'Project README',
       description: 'Main project documentation covering the website architecture, features, and development philosophy.',
       link: 'https://github.com/idealase/idealase.github.io/blob/main/README.md'
     },
     {
-      id: 3,
+      id: 4,
       title: 'React App Documentation',
       description: 'Technical reference for the modern React application including setup, features, and deployment.',
       link: 'https://github.com/idealase/idealase.github.io/blob/main/react-website/README.md'
     },
     {
-      id: 4,
+      id: 5,
       title: 'Security Guidelines',
       description: 'Comprehensive security documentation covering secret management, dependency security, and best practices.',
       link: 'https://github.com/idealase/idealase.github.io/blob/main/SECURITY.md'
     },
     {
-      id: 5,
+      id: 6,
       title: 'GitHub Actions',
       description: 'View the CI/CD pipeline, workflow runs, and deployment automation for this project.',
       link: 'https://github.com/idealase/idealase.github.io/actions'
     },
     {
-      id: 6,
+      id: 7,
       title: 'Repository Issues',
       description: 'Browse open and closed issues, bug reports, and feature requests for the project.',
       link: 'https://github.com/idealase/idealase.github.io/issues'
     },
     {
-      id: 7,
+      id: 8,
       title: 'Pull Requests',
       description: 'Review code changes, contributions, and development history through pull requests.',
       link: 'https://github.com/idealase/idealase.github.io/pulls'
