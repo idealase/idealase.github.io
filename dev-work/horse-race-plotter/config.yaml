@@ -1,0 +1,22 @@
+# Horse Race Plotter Configuration
+
+# Race settings
+finish_distance: 100
+max_turns: 15
+
+# Horses/teams participating in the race
+horses:
+  - "Data Team"
+  - "AI Team"
+  - "Ops Team"
+  - "Dev Team"
+
+# Scoring parameters
+scoring:
+  base_distance_correct: 10      # Base distance for correct answer
+  base_distance_incorrect: 0     # Distance for incorrect answer (could be negative for penalty)
+  speed_factor: 8                # Higher values = more lenient timing (seconds)
+  max_time_bonus: 5              # Maximum bonus distance from speed
+
+# Question file path (relative to this config file)
+questions_file: "questions.yaml"
