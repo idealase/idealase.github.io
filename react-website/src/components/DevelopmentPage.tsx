@@ -354,6 +354,28 @@ const DevelopmentPage: React.FC = () => {
           </ul>
         </>
       )
+    },
+    {
+      id: 11,
+      date: 'November 18, 2025',
+      title: 'Horse Race Plotter: Python gaming in the browser',
+      content: (
+        <>
+          <p>
+            Expanding the dev-work experiments, the Horse Race Plotter introduces a Python-powered, 
+            survey-driven racing game that runs entirely in the browser via Pyodide. Players compete 
+            by answering trivia questions, with speed and accuracy determining their horse&apos;s progress.
+          </p>
+          <ul>
+            <li>Built modular Python game with 5 core modules: game logic, questions, CLI, and plotting.</li>
+            <li>Integrated Pyodide for WebAssembly-based Python execution in the browser.</li>
+            <li>Created terminal emulator interface matching the DOS Hangman aesthetic.</li>
+            <li>Implemented async I/O for non-blocking user input in web environment.</li>
+            <li>Added 20+ survey questions covering data, AI, DevOps, and programming topics.</li>
+            <li>Configured YAML-based settings for flexible game customization.</li>
+          </ul>
+        </>
+      )
     }
   ];
 
