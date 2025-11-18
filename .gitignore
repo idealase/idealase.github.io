@@ -71,3 +71,8 @@ config.js
 
 # Horse Race Plotter output files
 dev-work/horse-race-plotter/*.png
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
