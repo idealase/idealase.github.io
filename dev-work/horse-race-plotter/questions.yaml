@@ -1,0 +1,183 @@
+# Survey questions for Horse Race Plotter
+# Each question has a text, answers (multiple choice), and the correct answer index
+
+questions:
+  - text: "What is the primary purpose of data visualization?"
+    answers:
+      - "To make data look pretty"
+      - "To communicate insights effectively"
+      - "To confuse stakeholders"
+      - "To hide bad results"
+    correct: 1
+    category: "data"
+
+  - text: "Which Python library is most commonly used for data visualization?"
+    answers:
+      - "NumPy"
+      - "Pandas"
+      - "Matplotlib"
+      - "Requests"
+    correct: 2
+    category: "python"
+
+  - text: "What does CSV stand for?"
+    answers:
+      - "Computer System Values"
+      - "Comma Separated Values"
+      - "Central Server Variable"
+      - "Code Syntax Validator"
+    correct: 1
+    category: "data"
+
+  - text: "In a scatter plot, what does each point represent?"
+    answers:
+      - "A data observation"
+      - "A line segment"
+      - "An error message"
+      - "A random value"
+    correct: 0
+    category: "visualization"
+
+  - text: "What is machine learning?"
+    answers:
+      - "Teaching computers to learn from data"
+      - "A type of hardware"
+      - "A programming language"
+      - "A database system"
+    correct: 0
+    category: "ai"
+
+  - text: "What does API stand for?"
+    answers:
+      - "Automatic Programming Interface"
+      - "Application Programming Interface"
+      - "Advanced Protocol Integration"
+      - "Automated Process Instruction"
+    correct: 1
+    category: "programming"
+
+  - text: "Which of these is a version control system?"
+    answers:
+      - "Python"
+      - "Git"
+      - "Docker"
+      - "SQL"
+    correct: 1
+    category: "devops"
+
+  - text: "What is the purpose of a database index?"
+    answers:
+      - "To make queries slower"
+      - "To increase storage space"
+      - "To speed up data retrieval"
+      - "To delete old records"
+    correct: 2
+    category: "database"
+
+  - text: "What does HTTP stand for?"
+    answers:
+      - "HyperText Transfer Protocol"
+      - "High Transfer Text Protocol"
+      - "Home Tool Transfer Protocol"
+      - "Hyper Terminal Text Process"
+    correct: 0
+    category: "web"
+
+  - text: "In Python, what is a 'list'?"
+    answers:
+      - "A function"
+      - "An ordered collection of items"
+      - "A loop statement"
+      - "A data type for text"
+    correct: 1
+    category: "python"
+
+  - text: "What is the main purpose of DevOps?"
+    answers:
+      - "To develop games"
+      - "To bridge development and operations"
+      - "To write documentation"
+      - "To design user interfaces"
+    correct: 1
+    category: "devops"
+
+  - text: "What does SQL stand for?"
+    answers:
+      - "Simple Query Language"
+      - "Structured Query Language"
+      - "System Quality Logic"
+      - "Standard Question List"
+    correct: 1
+    category: "database"
+
+  - text: "What is a neural network?"
+    answers:
+      - "A type of computer network"
+      - "A computing model inspired by the brain"
+      - "A data structure"
+      - "A programming paradigm"
+    correct: 1
+    category: "ai"
+
+  - text: "What is the main advantage of cloud computing?"
+    answers:
+      - "It's always sunny"
+      - "Scalability and flexibility"
+      - "It's free"
+      - "No internet needed"
+    correct: 1
+    category: "cloud"
+
+  - text: "What is a data frame in Pandas?"
+    answers:
+      - "A picture frame for data"
+      - "A 2D labeled data structure"
+      - "A type of loop"
+      - "A function parameter"
+    correct: 1
+    category: "python"
+
+  - text: "What does CI/CD stand for?"
+    answers:
+      - "Computer Integration/Computer Delivery"
+      - "Continuous Integration/Continuous Deployment"
+      - "Code Inspection/Code Documentation"
+      - "Central Interface/Central Database"
+    correct: 1
+    category: "devops"
+
+  - text: "What is the purpose of a histogram?"
+    answers:
+      - "To show historical events"
+      - "To display distribution of data"
+      - "To predict the future"
+      - "To store images"
+    correct: 1
+    category: "visualization"
+
+  - text: "What is Docker used for?"
+    answers:
+      - "Writing documents"
+      - "Containerizing applications"
+      - "Creating databases"
+      - "Designing graphics"
+    correct: 1
+    category: "devops"
+
+  - text: "What is overfitting in machine learning?"
+    answers:
+      - "A model that's too large"
+      - "A model that memorizes training data too well"
+      - "A model that runs too fast"
+      - "A model with too many users"
+    correct: 1
+    category: "ai"
+
+  - text: "What is the main purpose of data cleaning?"
+    answers:
+      - "To delete all data"
+      - "To remove errors and inconsistencies"
+      - "To make data look nice"
+      - "To encrypt information"
+    correct: 1
+    category: "data"

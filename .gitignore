@@ -68,3 +68,11 @@ config.js
 
 # Temporary files
 /tmp/
+
+# Horse Race Plotter output files
+dev-work/horse-race-plotter/*.png
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

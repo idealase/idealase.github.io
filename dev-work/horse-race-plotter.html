@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse Race Plotter - Dev Work</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        /* Terminal Emulator Styling */
+        .terminal-emulator {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            border: 2px solid #444;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #1d1d1d;
+        }
+
+        .emulator-header {
+            background-color: #5e81ac;
+            color: white;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .emulator-header button {
+            padding: 4px 10px;
+            font-size: 12px;
+            background-color: #88c0d0;
+            color: #1d1d1d;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .emulator-header button:hover {
+            background-color: #a3be8c;
+        }
+
+        .emulator-screen {
+            background-color: #1d1d1d;
+            color: #d8dee9;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .input-line {
+            display: flex;
+            background-color: #1d1d1d;
+            padding: 8px 15px;
+            border-top: 1px solid #444;
+        }
+
+        .prompt {
+            color: #88c0d0;
+            margin-right: 8px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        #terminal-input {
+            background-color: #1d1d1d;
+            color: #d8dee9;
+            border: none;
+            flex-grow: 1;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* Loading indicator */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #88c0d0;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Readme styling */
+        .readme {
+            background-color: #252525;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+
+        .readme h3 {
+            color: #88c0d0;
+            margin-bottom: 15px;
+        }
+
+        .readme pre {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #333;
+            color: #d8dee9;
+        }
+
+        .readme code {
+            color: #88c0d0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #88c0d0;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Game info boxes */
+        .info-box {
+            background-color: #2e3440;
+            border-left: 4px solid #88c0d0;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4 {
+            color: #88c0d0;
+            margin-top: 0;
+        }
+
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Horse Race Plotter 🐎</h1>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../documents.html">Documents</a></li>
+                <li><a href="../login.html">Private Area</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <a href="../private.html" class="back-link">← Back to Private Area</a>
+
+        <section id="horse-race-project">
+            <h2>Horse Race Plotter</h2>
+            <p>A survey-driven data plotting mini-game. Race horses by answering questions - the faster and more accurately you answer, the faster your horse advances!</p>
+
+            <div class="info-box">
+                <h4>How to Play</h4>
+                <ul>
+                    <li>Type <code>start</code> in the terminal below to begin</li>
+                    <li>Select your horse/team from the available options</li>
+                    <li>Answer survey questions as quickly and accurately as possible</li>
+                    <li>Correct answers move your horse forward</li>
+                    <li>Faster answers earn bonus distance</li>
+                    <li>First horse to reach the finish line wins!</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>Scoring System</h4>
+                <ul>
+                    <li><strong>Base Distance:</strong> 10 units for correct answers</li>
+                    <li><strong>Speed Bonus:</strong> Up to 5 extra units for quick responses</li>
+                    <li><strong>Race Length:</strong> 100 units to the finish line</li>
+                    <li><strong>AI Opponents:</strong> Compete against other teams!</li>
+                </ul>
+            </div>
+
+            <div class="readme">
+                <h3>About This Game</h3>
+                <p>
+                    Horse Race Plotter combines trivia, timing challenges, and data visualization. 
+                    Each horse represents a team, and players compete by answering survey questions. 
+                    The game tracks response times and accuracy, using them to determine race progress.
+                </p>
+                <p>
+                    This is a Python game running in your browser using Pyodide, a WebAssembly port of Python. 
+                    It demonstrates how complex Python applications can run entirely client-side.
+                </p>
+            </div>
+
+            <h3>Play the Game</h3>
+            <p>The game will load in a moment. Once ready, type <code>start</code> to begin racing!</p>
+
+            <div class="terminal-emulator">
+                <div class="emulator-header">
+                    <span>🐎 Horse Race Plotter Terminal</span>
+                    <div>
+                        <button id="reset-btn">Reset</button>
+                        <button id="help-btn">Help</button>
+                    </div>
+                </div>
+                <div id="emulator-screen" class="emulator-screen">
+                    <div class="loading">Loading Python environment...</div>
+                </div>
+                <div class="input-line">
+                    <span class="prompt">&gt;</span>
+                    <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" disabled>
+                </div>
+            </div>
+
+            <h3>Technical Details</h3>
+            <div class="readme">
+                <h4>Game Features</h4>
+                <ul>
+                    <li><strong>Python 3.x</strong> - Runs real Python code in the browser</li>
+                    <li><strong>Multiple Teams</strong> - Choose from Data Team, AI Team, Ops Team, and Dev Team</li>
+                    <li><strong>20+ Questions</strong> - Survey questions covering data, AI, DevOps, and programming</li>
+                    <li><strong>AI Opponents</strong> - Race against computer-controlled horses</li>
+                    <li><strong>Real-time Visualization</strong> - See the race progress as ASCII art</li>
+                </ul>
+                
+                <h4>Commands</h4>
+                <pre><code>start     - Start a new race
+help      - Show game instructions
+reset     - Reset the terminal
+cls       - Clear the screen</code></pre>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 My First Website</p>
+    </footer>
+
+    <script>
+        // Define error handler before script tags that use it
+        let pyodideLoadError = false;
+        
+        function handlePyodideLoadError() {
+            pyodideLoadError = true;
+            console.warn('Primary Pyodide CDN failed to load');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js" onerror="handlePyodideLoadError()"></script>
+    <script src="https://unpkg.com/pyodide@0.24.1/pyodide.js" onerror="console.warn('Backup Pyodide CDN also failed')"></script>
+    <script>
+        let pyodide = null;
+        let gameRunning = false;
+        let inputBuffer = [];
+        let inputResolve = null;
+
+        const emulatorScreen = document.getElementById('emulator-screen');
+        const terminalInput = document.getElementById('terminal-input');
+        const resetBtn = document.getElementById('reset-btn');
+        const helpBtn = document.getElementById('help-btn');
+
+        // Write text to terminal
+        function writeLine(text = '') {
+            emulatorScreen.textContent += text + '\n';
+            emulatorScreen.scrollTop = emulatorScreen.scrollHeight;
+        }
+
+        // Clear terminal
+        function clearScreen() {
+            emulatorScreen.textContent = '';
+        }
+
+        // Initialize Pyodide
+        async function initPyodide() {
+            try {
+                clearScreen();
+                writeLine('Loading Pyodide...');
+                
+                // Check if loadPyodide is available
+                if (typeof loadPyodide === 'undefined') {
+                    writeLine('Error: Pyodide failed to load from CDN.');
+                    writeLine('This may be due to:');
+                    writeLine('  - Ad blocker blocking the CDN');
+                    writeLine('  - Network issues');
+                    writeLine('  - Browser extensions');
+                    writeLine('');
+                    writeLine('Please try:');
+                    writeLine('  1. Disabling your ad blocker for this site');
+                    writeLine('  2. Checking your internet connection');
+                    writeLine('  3. Using a different browser');
+                    writeLine('');
+                    writeLine('Or run the game locally:');
+                    writeLine('  cd dev-work/horse-race-plotter');
+                    writeLine('  pip install -r requirements.txt');
+                    writeLine('  python horse_race_plotter.py');
+                    terminalInput.disabled = false;
+                    return;
+                }
+                
+                pyodide = await loadPyodide();
+                
+                writeLine('Installing dependencies...');
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install('pyyaml');
+                
+                writeLine('Loading game files...');
+                
+                // Load game configuration
+                const configYaml = await fetch('horse-race-plotter/config.yaml').then(r => r.text());
+                const questionsYaml = await fetch('horse-race-plotter/questions.yaml').then(r => r.text());
+                const questionsCode = await fetch('horse-race-plotter/questions.py').then(r => r.text());
+                const gameLogicCode = await fetch('horse-race-plotter/game_logic.py').then(r => r.text());
+                const cliCode = await fetch('horse-race-plotter/cli_web.py').then(r => r.text());
+                
+                // Create virtual filesystem
+                pyodide.FS.writeFile('/config.yaml', configYaml);
+                pyodide.FS.writeFile('/questions.yaml', questionsYaml);
+                
+                // Load Python modules
+                await pyodide.runPythonAsync(questionsCode);
+                await pyodide.runPythonAsync(gameLogicCode);
+                await pyodide.runPythonAsync(cliCode);
+                
+                clearScreen();
+                writeLine('╔══════════════════════════════════════════════════════════╗');
+                writeLine('║                🐎 HORSE RACE PLOTTER 🐎                 ║');
+                writeLine('╚══════════════════════════════════════════════════════════╝');
+                writeLine('');
+                writeLine('Welcome to Horse Race Plotter!');
+                writeLine('');
+                writeLine('Type "start" to begin a new race');
+                writeLine('Type "help" for instructions');
+                writeLine('Type "cls" to clear the screen');
+                writeLine('');
+                
+                terminalInput.disabled = false;
+                terminalInput.focus();
+                
+            } catch (error) {
+                writeLine('Error loading game: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        // Handle terminal input
+        terminalInput.addEventListener('keydown', async function(e) {
+            if (e.key === 'Enter') {
+                const cmd = terminalInput.value.trim();
+                terminalInput.value = '';
+                
+                if (!cmd) return;
+                
+                writeLine('> ' + cmd);
+                
+                if (cmd.toLowerCase() === 'cls') {
+                    clearScreen();
+                } else if (cmd.toLowerCase() === 'help') {
+                    showHelp();
+                } else if (cmd.toLowerCase() === 'start') {
+                    await startGame();
+                } else if (gameRunning) {
+                    // Pass input to game
+                    if (inputResolve) {
+                        inputResolve(cmd);
+                        inputResolve = null;
+                    }
+                } else {
+                    writeLine('Unknown command. Type "help" for instructions.');
+                }
+            }
+        });
+
+        // Show help
+        function showHelp() {
+            writeLine('');
+            writeLine('HOW TO PLAY:');
+            writeLine('• Type "start" to begin a new race');
+            writeLine('• Select your horse/team from the options');
+            writeLine('• Answer survey questions as quickly as possible');
+            writeLine('• Correct answers move your horse forward');
+            writeLine('• Faster answers earn bonus distance');
+            writeLine('• First horse to reach the finish line wins!');
+            writeLine('');
+            writeLine('COMMANDS:');
+            writeLine('  start  - Start a new race');
+            writeLine('  help   - Show this help');
+            writeLine('  cls    - Clear the screen');
+            writeLine('  reset  - Reset the terminal');
+            writeLine('');
+        }
+
+        // Start game
+        async function startGame() {
+            if (!pyodide) {
+                writeLine('Error: Python environment not loaded');
+                return;
+            }
+
+            gameRunning = true;
+            writeLine('');
+            
+            try {
+                // Define input function for Python
+                pyodide.globals.set('web_input', async (prompt) => {
+                    writeLine(prompt);
+                    return new Promise((resolve) => {
+                        inputResolve = resolve;
+                    });
+                });
+
+                pyodide.globals.set('web_print', (text) => {
+                    writeLine(text);
+                });
+
+                // Run the game
+                await pyodide.runPythonAsync(`
+import asyncio
+from pathlib import Path
+from game_logic import RaceState, ScoringSystem
+from questions import QuestionManager
+from cli_web import WebGameCLI
+import yaml
+
+# Load config
+with open('/config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+
+# Load questions
+question_manager = QuestionManager(Path('/questions.yaml'))
+
+# Create scoring system
+scoring_config = config.get('scoring', {})
+scoring_system = ScoringSystem(
+    base_distance_correct=scoring_config.get('base_distance_correct', 10.0),
+    base_distance_incorrect=scoring_config.get('base_distance_incorrect', 0.0),
+    speed_factor=scoring_config.get('speed_factor', 8.0),
+    max_time_bonus=scoring_config.get('max_time_bonus', 5.0)
+)
+
+# Create CLI
+cli = WebGameCLI(None)
+
+# Display title and instructions
+cli.display_title()
+cli.display_instructions()
+
+# Horse selection
+available_horses = config['horses']
+player_horse_name = await cli.display_horse_selection(available_horses)
+
+# Create race
+race = RaceState(
+    horse_names=available_horses,
+    player_horse_name=player_horse_name,
+    finish_distance=config['finish_distance'],
+    max_turns=config['max_turns'],
+    scoring_system=scoring_system
+)
+
+cli.race = race
+
+web_print(f"\\n🎮 You are racing as: {player_horse_name}")
+web_print("The race is about to begin!\\n")
+
+# Initial race view
+cli.display_race_view()
+
+# Main game loop
+questions_asked = 0
+max_questions = min(config['max_turns'], question_manager.get_question_count())
+
+while not race.is_game_over() and questions_asked < max_questions:
+    questions_asked += 1
+    
+    question = question_manager.get_next_question()
+    if not question:
+        break
+    
+    # Display question
+    cli.display_question(question, questions_asked, max_questions)
+    
+    # Get player's answer
+    answer_index, time_taken = await cli.get_answer(len(question.answers))
+    is_correct = question.is_correct(answer_index)
+    
+    # Process turn
+    distance_gained = race.process_turn(race.player_horse, is_correct, time_taken)
+    
+    # Display feedback
+    cli.display_answer_feedback(is_correct, question.correct_index, time_taken, distance_gained)
+    
+    # Simulate AI horses
+    for horse in race.horses:
+        if horse.is_ai:
+            race.simulate_ai_turn(horse)
+    
+    # Display race view
+    cli.display_race_view()
+    
+    # Check for winner
+    winner = race.check_winner()
+    if winner:
+        break
+
+# Ensure we have a winner
+if not race.winner:
+    race.check_winner()
+
+# Display results
+cli.display_winner()
+
+web_print("\\nThanks for playing Horse Race Plotter!")
+web_print("Type 'start' to play again.")
+                `);
+
+            } catch (error) {
+                writeLine('Error running game: ' + error.message);
+                console.error(error);
+            } finally {
+                gameRunning = false;
+                inputResolve = null;
+            }
+        }
+
+        // Reset button
+        resetBtn.addEventListener('click', async function() {
+            gameRunning = false;
+            inputResolve = null;
+            terminalInput.disabled = true;
+            await initPyodide();
+        });
+
+        // Help button
+        helpBtn.addEventListener('click', function() {
+            showHelp();
+        });
+
+        // Click terminal to focus input
+        emulatorScreen.addEventListener('click', function() {
+            terminalInput.focus();
+        });
+
+        // Initialize when Pyodide script is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Give the Pyodide script a moment to load
+                setTimeout(initPyodide, 100);
+            });
+        } else {
+            // DOM already loaded, wait a bit for Pyodide script
+            setTimeout(initPyodide, 100);
+        }
+    </script>
+</body>
+</html>
