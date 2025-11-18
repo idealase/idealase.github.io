@@ -248,8 +248,18 @@ cls       - Clear the screen</code></pre>
         <p>&copy; 2025 My First Website</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
-    <script type="module">
+    <script>
+        // Define error handler before script tags that use it
+        let pyodideLoadError = false;
+        
+        function handlePyodideLoadError() {
+            pyodideLoadError = true;
+            console.warn('Primary Pyodide CDN failed to load');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js" onerror="handlePyodideLoadError()"></script>
+    <script src="https://unpkg.com/pyodide@0.24.1/pyodide.js" onerror="console.warn('Backup Pyodide CDN also failed')"></script>
+    <script>
         let pyodide = null;
         let gameRunning = false;
         let inputBuffer = [];
@@ -276,6 +286,28 @@ cls       - Clear the screen</code></pre>
             try {
                 clearScreen();
                 writeLine('Loading Pyodide...');
+                
+                // Check if loadPyodide is available
+                if (typeof loadPyodide === 'undefined') {
+                    writeLine('Error: Pyodide failed to load from CDN.');
+                    writeLine('This may be due to:');
+                    writeLine('  - Ad blocker blocking the CDN');
+                    writeLine('  - Network issues');
+                    writeLine('  - Browser extensions');
+                    writeLine('');
+                    writeLine('Please try:');
+                    writeLine('  1. Disabling your ad blocker for this site');
+                    writeLine('  2. Checking your internet connection');
+                    writeLine('  3. Using a different browser');
+                    writeLine('');
+                    writeLine('Or run the game locally:');
+                    writeLine('  cd dev-work/horse-race-plotter');
+                    writeLine('  pip install -r requirements.txt');
+                    writeLine('  python horse_race_plotter.py');
+                    terminalInput.disabled = false;
+                    return;
+                }
+                
                 pyodide = await loadPyodide();
                 
                 writeLine('Installing dependencies...');
@@ -520,8 +552,16 @@ web_print("Type 'start' to play again.")
             terminalInput.focus();
         });
 
-        // Initialize on load
-        initPyodide();
+        // Initialize when Pyodide script is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Give the Pyodide script a moment to load
+                setTimeout(initPyodide, 100);
+            });
+        } else {
+            // DOM already loaded, wait a bit for Pyodide script
+            setTimeout(initPyodide, 100);
+        }
     </script>
 </body>
 </html>
