@@ -142,7 +142,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload security reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always() # Upload reports even if scans fail
         with:
           name: security-reports
@@ -225,7 +225,7 @@ jobs:
           # - Tracking of remediation efforts
 
       - name: Upload Gitleaks results as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always() # Always upload for manual review
         with:
           name: gitleaks-results
@@ -274,7 +274,7 @@ jobs:
           npm run lint:js -- --format json --output-file eslint-security.json || true
 
       - name: Upload ESLint security report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always() # Upload report even if ESLint finds issues
         with:
           name: eslint-security-report

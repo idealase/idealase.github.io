@@ -30,7 +30,7 @@ jobs:
         fail_action: false
         
     - name: Upload ZAP Scan Results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         name: zap-scan-results
@@ -107,7 +107,7 @@ jobs:
         cat security-headers-report.md
         
     - name: Upload Security Headers Report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         name: security-headers-report
@@ -193,7 +193,7 @@ jobs:
         cat ssl-report.md
         
     - name: Upload SSL/TLS Report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         name: ssl-tls-report
