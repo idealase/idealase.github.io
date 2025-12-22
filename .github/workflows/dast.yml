@@ -18,7 +18,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       
     - name: OWASP ZAP Baseline Scan
       uses: zaproxy/action-baseline@v0.14.0
@@ -47,7 +47,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       
     - name: Test Security Headers
       run: |
@@ -121,7 +121,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0  # Shallow clones should be disabled for better analysis
         
@@ -154,7 +154,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       
     - name: SSL/TLS Security Check
       run: |
