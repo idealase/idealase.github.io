@@ -169,6 +169,11 @@ const Navigation: React.FC = () => {
           </Link>
         </NavItem>
         <NavItem>
+          <Link to="/bucket-flow" $isActive={location.pathname === '/bucket-flow'}>
+            Bucket Flow
+          </Link>
+        </NavItem>
+        <NavItem>
           <Link to="/login" $isActive={location.pathname === '/login'}>
             Private Area
           </Link>
