@@ -194,7 +194,7 @@ export const useBucketSimulation = (params: BucketParams): BucketSimulation => {
     }
     runningRef.current = true;
     setRunning(true);
-  }, [animate]);
+  }, []);
 
   const pause = useCallback(() => {
     runningRef.current = false;
@@ -227,7 +227,7 @@ export const useBucketSimulation = (params: BucketParams): BucketSimulation => {
       qSpill
     });
     setSamples([]);
-  }, []);
+  }, [params.bucketHeight, params.initialHeight]);
 
   return {
     state,
