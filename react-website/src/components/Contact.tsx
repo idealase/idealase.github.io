@@ -176,7 +176,7 @@ const Contact: React.FC = () => {
         let errorMessage = 'Failed to send the message. ';
         
         if (error.text === 'Failed to fetch' || error.message === 'Failed to fetch') {
-          errorMessage += 'There seems to be a network connectivity issue or the email service is not properly configured. Please try again later or contact us directly at contact@sandford.systems';
+          errorMessage += 'Network connectivity issue detected. Please try again later or contact us at contact@sandford.systems';
         } else if (error.status === 400) {
           errorMessage += 'Invalid request. Please check your input and try again.';
         } else if (error.status === 401 || error.status === 403) {

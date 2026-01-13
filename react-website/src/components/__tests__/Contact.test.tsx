@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Contact from '../Contact';
+import * as emailjs from '@emailjs/browser';
 
 // Mock EmailJS
 jest.mock('@emailjs/browser', () => ({
@@ -10,8 +11,11 @@ jest.mock('@emailjs/browser', () => ({
 }));
 
 describe('Contact Component', () => {
+  let mockEmailjs: jest.Mocked<typeof emailjs>;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEmailjs = emailjs as jest.Mocked<typeof emailjs>;
   });
 
   test('renders contact form with all fields', () => {
@@ -24,8 +28,7 @@ describe('Contact Component', () => {
   });
 
   test('displays user-friendly error message for "Failed to fetch" error', async () => {
-    const emailjs = require('@emailjs/browser');
-    emailjs.send.mockRejectedValue({
+    mockEmailjs.send.mockRejectedValue({
       text: 'Failed to fetch',
       message: 'Failed to fetch'
     });
@@ -49,8 +52,7 @@ describe('Contact Component', () => {
   });
 
   test('displays specific error message for 404 error', async () => {
-    const emailjs = require('@emailjs/browser');
-    emailjs.send.mockRejectedValue({
+    mockEmailjs.send.mockRejectedValue({
       status: 404,
       text: 'Not Found'
     });
@@ -72,8 +74,7 @@ describe('Contact Component', () => {
   });
 
   test('displays success message when email sends successfully', async () => {
-    const emailjs = require('@emailjs/browser');
-    emailjs.send.mockResolvedValue({
+    mockEmailjs.send.mockResolvedValue({
       status: 200,
       text: 'OK'
     });
