@@ -171,8 +171,26 @@ const Contact: React.FC = () => {
       })
       .catch((error) => {
         console.error('EmailJS detailed error:', error);
+        
+        // Provide more helpful error messages based on error type
+        let errorMessage = 'Failed to send the message. ';
+        
+        if (error.text === 'Failed to fetch' || error.message === 'Failed to fetch') {
+          errorMessage += 'There seems to be a network connectivity issue or the email service is not properly configured. Please try again later or contact us directly at contact@sandford.systems';
+        } else if (error.status === 400) {
+          errorMessage += 'Invalid request. Please check your input and try again.';
+        } else if (error.status === 401 || error.status === 403) {
+          errorMessage += 'Email service authentication failed. Please contact the site administrator.';
+        } else if (error.status === 404) {
+          errorMessage += 'Email service configuration not found. Please contact the site administrator.';
+        } else if (error.status >= 500) {
+          errorMessage += 'Email service is temporarily unavailable. Please try again later.';
+        } else {
+          errorMessage += `Error: ${error.text || error.message || 'Unknown error occurred'}`;
+        }
+        
         setMessage({
-          text: `Failed to send the message: ${error.text || error.message || 'Unknown error'}`,
+          text: errorMessage,
           success: false
         });
       })
