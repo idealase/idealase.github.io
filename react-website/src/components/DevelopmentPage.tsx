@@ -124,6 +124,62 @@ const CodeBlock = styled.pre`
   margin: 1.5rem 0;
 `;
 
+const ProjectsGrid = styled(motion.div)`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0 4rem 0;
+`;
+
+const ProjectCard = styled(motion.a)`
+  display: block;
+  background-color: rgba(35, 35, 35, 0.6);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: #e1e1e1;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #88c0d0;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(136, 192, 208, 0.15);
+  }
+`;
+
+const ProjectTitle = styled.h3`
+  color: #88c0d0;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+`;
+
+const ProjectDescription = styled.p`
+  color: #b8b8b8;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+`;
+
+const ProjectMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #5e81ac;
+`;
+
+const SectionTitle = styled(motion.h3)`
+  color: #e1e1e1;
+  font-size: 1.75rem;
+  margin: 3rem 0 1rem 0;
+  
+  &::before {
+    content: '// ';
+    color: #5e81ac;
+  }
+`;
+
 // Animation variants for staggered animations
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -150,6 +206,45 @@ const DevelopmentPage: React.FC = () => {
   useEffect(() => {
     document.title = 'Development - sandford.systems';
   }, []);
+
+  const deployedProjects = [
+    {
+      name: 'minclo',
+      url: 'https://idealase.github.io/minclo',
+      description: 'Minimalist closet organizer application',
+      language: 'TypeScript'
+    },
+    {
+      name: 'spider-size-simulator',
+      url: 'https://idealase.github.io/spider-size-simulator',
+      description: 'Interactive spider size comparison tool',
+      language: 'TypeScript'
+    },
+    {
+      name: 'me-net',
+      url: 'https://idealase.github.io/me-net',
+      description: 'Personal network visualization',
+      language: 'TypeScript'
+    },
+    {
+      name: 'PulseQuiz',
+      url: 'https://idealase.github.io/PulseQuiz',
+      description: 'Interactive quiz application',
+      language: 'TypeScript'
+    },
+    {
+      name: 'bucket-flow-calculus',
+      url: 'https://idealase.github.io/bucket-flow-calculus',
+      description: 'Bucket flow visualization and calculus',
+      language: 'TypeScript'
+    },
+    {
+      name: 'dc-sim',
+      url: 'https://idealase.github.io/dc-sim',
+      description: 'Data center simulation tool',
+      language: 'TypeScript'
+    }
+  ];
 
   const developmentMilestones = [
     {
@@ -397,6 +492,56 @@ const DevelopmentPage: React.FC = () => {
           Follow the repo&apos;s glow-up from static sketches to a security-hardened, vibe-coded meta-site chronicled
           commit by commit.
         </motion.p>
+
+        <SectionTitle
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          Deployed Projects
+        </SectionTitle>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          style={{ marginBottom: '1rem' }}
+        >
+          Live GitHub Pages deployments from my repositories:
+        </motion.p>
+        <ProjectsGrid
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          {deployedProjects.map((project, index) => (
+            <ProjectCard
+              key={project.name}
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <ProjectTitle>{project.name}</ProjectTitle>
+              <ProjectDescription>{project.description}</ProjectDescription>
+              <ProjectMeta>
+                <span>{project.language}</span>
+                <span>•</span>
+                <span>GitHub Pages</span>
+              </ProjectMeta>
+            </ProjectCard>
+          ))}
+        </ProjectsGrid>
+
+        <SectionTitle
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+        >
+          Development Timeline
+        </SectionTitle>
 
         <TimelineContainer
           variants={containerVariants}

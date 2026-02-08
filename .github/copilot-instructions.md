@@ -48,6 +48,12 @@ cd react-website && npm run build:clean
 # Run React tests - takes ~3-5 seconds. NEVER CANCEL. Set timeout to 30+ seconds.
 cd react-website && CI=true npm test -- --coverage --watchAll=false
 
+# Run single test file
+cd react-website && npm test -- App.test.tsx --watchAll=false
+
+# Run tests with specific pattern
+cd react-website && npm test -- --testNamePattern="navigation" --watchAll=false
+
 # Run legacy tests (HTML validation, navigation tests) - takes <1 second
 cd .. && node tests/run-tests.js
 
@@ -179,6 +185,31 @@ cp config.example.js config.js
 - **Process**: Security checks → Tests → Build → Deploy to GitHub Pages
 - **Manual trigger**: Use workflow_dispatch if needed
 - **Deployment**: Automatic on push to `main` branch
+
+## Key Conventions and Patterns
+
+### Component Architecture
+- **Styled-components**: All styling uses styled-components CSS-in-JS approach
+- **File naming**: Component files use PascalCase (e.g., `HomePage.tsx`, `Navigation.tsx`)
+- **Component structure**: Each page component is self-contained with its own styled components
+- **Routing**: HashRouter (`/#/path`) for GitHub Pages compatibility
+
+### Styling Conventions
+- **Color palette**: Nord-inspired theme with `#88c0d0` (frost blue), `#5e81ac` (storm blue), `#1d1d1d` (background), `#e1e1e1` (text)
+- **Typography**: Inter for body, Fira Code for code blocks
+- **Animations**: Framer Motion for page transitions and component animations
+- **Responsive**: Mobile-first approach with styled-components media queries
+
+### State Management
+- **No global state library**: Uses React hooks (useState, useEffect) for local state
+- **EmailJS integration**: Contact form uses @emailjs/browser package
+- **Form handling**: Direct form submission via EmailJS, no intermediate state management
+
+### Security Patterns
+- **Secret management**: Never commit `config.js` (use `config.example.js` as template)
+- **ESLint security plugins**: `eslint-plugin-security` and `eslint-plugin-no-secrets` enabled
+- **CSP headers**: Security headers configured (see SECURITY.md)
+- **npm overrides**: Use package.json overrides to patch vulnerable transitive dependencies
 
 ## Quick Reference Commands
 
