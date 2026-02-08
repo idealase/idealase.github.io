@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ArrowVisualization from './ArrowVisualization';
 import Contact from './Contact';
 import FaultyTerminal from './FaultyTerminal';
+import InteractiveTerminal from './InteractiveTerminal';
 
 const HomeContainer = styled.div`
   min-height: 100vh;
@@ -32,37 +33,6 @@ const HeroSection = styled.section`
   }
 `;
 
-
-const HeroContent = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  max-width: 800px;
-  width: 100%;
-`;
-
-const Title = styled(motion.h1)`
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 700;
-  color: #e1e1e1;
-  margin-bottom: 1.5rem;
-  line-height: 1.1;
-
-  span {
-    color: #88c0d0;
-  }
-`;
-
-const Subtitle = styled(motion.p)`
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  color: #d8dee9;
-  margin-bottom: 3rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-`;
 
 const ScrollPrompt = styled(motion.button)`
   position: absolute;
@@ -195,23 +165,7 @@ const HomePage: React.FC = () => {
             zIndex: 0
           }}
         />
-        <HeroContent>
-          <Title
-            as="h1"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Welcome to <span>sandford.systems</span>
-          </Title>
-          <Subtitle
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            A modern and sophisticated React site, built entirely from vibes.
-          </Subtitle>
-        </HeroContent>
+        <InteractiveTerminal />
         <ScrollPrompt
           onClick={scrollToContent}
           onKeyDown={handleKeyDown}
