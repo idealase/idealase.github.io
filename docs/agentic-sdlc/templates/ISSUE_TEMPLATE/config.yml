@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "📖 Agentic SDLC Docs"
+    url: https://idealase.github.io/docs/agentic-sdlc/
+    about: Read the playbook for how issues are triaged, dispatched, and reviewed
+  - name: "💬 Discussion"
+    url: https://github.com/idealase/idealase.github.io/discussions
+    about: Ask questions or discuss ideas before creating an issue

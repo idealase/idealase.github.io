@@ -1,0 +1,94 @@
+name: "🤖 Agent Task"
+description: A task scoped for AI agent execution
+labels: ["agent-ready"]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: One-sentence description of the deliverable
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this matters and any background info
+      placeholder: |
+        What problem does this solve? Link to related issues or docs.
+
+  - type: textarea
+    id: files-modify
+    attributes:
+      label: Files to Modify
+      description: Explicit list of files the agent will read/write
+      placeholder: |
+        - src/components/Header.tsx
+        - src/styles/header.css
+    validations:
+      required: true
+
+  - type: textarea
+    id: files-context
+    attributes:
+      label: Files for Context (read-only)
+      description: Files the agent should read but not modify
+      placeholder: |
+        - .github/copilot-instructions.md
+        - src/types/index.ts
+        - README.md
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Binary pass/fail criteria — use checkboxes
+      placeholder: |
+        - [ ] Component renders the user's name
+        - [ ] Unit test covers the new prop
+        - [ ] No TypeScript errors
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of Scope
+      description: What NOT to change — helps prevent agent scope creep
+      placeholder: |
+        - Do not modify the auth module
+        - Do not add new dependencies
+        - Do not change the database schema
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size Estimate
+      options:
+        - "size/XS — 1 file, <50 lines"
+        - "size/S — 1-3 files, <200 lines"
+        - "size/M — 3-8 files, <500 lines"
+        - "size/L — 8+ files (needs careful scoping)"
+        - "size/XL — Must be decomposed into sub-issues"
+    validations:
+      required: true
+
+  - type: textarea
+    id: build-test
+    attributes:
+      label: Build & Test Commands
+      description: Commands the agent should run to verify its work
+      render: bash
+      placeholder: |
+        npm run build
+        npm run test
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Issues that must be completed before this one
+      placeholder: |
+        - #12 — Database schema migration
+        - #15 — API endpoint for user profiles
