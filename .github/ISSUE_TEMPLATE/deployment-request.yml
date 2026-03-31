@@ -1,0 +1,107 @@
+name: "🚀 Deployment Request"
+description: Request a new deployment to sandford.systems
+labels: ["deployment"]
+body:
+  - type: input
+    id: app-name
+    attributes:
+      label: App Name
+      description: Name of the application (used for service naming)
+      placeholder: "my-app"
+    validations:
+      required: true
+
+  - type: input
+    id: subdomain
+    attributes:
+      label: Target Subdomain
+      description: "Will be accessible at {subdomain}.sandford.systems"
+      placeholder: "my-app"
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: Repository
+      description: "GitHub repo name under the idealase org"
+      placeholder: "idealase/my-app"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stack
+    attributes:
+      label: Stack
+      description: What kind of application is this?
+      options:
+        - "Static frontend (HTML/CSS/JS served by Nginx)"
+        - "SPA (React/Vue/Svelte built to dist/, served by Nginx)"
+        - "Full-stack (frontend + backend API process)"
+        - "API only (backend process, no static files)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: build-steps
+    attributes:
+      label: Build Steps
+      description: Commands to build the deployable artifact
+      render: bash
+      placeholder: |
+        cd ~/Desktop/Repos/my-app
+        npm install
+        npm run build
+    validations:
+      required: true
+
+  - type: textarea
+    id: backend-details
+    attributes:
+      label: Backend Details (if applicable)
+      description: Start command, port, and any environment variables needed
+      placeholder: |
+        Start command: npm run start
+        Port: 8030
+        Environment variables:
+        - DATABASE_URL (in .env, not committed)
+        - NODE_ENV=production
+
+  - type: input
+    id: port
+    attributes:
+      label: Nginx Listen Port
+      description: "Local port for the Nginx server block (check existing: 8020-8025 in use)"
+      placeholder: "8026"
+    validations:
+      required: true
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: What must be in place before deployment?
+      placeholder: |
+        - [ ] Build succeeds locally
+        - [ ] Self-hosted runner configured
+        - [ ] Domain DNS record exists in Cloudflare
+        - [ ] Any required secrets are set in GitHub
+
+  - type: textarea
+    id: health-check
+    attributes:
+      label: Health Check
+      description: How to verify the deployment is working
+      render: bash
+      placeholder: |
+        curl -sf https://my-app.sandford.systems/ | head -1
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Anything else relevant to the deployment
+      placeholder: |
+        - Needs WebSocket support for real-time features
+        - Static assets should have long cache headers
+        - Previous deployment attempt failed due to port conflict

@@ -1,0 +1,88 @@
+name: "🎯 Epic"
+description: A parent tracking issue that decomposes into agent-ready sub-issues
+labels: ["epic"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What does completion of this epic look like?
+      placeholder: |
+        Users can sign up, log in, and manage their profile on the app.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: Current State
+      description: Where are we now? What exists and what's missing?
+      placeholder: |
+        - Auth endpoints exist but have no frontend
+        - No user profile page
+        - Database schema for users is complete
+
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Deliverables
+      description: Concrete outputs — use checkboxes to track progress
+      placeholder: |
+        - [ ] Login page with email/password form
+        - [ ] Registration page with validation
+        - [ ] User profile page (view + edit)
+        - [ ] Auth middleware for protected routes
+        - [ ] E2E tests for auth flow
+    validations:
+      required: true
+
+  - type: textarea
+    id: sub-issues
+    attributes:
+      label: Sub-Issues
+      description: |
+        Break the deliverables into agent-ready tasks. Create each as a separate issue
+        using the "🤖 Agent Task" template, then link them here.
+      placeholder: |
+        - [ ] #101 — Login page component (size/S)
+        - [ ] #102 — Registration page component (size/S)
+        - [ ] #103 — Auth middleware (size/XS)
+        - [ ] #104 — Profile page (size/M)
+        - [ ] #105 — E2E auth tests (size/S)
+
+  - type: textarea
+    id: success-criteria
+    attributes:
+      label: Success Criteria
+      description: How do we know the epic is truly done?
+      placeholder: |
+        - All sub-issues are closed
+        - E2E tests pass for the full auth flow
+        - Deployed to {app}.sandford.systems
+        - No regressions in existing functionality
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      description: Current lifecycle phase of this epic
+      options:
+        - "🔍 Scoping — defining deliverables and sub-issues"
+        - "📋 Ready — all sub-issues created and sized"
+        - "🚧 In Progress — agents are working on sub-issues"
+        - "🔎 Review — all sub-issues done, awaiting final verification"
+        - "✅ Complete — deployed and verified"
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Open questions, risks, or decisions to document
+      placeholder: |
+        - Decision: Using JWT tokens, not session cookies
+        - Risk: Password reset flow not yet designed
+        - Question: Should we support OAuth providers?

@@ -1,0 +1,88 @@
+name: "🐛 Bug Report"
+description: Report a bug with structured reproduction steps
+labels: ["bug"]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: One-line description of the bug
+      placeholder: "Login button does nothing when clicked on mobile"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps to trigger the bug — numbered list
+      placeholder: |
+        1. Open https://{app}.sandford.systems on mobile
+        2. Enter valid credentials
+        3. Tap the "Log In" button
+        4. Nothing happens — no loading indicator, no navigation
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen when following the steps above?
+      placeholder: |
+        After tapping "Log In", the user should see a loading spinner
+        and then be redirected to the dashboard.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happens?
+      placeholder: |
+        Nothing happens. The button appears to receive the tap
+        (ripple effect plays) but no network request is made.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Where was this observed?
+      placeholder: |
+        - App: {app}.sandford.systems
+        - Browser: Safari 17.4 on iOS 17
+        - Device: iPhone 15
+        - Deployment: commit abc1234
+      render: markdown
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Logs
+      description: Attach screenshots, screen recordings, or relevant console/server logs
+      placeholder: |
+        Drag and drop images here, or paste console output.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - "critical — app is unusable or data loss"
+        - "high — major feature broken, no workaround"
+        - "medium — feature broken but workaround exists"
+        - "low — cosmetic or minor inconvenience"
+    validations:
+      required: true
+
+  - type: textarea
+    id: root-cause-hint
+    attributes:
+      label: Root Cause Hint (optional)
+      description: If you have a suspicion about what's causing this, note it here
+      placeholder: |
+        Might be related to the touch event handler not calling preventDefault().
+        See src/components/LoginForm.tsx line 42.
