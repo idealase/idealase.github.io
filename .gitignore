@@ -76,3 +76,7 @@ dev-work/horse-race-plotter/*.png
 __pycache__/
 *.pyc
 *.pyo
+
+# Claude Code
+.claude/settings.local.json
+CLAUDE.local.md
