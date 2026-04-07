@@ -239,6 +239,115 @@ Dispatch sub-issues in waves:
 2. **Wave 2**: Issues whose dependencies were in Wave 1 (dispatch after Wave 1 merges)
 3. **Wave 3**: Roll-up / integration issues
 
+### Pattern 5: Programmatic Agent Assignment via GraphQL
+
+**When**: You want to assign GitHub's coding agents (Copilot, Claude, Codex) to issues from the terminal instead of the browser UI.
+
+GitHub exposes multiple coding agents as assignable bots. The REST API (`gh issue edit --add-assignee`) **does not** support bot actors — you must use GraphQL.
+
+#### Discovering Available Agents
+
+Query `suggestedActors` on any issue to see which agents are available for your repo:
+
+```bash
+gh api graphql -f query='
+{
+  repository(owner: "idealase", name: "YOUR-REPO") {
+    issue(number: 1) {
+      suggestedActors(first: 20) {
+        nodes {
+          ... on User { id login }
+          ... on Bot { id login }
+          ... on Mannequin { id login }
+        }
+      }
+    }
+  }
+}'
+```
+
+As of April 2026, the available agents are:
+
+| Bot login | Bot ID | Provider | Best for |
+|---|---|---|---|
+| `copilot-swe-agent` | `BOT_kgDOC9w8XQ` | GitHub (default) | General tasks, GitHub-native workflows |
+| `anthropic-code-agent` | `BOT_kgDODnPHJg` | Anthropic (Claude) | Complex reasoning, large refactors |
+| `openai-code-agent` | `BOT_kgDODnSAjQ` | OpenAI (Codex/GPT) | Code generation, broad language support |
+
+> **Note**: Bot IDs may change over time. Always verify via `suggestedActors` rather than hardcoding.
+
+#### Assigning an Agent to an Issue
+
+**Step 1**: Get the issue's node ID:
+
+```bash
+gh api graphql -f query='
+{
+  repository(owner: "idealase", name: "YOUR-REPO") {
+    issue(number: 42) { id }
+  }
+}'
+```
+
+**Step 2**: Assign the agent using `addAssigneesToAssignable`:
+
+```bash
+# Assign Claude to issue
+gh api graphql -f query='
+mutation {
+  addAssigneesToAssignable(input: {
+    assignableId: "ISSUE_NODE_ID"
+    assigneeIds: ["BOT_kgDODnPHJg"]
+  }) {
+    assignable { ... on Issue { title number } }
+  }
+}'
+```
+
+#### One-Liner Helper
+
+Combine both steps into a single command:
+
+```bash
+# Usage: assign-agent <owner> <repo> <issue_number> <bot_id>
+assign-agent() {
+  local owner=$1 repo=$2 issue=$3 bot=$4
+  local node_id=$(gh api graphql -f query="
+    { repository(owner: \"$owner\", name: \"$repo\") {
+        issue(number: $issue) { id }
+    }}" --jq '.data.repository.issue.id')
+  gh api graphql -f query="
+    mutation {
+      addAssigneesToAssignable(input: {
+        assignableId: \"$node_id\"
+        assigneeIds: [\"$bot\"]
+      }) {
+        assignable { ... on Issue { number title } }
+      }
+    }"
+}
+
+# Assign Claude to issue #4
+assign-agent idealase token-ledger 4 BOT_kgDODnPHJg
+
+# Assign Codex to issue #3
+assign-agent idealase token-ledger 3 BOT_kgDODnSAjQ
+```
+
+#### Model Selection Limitations
+
+You **cannot** specify the exact model version (e.g. "Claude Sonnet 4.6" vs "Claude Opus 4") via the API. The agent platform selects the model based on your plan tier and GitHub's internal routing. Choosing the right **agent** (Anthropic vs OpenAI vs Copilot) is the closest you can get to model selection programmatically.
+
+#### Why Not REST API?
+
+```bash
+# This DOES NOT work — bot logins aren't recognized as users:
+gh issue edit 42 --repo owner/repo --add-assignee "copilot"
+# → error: 'copilot' not found
+```
+
+The REST API's assignee endpoint only accepts user logins. Bot actors require the GraphQL `addAssigneesToAssignable` mutation.
+
 ---
 
 ## 4. Coordination Across Repos
@@ -627,9 +736,31 @@ Is the issue agent-ready?
   ├─ No → Decompose or add spec detail first
   └─ Yes → Does it depend on unmerged work?
       ├─ Yes → Queue it for the next wave
-      └─ No → Is there other work in the same repo?
-          ├─ Yes → Batch them together (Pattern 3)
-          └─ No → Fan out independently (Pattern 1)
+      └─ No → Which agent fits best?
+          ├─ Complex reasoning / refactoring → Claude (anthropic-code-agent)
+          ├─ Broad code generation → Codex (openai-code-agent)
+          └─ General / GitHub-native → Copilot (copilot-swe-agent)
+              └─ Is there other work in the same repo?
+                  ├─ Yes → Batch them together (Pattern 3)
+                  └─ No → Fan out independently (Pattern 1)
+```
+
+### Agent Assignment Quick Reference
+```bash
+# Discover available agents for a repo
+gh api graphql -f query='{ repository(owner:"idealase", name:"REPO") {
+  issue(number:1) { suggestedActors(first:10) { nodes {
+    ... on Bot { id login } } } } } }'
+
+# Assign agent to issue (GraphQL — REST does not support bots)
+gh api graphql -f query='mutation { addAssigneesToAssignable(input: {
+  assignableId:"ISSUE_NODE_ID", assigneeIds:["BOT_ID"]
+}) { assignable { ... on Issue { number } } } }'
+
+# Agent IDs (verify via suggestedActors — these may change)
+#   copilot-swe-agent:    BOT_kgDOC9w8XQ
+#   anthropic-code-agent: BOT_kgDODnPHJg
+#   openai-code-agent:    BOT_kgDODnSAjQ
 ```
 
 ---
