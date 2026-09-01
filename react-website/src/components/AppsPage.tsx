@@ -139,7 +139,7 @@ const CategoryTag = styled.span`
 
 const AppsPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Apps & Projects | sandford.systems';
+    document.title = 'Apps & Projects - sandford.systems';
   }, []);
 
   return (
