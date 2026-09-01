@@ -10,6 +10,7 @@ import LoginPage from './components/LoginPage';
 import PerthBeerCuratorPage from './components/PerthBeerCuratorPage';
 import ContactPage from './components/ContactPage';
 import BucketFlowPage from './components/BucketFlowPage';
+import AppsPage from './components/AppsPage';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -38,6 +39,7 @@ function App() {
         <MainContent>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/apps" element={<AppsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/development" element={<DevelopmentPage />} />
