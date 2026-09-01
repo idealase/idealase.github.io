@@ -154,6 +154,11 @@ const Navigation: React.FC = () => {
           </Link>
         </NavItem>
         <NavItem>
+          <Link to="/apps" $isActive={location.pathname === '/apps'}>
+            Apps
+          </Link>
+        </NavItem>
+        <NavItem>
           <Link to="/about" $isActive={location.pathname === '/about'}>
             About
           </Link>
