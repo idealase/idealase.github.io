@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import AppsPage from './components/AppsPage';
+import SitesPage, { siteGroups } from './components/SitesPage';
 import reportWebVitals from './reportWebVitals';
 
 test('reportWebVitals function exists', () => {
@@ -38,4 +39,16 @@ test('navigation text patterns exist in codebase', () => {
   expect(routes).toContain('/');
   expect(routes).toContain('/about');
   expect(routes.length).toBeGreaterThan(5);
+});
+
+test('Sites page lists grouped links to every site', () => {
+  render(<SitesPage />);
+
+  expect(screen.getByRole('heading', { name: 'Sites' })).toBeInTheDocument();
+  for (const group of siteGroups) {
+    expect(screen.getByRole('heading', { name: group.title })).toBeInTheDocument();
+    for (const site of group.sites) {
+      expect(screen.getByRole('link', { name: site.name })).toHaveAttribute('href', site.url);
+    }
+  }
 });
