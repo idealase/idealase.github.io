@@ -33,10 +33,18 @@ jobs:
           cd react-website
           npm ci
 
-      - name: Run security audit (fail on high)
+      # Gate on the dependencies that ship to the browser. Build and test
+      # tooling (react-scripts, jest, eslint) is reported but not blocking:
+      # some of its transitive packages have no patched release.
+      - name: Run security audit (fail on high, shipped dependencies)
         run: |
           cd react-website
-          npm audit --audit-level=high
+          npm audit --audit-level=high --omit=dev
+
+      - name: Report full audit including dev tooling (non-blocking)
+        run: |
+          cd react-website
+          npm audit --audit-level=high || echo "::warning::npm audit reports high-severity issues in dev tooling; see log above"
         
   test:
     name: Test React Application
