@@ -1,7 +1,16 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  ALL_PROJECTS,
+  DOCUMENTS,
+  PROJECT_GROUPS,
+  HIDDEN_ROUTES,
+  NAV_ITEMS,
+  Project,
+} from '../data/siteContent';
+import { MILESTONES } from './DevelopmentTimeline';
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -11,66 +20,22 @@ interface OutputLine {
 }
 
 // ── Route & data maps ──────────────────────────────────────────────────
+// Pages, projects, docs and the timeline come from the same data the rest of
+// the site renders, so the terminal can't drift out of date.
 
-const ROUTE_MAP: Record<string, string> = {
-  home: '/',
-  about: '/about',
-  documents: '/documents',
-  docs: '/documents',
-  development: '/development',
-  dev: '/development',
-  login: '/login',
-  contact: '/contact',
-  'perth-beer-curator': '/perth-beer-curator',
-  pbc: '/perth-beer-curator',
-  'bucket-flow': '/bucket-flow',
-  bucket: '/bucket-flow',
-};
+const ROUTES = [...NAV_ITEMS, ...HIDDEN_ROUTES];
 
-const PAGES = [
-  { name: 'home', path: '/', description: 'Landing page' },
-  { name: 'about', path: '/about', description: 'About sandford.systems' },
-  { name: 'documents', path: '/documents', description: 'Essays & resources' },
-  { name: 'development', path: '/development', description: 'Timeline & projects' },
-  { name: 'contact', path: '/contact', description: 'Get in touch' },
-  { name: 'bucket-flow', path: '/bucket-flow', description: 'Bucket flow simulator' },
-  { name: 'perth-beer-curator', path: '/perth-beer-curator', description: 'Beer curator' },
-  { name: 'login', path: '/login', description: 'Private area' },
-];
+const ROUTE_MAP = new Map<string, string>(
+  ROUTES.flatMap(route => route.aliases.map(alias => [alias, route.path] as [string, string])),
+);
 
-const PROJECTS = [
-  { name: 'minclo', url: 'idealase.github.io/minclo', desc: 'Minimalist closet organizer' },
-  { name: 'spider-size-simulator', url: 'idealase.github.io/spider-size-simulator', desc: 'Interactive spider size comparison' },
-  { name: 'me-net', url: 'idealase.github.io/me-net', desc: 'Personal network visualization' },
-  { name: 'PulseQuiz', url: 'idealase.github.io/PulseQuiz', desc: 'Interactive quiz app' },
-  { name: 'bucket-flow-calculus', url: 'idealase.github.io/bucket-flow-calculus', desc: 'Bucket flow visualization' },
-  { name: 'dc-sim', url: 'idealase.github.io/dc-sim', desc: 'Data center simulation' },
-];
+const PAGES = ROUTES.map(route => ({
+  name: route.aliases[0],
+  path: route.path,
+  description: route.description,
+}));
 
-const DOCUMENTS = [
-  { name: 'the-fatal-economy', title: 'The Fatal Economy', desc: 'Alternative history of the Pax Britannica and WWI origins' },
-  { name: 'hypermodernity', title: 'Hypermodernity & Technology', desc: 'Essay in six chapters on hypermodernity and society' },
-  { name: 'readme', title: 'Project README', desc: 'Website architecture and development philosophy' },
-  { name: 'react-docs', title: 'React App Documentation', desc: 'Technical reference for the React application' },
-  { name: 'security', title: 'Security Guidelines', desc: 'Secret management and dependency security' },
-  { name: 'actions', title: 'GitHub Actions', desc: 'CI/CD pipeline and deployment automation' },
-  { name: 'issues', title: 'Repository Issues', desc: 'Bug reports and feature requests' },
-  { name: 'pulls', title: 'Pull Requests', desc: 'Code changes and contribution history' },
-];
-
-const MILESTONES = [
-  { date: 'Apr 15 2025', title: 'Foundations of the vibe-coded meta-site' },
-  { date: 'Apr 15 2025', title: 'Secret doors and narrative intrigue' },
-  { date: 'Apr 15 2025', title: 'Automation joins the ritual' },
-  { date: 'Apr 20 2025', title: 'React renaissance and the HashRouter pivot' },
-  { date: 'Jul 23 2025', title: 'Hybrid architecture ceasefire' },
-  { date: 'Aug 4-5 2025', title: 'Security gauntlet, phases I-IV' },
-  { date: 'Aug 4-5 2025', title: 'The login labyrinth gets luxe' },
-  { date: 'Aug 20 2025', title: 'Atmospherics: Faulty terminals and decrypted lore' },
-  { date: 'Sep 10 2025', title: 'Accessibility polish for every traveler' },
-  { date: 'Oct-Nov 2025', title: 'Curating the canon' },
-  { date: 'Nov 18 2025', title: 'Horse Race Plotter: Python gaming in the browser' },
-];
+const MAX_LINES = 400;
 
 const NEOFETCH_ART = [
   '        ___           ___      ',
@@ -90,14 +55,14 @@ const NEOFETCH_INFO = [
   '',
   'sandford.systems',
   '─────────────────',
-  'Framework: React 19.1.0',
-  'Language:  TypeScript 4.9.5',
-  'Styling:   styled-components 6.1',
-  'Motion:    Framer Motion 12.7',
+  `Framework: React ${React.version}`,
+  'Language:  TypeScript',
+  'Styling:   styled-components 6',
+  'Motion:    Framer Motion 12',
   'Graphics:  OGL (WebGL)',
-  'Router:    react-router-dom 7.5',
-  'Pages:     8',
-  'Projects:  6 deployed',
+  'Router:    react-router 7 (hash)',
+  `Pages:     ${NAV_ITEMS.length}`,
+  `Projects:  ${ALL_PROJECTS.length}`,
   'Palette:   Nord (#88c0d0, #5e81ac)',
   'Vibes:     immaculate',
 ];
@@ -110,6 +75,7 @@ const HELP_TEXT: OutputLine[] = [
   { text: '  about               About sandford.systems', type: 'output' },
   { text: '  ls [pages|projects|docs]  List items', type: 'output' },
   { text: '  cd <page>           Navigate to a page', type: 'output' },
+  { text: '  open <project>      Open a project in a new tab', type: 'output' },
   { text: '  cat <topic>         Read content (about, readme)', type: 'output' },
   { text: '  history             Development timeline', type: 'output' },
   { text: '  neofetch            System info', type: 'output' },
@@ -120,7 +86,7 @@ const HELP_TEXT: OutputLine[] = [
   { text: '  echo <text>         Echo text', type: 'output' },
   { text: '  clear               Clear terminal', type: 'output' },
   { text: '', type: 'output' },
-  { text: '  Tip: use Tab to autocomplete commands', type: 'system' },
+  { text: '  Tip: Tab autocompletes, ↑/↓ recall history, Ctrl+L clears', type: 'system' },
   { text: '', type: 'output' },
 ];
 
@@ -134,18 +100,38 @@ const WELCOME: OutputLine[] = [
 
 // ── Command completions ────────────────────────────────────────────────
 
+const slugify = (text: string) =>
+  text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+const projectSlug = (project: Project) => project.slug ?? slugify(project.name);
+
+const PROJECT_LOOKUP = new Map<string, Project>(
+  ALL_PROJECTS.map(project => [projectSlug(project), project] as [string, Project]),
+);
+
 const ALL_COMMANDS = [
   'help', 'about', 'ls', 'ls pages', 'ls projects', 'ls docs',
-  'cd', 'cat', 'cat about', 'cat readme', 'history', 'neofetch',
+  'cd', ...PAGES.map(page => `cd ${page.name}`),
+  'open', ...Array.from(PROJECT_LOOKUP.keys(), slug => `open ${slug}`),
+  'cat', 'cat about', 'cat readme', 'history', 'neofetch',
   'pwd', 'whoami', 'whois', 'date', 'echo', 'clear', 'uname',
   'sudo', 'rm',
 ];
 
+/** Extend the input to the longest prefix shared by every match. */
+const commonPrefix = (items: string[]) =>
+  items.reduce((prefix, item) => {
+    let i = 0;
+    while (i < prefix.length && i < item.length && prefix.charAt(i) === item.charAt(i)) i++;
+    return prefix.slice(0, i);
+  });
+
 // ── Styled components ──────────────────────────────────────────────────
 
+// Blink the block, not the glyph, so a character under the cursor stays readable.
 const blink = keyframes`
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%, 49% { background-color: #88c0d0; color: #1d1d1d; }
+  50%, 100% { background-color: transparent; color: #d8dee9; }
 `;
 
 const scanlines = keyframes`
@@ -153,14 +139,17 @@ const scanlines = keyframes`
   100% { background-position: 0 4px; }
 `;
 
+// Laid out by the hero's flexbox rather than absolute + translate(-50%, -50%):
+// Framer Motion writes its own transform for the entrance animation, which
+// wiped out the CSS centring and left the terminal hanging off-centre.
 const TerminalWrapper = styled(motion.div)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
   z-index: 2;
-  width: min(90vw, 720px);
-  max-height: 60vh;
+  width: min(100%, 720px);
+  display: flex;
+  flex-direction: column;
+  max-height: min(60vh, 560px);
+  cursor: text;
   background: rgba(0, 0, 0, 0.78);
   border: 1px solid rgba(136, 192, 208, 0.25);
   border-radius: 8px;
@@ -183,6 +172,12 @@ const TerminalWrapper = styled(motion.div)`
     animation: ${scanlines} 0.3s linear infinite;
     pointer-events: none;
     z-index: 3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::after {
+      animation: none;
+    }
   }
 `;
 
@@ -213,13 +208,13 @@ const TitleText = styled.span`
 
 const OutputArea = styled.div`
   padding: 12px 14px 0 14px;
-  max-height: calc(60vh - 80px);
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   font-family: 'Fira Code', monospace;
   font-size: 0.82rem;
   line-height: 1.55;
-  scroll-behavior: smooth;
-
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -253,8 +248,10 @@ const Line = styled.div<{ $type: OutputLine['type'] }>`
 `;
 
 const InputRow = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   padding: 4px 14px 12px 14px;
   font-family: 'Fira Code', monospace;
   font-size: 0.82rem;
@@ -271,27 +268,47 @@ const Prompt = styled.span`
   flex-shrink: 0;
 `;
 
+// Visually hidden but still focusable. 16px stops iOS Safari zooming on focus.
 const HiddenInput = styled.input`
   position: absolute;
+  left: 0;
+  bottom: 0;
   opacity: 0;
   pointer-events: none;
-  width: 0;
-  height: 0;
+  width: 1px;
+  height: 1px;
+  font-size: 16px;
+  border: 0;
+  padding: 0;
 `;
 
 const InputDisplay = styled.span`
   color: #d8dee9;
   flex: 1;
-  position: relative;
+  min-width: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
 `;
 
-const Cursor = styled.span`
+// Block cursor that sits on the character at the caret (or after the text).
+// Solid and blinking while focused; a hollow outline when the terminal is idle.
+const Cursor = styled.span<{ $focused: boolean }>`
   display: inline-block;
-  width: 0.55em;
-  height: 1.15em;
-  background: #88c0d0;
+  min-width: 0.6em;
+  height: 1.3em;
+  line-height: 1.3em;
   vertical-align: text-bottom;
-  animation: ${blink} 1s step-end infinite;
+  white-space: pre;
+  color: #1d1d1d;
+  background: ${p => (p.$focused ? '#88c0d0' : 'transparent')};
+  box-shadow: ${p => (p.$focused ? 'none' : 'inset 0 0 0 1px rgba(136, 192, 208, 0.7)')};
+  ${p => p.$focused && css`
+    animation: ${blink} 1s step-end infinite;
+  `}
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 // ── Component ──────────────────────────────────────────────────────────
@@ -301,6 +318,8 @@ export default function InteractiveTerminal() {
   const [input, setInput] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [caret, setCaret] = useState(0);
+  const [focused, setFocused] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
@@ -313,19 +332,38 @@ export default function InteractiveTerminal() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [output]);
 
-  // Focus input on mount
+  // Focus on load for mouse/keyboard users only: on touch devices it would pop
+  // the on-screen keyboard over the hero before anyone asked to type.
   useEffect(() => {
-    inputRef.current?.focus();
+    const finePointer = window.matchMedia?.('(pointer: fine)').matches ?? true;
+    if (finePointer) inputRef.current?.focus({ preventScroll: true });
   }, []);
 
   const focusInput = useCallback(() => {
-    inputRef.current?.focus();
+    // Don't steal focus while someone is selecting output to copy it.
+    if (window.getSelection()?.toString()) return;
+    inputRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  const syncCaret = useCallback(() => {
+    const el = inputRef.current;
+    if (el) setCaret(el.selectionStart ?? el.value.length);
+  }, []);
+
+  /** Replace the input text and park the caret at the end. */
+  const setInputValue = useCallback((value: string) => {
+    setInput(value);
+    setCaret(value.length);
+    requestAnimationFrame(() => {
+      const el = inputRef.current;
+      if (el) el.setSelectionRange(value.length, value.length);
+    });
   }, []);
 
   // ── Command execution ──────────────────────────────────────────────
 
   const pushLines = useCallback((lines: OutputLine[]) => {
-    setOutput(prev => [...prev, ...lines]);
+    setOutput(prev => [...prev, ...lines].slice(-MAX_LINES));
   }, []);
 
   const executeCommand = useCallback((raw: string) => {
@@ -382,19 +420,28 @@ export default function InteractiveTerminal() {
             { text: '', type: 'output' },
           ]);
         } else if (sub === 'projects') {
+          // Grouped like the Development page; descriptions are trimmed so most
+          // rows stay on one line in the 720px terminal.
+          const lines: OutputLine[] = [];
+          for (const group of PROJECT_GROUPS) {
+            lines.push({ text: '', type: 'output' }, { text: group.title, type: 'system' });
+            for (const p of group.projects) {
+              const slug = projectSlug(p);
+              const desc = p.description.length > 58 ? `${p.description.slice(0, 57).trimEnd()}…` : p.description;
+              lines.push({ text: `  ${slug.padEnd(22)} ${desc}`, type: 'output' });
+            }
+          }
           pushLines([
+            ...lines,
             { text: '', type: 'output' },
-            ...PROJECTS.map(p => ({
-              text: `  ${p.name.padEnd(26)} ${p.desc}`,
-              type: 'output' as const,
-            })),
+            { text: "  Use 'open <project>' to launch one, or 'cd development' for the full list.", type: 'system' },
             { text: '', type: 'output' },
           ]);
         } else if (sub === 'docs') {
           pushLines([
             { text: '', type: 'output' },
             ...DOCUMENTS.map(d => ({
-              text: `  ${d.name.padEnd(22)} ${d.desc}`,
+              text: `  ${d.slug.padEnd(22)} ${d.title.split(':')[0]}`,
               type: 'output' as const,
             })),
             { text: '', type: 'output' },
@@ -411,13 +458,33 @@ export default function InteractiveTerminal() {
         if (!target || target === '~' || target === '/') {
           navigate('/');
           pushLines([{ text: 'Navigating to home...', type: 'system' }]);
-        } else if (ROUTE_MAP[target]) {
-          navigate(ROUTE_MAP[target]);
+        } else if (ROUTE_MAP.has(target)) {
+          navigate(ROUTE_MAP.get(target) as string);
           pushLines([{ text: `Navigating to ${target}...`, type: 'system' }]);
         } else {
           pushLines([
             { text: `cd: '${target}' not found. Use 'ls pages' to see routes.`, type: 'error' },
           ]);
+        }
+        break;
+      }
+
+      // ── open ──
+      case 'open': {
+        const slug = slugify(args.join(' '));
+        const project = slug
+          ? PROJECT_LOOKUP.get(slug) ?? ALL_PROJECTS.find(p => projectSlug(p).startsWith(slug))
+          : undefined;
+        if (!slug) {
+          pushLines([{ text: 'open: specify a project. Try \'ls projects\'.', type: 'error' }]);
+        } else if (!project) {
+          pushLines([{ text: `open: '${args.join(' ')}' not found. Try 'ls projects'.`, type: 'error' }]);
+        } else if (project.internal) {
+          navigate(project.url);
+          pushLines([{ text: `Navigating to ${project.name}...`, type: 'system' }]);
+        } else {
+          window.open(project.url, '_blank', 'noopener,noreferrer');
+          pushLines([{ text: `Opening ${project.name} → ${project.url}`, type: 'system' }]);
         }
         break;
       }
@@ -466,7 +533,7 @@ export default function InteractiveTerminal() {
           { text: 'Development Timeline', type: 'system' },
           { text: '────────────────────', type: 'system' },
           ...MILESTONES.map((m, i) => ({
-            text: `  ${String(i + 1).padStart(2)}.  ${m.date.padEnd(16)} ${m.title}`,
+            text: `  ${String(i + 1).padStart(2)}.  ${m.date.padEnd(28)} ${m.title}`,
             type: 'output' as const,
           })),
           { text: '', type: 'output' },
@@ -592,7 +659,7 @@ export default function InteractiveTerminal() {
     if (e.key === 'Enter') {
       e.preventDefault();
       executeCommand(input);
-      setInput('');
+      setInputValue('');
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (commandHistory.length === 0) return;
@@ -600,35 +667,49 @@ export default function InteractiveTerminal() {
         ? commandHistory.length - 1
         : Math.max(0, historyIndex - 1);
       setHistoryIndex(newIndex);
-      setInput(commandHistory[newIndex]);
+      setInputValue(commandHistory[newIndex]);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (historyIndex === -1) return;
       const newIndex = historyIndex + 1;
       if (newIndex >= commandHistory.length) {
         setHistoryIndex(-1);
-        setInput('');
+        setInputValue('');
       } else {
         setHistoryIndex(newIndex);
-        setInput(commandHistory[newIndex]);
+        setInputValue(commandHistory[newIndex]);
       }
     } else if (e.key === 'Tab') {
       e.preventDefault();
       if (!input) return;
-      const matches = ALL_COMMANDS.filter(c => c.startsWith(input.toLowerCase()));
+      const typed = input.toLowerCase();
+      const matches = ALL_COMMANDS.filter(c => c.startsWith(typed));
       if (matches.length === 1) {
-        setInput(matches[0]);
+        setInputValue(`${matches[0]} `);
       } else if (matches.length > 1) {
-        pushLines([
-          { text: `visitor@sandford ~ $ ${input}`, type: 'input' },
-          { text: matches.join('  '), type: 'system' },
-        ]);
+        const shared = commonPrefix(matches);
+        if (shared.length > typed.length) {
+          setInputValue(shared);
+        } else if (matches.includes(typed) && !typed.endsWith(' ')) {
+          // e.g. "ls" → "ls " so the next Tab lists its arguments.
+          setInputValue(`${typed} `);
+        } else {
+          // List the candidates for the word being completed, like a real shell.
+          const start = typed.lastIndexOf(' ') + 1;
+          const options = Array.from(new Set(
+            matches.map(m => m.slice(start)).filter(rest => rest && !rest.includes(' ')),
+          ));
+          pushLines([
+            { text: `visitor@sandford ~ $ ${input}`, type: 'input' },
+            { text: options.join('  '), type: 'system' },
+          ]);
+        }
       }
     } else if (e.key === 'l' && e.ctrlKey) {
       e.preventDefault();
       setOutput([]);
     }
-  }, [input, commandHistory, historyIndex, executeCommand, pushLines]);
+  }, [input, commandHistory, historyIndex, executeCommand, pushLines, setInputValue]);
 
   // ── Render ─────────────────────────────────────────────────────────
 
@@ -638,8 +719,8 @@ export default function InteractiveTerminal() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.3 }}
       onClick={focusInput}
-      role="application"
-      aria-label="Interactive terminal"
+      role="region"
+      aria-label="Interactive terminal. Type help and press Enter."
     >
       <TitleBar>
         <Dot $color="#bf616a" />
@@ -648,7 +729,7 @@ export default function InteractiveTerminal() {
         <TitleText>visitor@sandford.systems:~</TitleText>
       </TitleBar>
 
-      <OutputArea ref={outputRef}>
+      <OutputArea ref={outputRef} role="log" aria-live="polite">
         {output.map((line, i) => (
           <Line key={i} $type={line.type}>{line.text}</Line>
         ))}
@@ -659,17 +740,26 @@ export default function InteractiveTerminal() {
         <HiddenInput
           ref={inputRef}
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={e => {
+            setInput(e.target.value);
+            setCaret(e.target.selectionStart ?? e.target.value.length);
+          }}
           onKeyDown={handleKeyDown}
-          autoFocus
+          onKeyUp={syncCaret}
+          onSelect={syncCaret}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           spellCheck={false}
           autoComplete="off"
+          autoCorrect="off"
           autoCapitalize="off"
+          enterKeyHint="send"
           aria-label="Terminal command input"
         />
-        <InputDisplay>
-          {input}
-          <Cursor />
+        <InputDisplay aria-hidden="true">
+          {input.slice(0, caret)}
+          <Cursor $focused={focused}>{input.slice(caret, caret + 1) || ' '}</Cursor>
+          {input.slice(caret + 1)}
         </InputDisplay>
       </InputRow>
     </TerminalWrapper>

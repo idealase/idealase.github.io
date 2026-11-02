@@ -1,4 +1,4 @@
-import { Routes, Route, HashRouter } from 'react-router-dom';
+import { Routes, Route, HashRouter, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import GlobalStyles from './GlobalStyles';
 import Navigation from './components/Navigation';
@@ -10,8 +10,6 @@ import LoginPage from './components/LoginPage';
 import PerthBeerCuratorPage from './components/PerthBeerCuratorPage';
 import ContactPage from './components/ContactPage';
 import BucketFlowPage from './components/BucketFlowPage';
-import AppsPage from './components/AppsPage';
-import SitesPage from './components/SitesPage';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -29,6 +27,14 @@ const Footer = styled.footer`
   text-align: center;
   color: #e1e1e1;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+
+  p {
+    margin: 0;
+  }
+`;
+
+const FooterLink = styled.a`
+  color: #88c0d0;
 `;
 
 function App() {
@@ -40,8 +46,6 @@ function App() {
         <MainContent>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/apps" element={<AppsPage />} />
-            <Route path="/sites" element={<SitesPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/development" element={<DevelopmentPage />} />
@@ -49,10 +53,14 @@ function App() {
             <Route path="/perth-beer-curator" element={<PerthBeerCuratorPage />} />
             <Route path="/bucket-flow" element={<BucketFlowPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            {/* Apps and Sites were merged into Development; keep old links working. */}
+            <Route path="/apps" element={<Navigate to="/development" replace />} />
+            <Route path="/sites" element={<Navigate to="/development" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </MainContent>
         <Footer>
-          <p>&copy; 2025 My Website | <a href="https://github.com/idealase/idealase.github.io" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+          <p>&copy; 2025–{new Date().getFullYear()} sandford.systems · <FooterLink href="https://github.com/idealase" target="_blank" rel="noopener noreferrer">GitHub</FooterLink></p>
         </Footer>
       </AppContainer>
     </HashRouter>

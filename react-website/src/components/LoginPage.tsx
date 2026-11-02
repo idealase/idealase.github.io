@@ -27,7 +27,7 @@ const LoginHeader = styled.div`
   text-align: center;
 `;
 
-const LoginTitle = styled.h2`
+const LoginTitle = styled.h1`
   color: #ffffff;
   margin: 0;
   font-size: 2rem;

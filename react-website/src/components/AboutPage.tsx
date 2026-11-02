@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { Link as RouterLink } from 'react-router-dom';
 
 const AboutContainer = styled.div`
   min-height: 100vh;
@@ -15,7 +16,7 @@ const ContentSection = styled.section`
   color: #e1e1e1;
 `;
 
-const Title = styled(motion.h2)`
+const Title = styled(motion.h1)`
   color: #e1e1e1;
   font-size: 2.5rem;
   margin-bottom: 2rem;
@@ -43,7 +44,7 @@ const AboutContent = styled.div`
   line-height: 1.7;
 `;
 
-const SectionTitle = styled.h3`
+const SectionTitle = styled.h2`
   color: #88c0d0;
   margin: 2rem 0 1rem;
   font-size: 1.5rem;
@@ -69,27 +70,7 @@ const StyledList = styled.ul`
   }
 `;
 
-const LinkSection = styled.div`
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(100, 100, 100, 0.3);
-`;
-
-const StyledLink = styled.a`
-  display: inline-block;
-  margin: 0.5rem 0;
-  padding: 0.75rem 1.5rem;
-  background-color: rgba(94, 129, 172, 0.2);
-  border-radius: 4px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: rgba(94, 129, 172, 0.3);
-    transform: translateY(-2px);
-  }
-`;
-
-const InlineLink = styled.a`
+const linkStyles = `
   color: #88c0d0;
   text-decoration: none;
   border-bottom: 1px solid rgba(136, 192, 208, 0.4);
@@ -98,6 +79,14 @@ const InlineLink = styled.a`
   &:hover {
     border-bottom-color: rgba(136, 192, 208, 0.8);
   }
+`;
+
+const InlineLink = styled.a`
+  ${linkStyles}
+`;
+
+const InternalLink = styled(RouterLink)`
+  ${linkStyles}
 `;
 
 const Whisper = styled.p`
@@ -140,12 +129,6 @@ const AboutPage: React.FC = () => {
         </motion.p>
 
         <AboutContent>
-          <SectionTitle>About This Website</SectionTitle>
-          <p>
-            This site started as a playground for learning the absolute basics of the web stack and now captures every
-            experiment along the way.
-          </p>
-
           <SectionTitle>Development Story</SectionTitle>
           <p>
             The project kicked off with static HTML pages that documented each small breakthrough. As new ideas surfaced, the
@@ -154,63 +137,28 @@ const AboutPage: React.FC = () => {
             was tried, why it mattered, and what was left behind for future reflection.
           </p>
 
-          <SectionTitle>Documentation &amp; Resources</SectionTitle>
+          <SectionTitle>What You Can Explore</SectionTitle>
           <StyledList>
             <li>
-              Project source, issues, and development logs live in the{' '}
-              <InlineLink
-                href="https://github.com/idealase/idealase.github.io"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              Every live project, the source behind it, and a commit-by-commit timeline on the{' '}
+              <InternalLink to="/development">Development</InternalLink> page.
+            </li>
+            <li>
+              Essays and thought experiments in <InternalLink to="/documents">Documents</InternalLink>.
+            </li>
+            <li>
+              Security hardening notes, accessibility checklists and test reports across the{' '}
+              <InlineLink href="https://github.com/idealase/idealase.github.io" target="_blank" rel="noopener noreferrer">
                 GitHub repository
               </InlineLink>
               .
             </li>
-            <li>
-              Historical context for the "First JS" prototype, including notes on the original vanilla JavaScript widgets, can
-              be found in the{' '}
-              <InlineLink href="/documents.html">documents section</InlineLink>.
-            </li>
-            <li>
-              Experiments with authentication, security headers, and testing are captured across the{' '}
-              <code>tests/</code> folder and the linked reports.
-            </li>
-          </StyledList>
-
-          <SectionTitle>What You Can Explore</SectionTitle>
-          <StyledList>
-            <li>Timeline snapshots of each refactor and technology spike.</li>
-            <li>Comparisons between static and React-driven interfaces.</li>
-            <li>Security hardening notes, accessibility checklists, and lessons learned.</li>
           </StyledList>
 
           <Whisper>
-            Psst... the backstage{' '}
-            <InlineLink href="/login.html">portal</InlineLink> is tucked away right here for those who know to look.
+            Psst... the backstage <InternalLink to="/login">portal</InternalLink> is tucked away right here for those who
+            know to look.
           </Whisper>
-
-          <LinkSection>
-            <SectionTitle>Project Repository</SectionTitle>
-            <p>
-              <StyledLink
-                href="https://github.com/idealase/idealase.github.io"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View this project on GitHub
-              </StyledLink>
-            </p>
-            <p>
-              <StyledLink
-                href="https://github.com/idealase/idealase.github.io/actions"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub Actions Deployments
-              </StyledLink>
-            </p>
-          </LinkSection>
         </AboutContent>
       </ContentSection>
     </AboutContainer>

@@ -76,5 +76,10 @@
     "serialize-javascript": "^7.0.5",
     "underscore": "^1.13.8",
     "ws@<7.5.11": "7.5.13"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^react-router/dom$": "<rootDir>/node_modules/react-router/dist/development/dom-export.js"
+    }
   }
 }

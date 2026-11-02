@@ -9,7 +9,7 @@ const ContactSection = styled.section`
   margin: 0 auto;
 `;
 
-const Title = styled.h2`
+const Title = styled.h1`
   color: #e1e1e1;
   font-size: 2.5rem;
   margin-bottom: 2rem;
@@ -182,7 +182,7 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <ContactSection id="contact">
+    <ContactSection>
       <Title>Contact sandford.systems</Title>
       <Description>
         Have an idea for a new feature, prompt, or improvement? Send it our way!

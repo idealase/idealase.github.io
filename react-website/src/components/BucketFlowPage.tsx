@@ -32,7 +32,7 @@ const Panel = styled.section`
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
 `;
 
-const Title = styled.h2`
+const Title = styled.h1`
   margin: 0 0 1rem;
   font-size: 2rem;
   color: #e1e1e1;

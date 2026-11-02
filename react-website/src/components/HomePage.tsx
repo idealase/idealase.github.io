@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ArrowVisualization from './ArrowVisualization';
-import Contact from './Contact';
 import FaultyTerminal from './FaultyTerminal';
 import InteractiveTerminal from './InteractiveTerminal';
 
@@ -12,33 +11,40 @@ const HomeContainer = styled.div`
 `;
 
 const HeroSection = styled.section`
-  height: 90vh;
+  /* Fill the viewport below the sticky nav; content can grow past it on short screens. */
+  min-height: calc(100vh - 60px);
+  min-height: calc(100svh - 60px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 0 2rem;
+  padding: 3rem 1rem 7rem;
+  box-sizing: border-box;
   position: relative;
   overflow: hidden;
-
-  @media (max-width: 768px) {
-    height: 80vh;
-    min-height: 600px;
-  }
-
-  @media (max-width: 480px) {
-    height: 70vh;
-    min-height: 500px;
-  }
+  isolation: isolate;
 `;
 
+const VisuallyHidden = styled.h1`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+`;
 
 const ScrollPrompt = styled(motion.button)`
+  /* Centred without transform: Framer Motion owns the transform for hover/tap. */
   position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -50,11 +56,10 @@ const ScrollPrompt = styled(motion.button)`
   z-index: 2;
   padding: 1rem;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
 
   &:hover {
     background-color: rgba(136, 192, 208, 0.1);
-    transform: translateX(-50%) translateY(-2px);
   }
 
   &:focus {
@@ -88,6 +93,7 @@ const ContentSection = styled.section`
   max-width: 1200px;
   margin: 0 auto;
   padding: 5rem 2rem;
+  scroll-margin-top: 4rem;
   color: #e1e1e1;
 `;
 
@@ -119,13 +125,53 @@ const IntroText = styled.p`
   color: #d8dee9;
 `;
 
+// Hoisted so the WebGL effect isn't torn down and rebuilt on every render
+// (its setup effect depends on these values, including the gridMul array).
+const BACKDROP_PROPS = {
+  scale: 3,
+  gridMul: [2, 1] as [number, number],
+  digitSize: 1.4,
+  timeScale: 1.9,
+  scanlineIntensity: 2,
+  glitchAmount: 1,
+  flickerAmount: 1,
+  noiseAmp: 0.6,
+  chromaticAberration: 0,
+  dither: 0,
+  curvature: 0.17,
+  tint: '#4b6f8b',
+  mouseStrength: 1.4,
+  pageLoadAnimation: false,
+  brightness: 0.5,
+  style: { zIndex: 0 },
+};
+
+const usePrefersReducedMotion = () => {
+  const query = '(prefers-reduced-motion: reduce)';
+  const [reduced, setReduced] = useState(
+    () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia(query).matches,
+  );
+
+  useEffect(() => {
+    if (!window.matchMedia) return undefined;
+    const mql = window.matchMedia(query);
+    const onChange = () => setReduced(mql.matches);
+    mql.addEventListener?.('change', onChange);
+    return () => mql.removeEventListener?.('change', onChange);
+  }, []);
+
+  return reduced;
+};
+
 const HomePage: React.FC = () => {
+  const reducedMotion = usePrefersReducedMotion();
+
   useEffect(() => {
     document.title = 'sandford.systems';
   }, []);
 
   const scrollToContent = () => {
-    document.getElementById('content')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('content')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -137,34 +183,9 @@ const HomePage: React.FC = () => {
 
   return (
     <HomeContainer>
-      <HeroSection role="banner" aria-label="Welcome section">
-        <FaultyTerminal
-          scale={3}
-          gridMul={[2, 1]}
-          digitSize={1.4}
-          timeScale={1.9}
-          pause={false}
-          scanlineIntensity={2}
-          glitchAmount={1}
-          flickerAmount={1}
-          noiseAmp={0.6}
-          chromaticAberration={0}
-          dither={0}
-          curvature={0.17}
-          tint="#4b6f8b"
-          mouseReact={true}
-          mouseStrength={1.4}
-          pageLoadAnimation={false}
-          brightness={0.5}
-          style={{ 
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 0
-          }}
-        />
+      <HeroSection aria-label="Interactive terminal">
+        <VisuallyHidden>sandford.systems</VisuallyHidden>
+        <FaultyTerminal {...BACKDROP_PROPS} pause={reducedMotion} mouseReact={!reducedMotion} />
         <InteractiveTerminal />
         <ScrollPrompt
           onClick={scrollToContent}
@@ -195,21 +216,15 @@ const HomePage: React.FC = () => {
         </ScrollPrompt>
       </HeroSection>
 
-      <main>
-        <ContentSection id="content" aria-label="Main content">
-          <SectionTitle as="h2">About sandford.systems</SectionTitle>
-          <IntroText>
-            sandford.systems is a digital playground for ideas around secure-by-
-            design software, resilient infrastructure, and thoughtful product
-            development. Expect deep dives into tooling, experiments with user
-            experience, and the occasional detour into creative technology
-            tangents.
-          </IntroText>
-          <ArrowVisualization />
-        </ContentSection>
-
-        <Contact />
-      </main>
+      <ContentSection id="content" aria-labelledby="intro-heading">
+        <SectionTitle id="intro-heading">What is this place?</SectionTitle>
+        <IntroText>
+          sandford.systems is a digital playground for ideas around secure-by-design software, resilient
+          infrastructure, and thoughtful product development, built almost entirely by vibe coding. Expect
+          experiments with tooling and user experience, and the occasional detour into creative technology tangents.
+        </IntroText>
+        <ArrowVisualization />
+      </ContentSection>
     </HomeContainer>
   );
 };
